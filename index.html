@@ -60,12 +60,12 @@
     .search-box{flex:1;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0 14px;box-shadow:var(--shadow)}
     .search-box i{color:var(--muted);font-size:14px}
     .search-box input{width:100%;border:none;outline:none;background:transparent;padding:13px 0;color:var(--text);font-size:14px}
-    .hero{margin:12px 12px 6px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:20px;padding:20px 18px;box-shadow:0 12px 24px rgba(0,0,0,0.10);position:relative;overflow:hidden}
+    .hero{margin:10px 12px 4px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 12px 24px rgba(0,0,0,0.10);position:relative;overflow:hidden}
     .hero::before{content:"";position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);left:-25px;bottom:-40px}
     .hero::after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.06);top:-25px;right:-20px}
     .hero h2,.hero p{position:relative;z-index:1}
-    .hero h2{margin:0 0 6px;font-size:26px;font-weight:900;line-height:1.5}
-    .hero p{margin:0;font-size:15px;line-height:1.9;opacity:.97;font-weight:500}
+    .hero h2{margin:0 0 4px;font-size:22px;font-weight:900;line-height:1.45}
+    .hero p{margin:0;font-size:13px;line-height:1.75;opacity:.97;font-weight:500}
     .section-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 0;gap:10px;flex-wrap:wrap}
     .section-title{font-size:15px;font-weight:900}
     .section-note{color:var(--muted);font-size:12px}
@@ -75,13 +75,11 @@
     .cat-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
     .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center}
     .filters select{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;outline:none;box-shadow:var(--shadow)}
-    .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+    .browse-sticky{position:sticky;top:132px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
     body.dark-mode .browse-sticky{background:linear-gradient(180deg,var(--bg),rgba(11,18,32,.98))}
     .browse-sticky .section-bar{padding-top:0}
     .browse-sticky .section-bar,.browse-sticky .category-strip,.browse-sticky .filters{position:relative;top:auto}
-    .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-    body.ads-active .browse-sticky{top:142px}
-    .ads-wrap.ads-floating{position:sticky;top:72px;z-index:1900;margin:8px 12px 0;border-radius:16px}
+    .browse-sticky .ads-wrap{display:none}
     .browse-sticky .category-strip{padding-top:8px;padding-bottom:10px}
     .browse-sticky .filters{padding-bottom:10px}
 
@@ -90,7 +88,7 @@
     .card-top-badges{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
     .badge{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;color:#fff;box-shadow:0 8px 18px rgba(0,0,0,0.12)}
     .badge.featured{background:linear-gradient(135deg,#f59e0b,#f97316)}
-    .admin-delete-btn,.admin-edit-btn{position:absolute;z-index:4;width:34px;height:34px;border:none;border-radius:12px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .admin-delete-btn,.admin-edit-btn{position:absolute;z-index:8;width:34px;height:34px;border:none;border-radius:12px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
     .admin-delete-btn{top:10px;left:10px;background:rgba(220,38,38,.95)}
     .admin-edit-btn{top:52px;left:10px;background:rgba(37,99,235,.95)}
     .gallery-wrapper{width:100%;height:210px;background:linear-gradient(180deg,#fff,#f8fafc);position:relative;overflow:hidden}
@@ -104,9 +102,9 @@
     .gallery-thumbs::-webkit-scrollbar{display:none}
     .gallery-thumb{width:50px;height:50px;border-radius:12px;border:2px solid transparent;object-fit:cover;background:#fff;cursor:pointer;flex-shrink:0}
     .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
-    .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
+    .product-info{padding:10px;display:flex;flex-direction:column;flex:1;gap:4px}
     .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
-    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:700;min-height:58px;display:block;max-height:7.8em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}
+    .p-desc{font-size:14px;color:var(--muted);margin:0 0 2px;line-height:1.75;overflow:hidden;cursor:pointer;font-weight:700;min-height:24px;display:block;max-height:6.8em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}.p-desc.short-price{font-size:22px;font-weight:900;color:var(--text);line-height:1.2;margin-bottom:0}.p-desc.long-desc{font-size:12px;line-height:1.65}
     .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto}
     .p-desc.has-more::after{content:" عرض الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
     .p-desc.expanded::after{content:" إخفاء الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
@@ -114,8 +112,8 @@
     .stock{font-size:11px;font-weight:800;border-radius:999px;padding:6px 10px}
     .stock.in{background:rgba(22,163,74,.12);color:var(--success)}
     .stock.out{background:rgba(220,38,38,.12);color:var(--danger)}
-    .price-tag{color:var(--success);font-size:18px;font-weight:900;margin-bottom:6px}
-    .card-actions{margin-top:auto;display:flex;gap:8px;align-items:center}
+    .price-tag{color:var(--success);font-size:18px;font-weight:900;margin-bottom:2px}
+    .card-actions{margin-top:2px;display:flex;gap:8px;align-items:center}
     .btn{border:none;outline:none;cursor:pointer;border-radius:12px;padding:11px 14px;font-weight:900;font-size:13px;transition:.2s}
     .btn-order{flex:1;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;white-space:nowrap}
     .btn-share{width:46px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 46px;min-height:46px}
@@ -125,8 +123,7 @@
     .footer .desc{color:var(--muted);font-size:13px;line-height:1.7}
     .socials{display:flex;justify-content:center;gap:12px;margin-top:14px;flex-wrap:wrap}
     .social-btn{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--accent);display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:var(--shadow);font-size:16px}
-    .mini-text{font-size:11px;color:var(--muted);margin-top:12px;white-space:pre-line}
-    #footerVersion{display:block}
+    .mini-text{font-size:11px;color:var(--muted);margin-top:12px}
 
     .modal{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:14px}
     .modal.show{display:flex}
@@ -209,7 +206,7 @@
     .z-img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:start;background:#000}
     .fab-admin{position:fixed;left:14px;bottom:18px;z-index:2500;width:56px;height:56px;border:none;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 18px 30px rgba(37,99,235,.28);font-size:20px;display:none;align-items:center;justify-content:center;cursor:pointer}
     .fab-admin.show{display:flex}
-    .ads-wrap{margin:8px 12px 10px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:none;position:relative;top:auto;z-index:2}
+    .ads-wrap{margin:8px 12px 10px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:none;position:sticky;top:72px;z-index:1901}
     .ads-wrap.show{display:block}
     .ads-strip{position:relative;min-height:58px;display:flex;align-items:center;overflow:hidden;color:#fff;padding:0 14px}
     .ads-label{position:relative;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);flex-shrink:0;margin-left:10px}
@@ -236,8 +233,7 @@
       .grid-2,.switches,.stats-grid,.color-speed-row{grid-template-columns:1fr}
       .products{grid-template-columns:repeat(2,minmax(0,1fr))}
       .gallery-wrapper{height:170px}
-      .browse-sticky{top:74px}
-      body.ads-active .browse-sticky{top:144px}
+      .browse-sticky{top:126px}
       .modal-card{padding-bottom:calc(180px + env(safe-area-inset-bottom, 0px))}
     }
   </style>
@@ -282,7 +278,7 @@
 
   <section class="hero"><h2 id="heroTitle">مرحبًا بك في متجر MS</h2><p id="heroDesc">منتجات مختارة بعناية وطلب مباشر وسريع عبر واتساب.</p></section>
 
-  <section id="adsWrap" class="ads-wrap ads-floating"><div id="adsStrip" class="ads-strip"></div></section>
+  <section id="adsWrap" class="ads-wrap"><div id="adsStrip" class="ads-strip"></div></section>
 
   <div class="browse-sticky">
     <div class="section-bar">
@@ -443,9 +439,9 @@
       <div class="field"><label>وصف المتجر / عن المتجر</label><textarea id="setStoreAbout"></textarea></div>
       <div class="grid-2"><div class="field"><label>عنوان الواجهة الرئيسية</label><input type="text" id="setHeroTitle" /></div><div class="field"><label>وصف الواجهة الرئيسية</label><input type="text" id="setHeroDesc" /></div></div>
       <div class="grid-2"><div class="field"><label>رقم واتساب للطلبات</label><input type="text" id="setWhatsapp" placeholder="9647xxxxxxxx" /></div><div class="field"><label>رابط تيليجرام</label><input type="text" id="setTelegram" placeholder="https://t.me/username" /></div></div>
-      <div class="grid-2"><div class="field"><label>رابط تيك توك</label><input type="text" id="setTiktok" placeholder="https://www.tiktok.com/@username" /></div><div class="field"><label>حجم خط الحقوق</label><input type="number" id="setFooterFontSize" min="10" max="40" step="1" placeholder="مثال: 14" /></div></div>
-      <div class="field"><label>حقوق المتجر (الفوتر)</label><textarea id="setFooterText" placeholder="مثال: MS Store © 2026 | جميع الحقوق محفوظة
-سطر ثاني"></textarea><div class="helper-inline">اضغط Enter لإضافة سطر جديد داخل الحقوق.</div></div>
+      <div class="grid-2"><div class="field"><label>رابط تيك توك</label><input type="text" id="setTiktok" placeholder="https://www.tiktok.com/@username" /></div><div class="field"><label>حجم خط الحقوق</label><input type="number" id="setFooterFontSize" min="10" max="28" step="1" placeholder="مثال: 11" /></div></div>
+      <div class="field"><label>حقوق المتجر (الفوتر)</label><textarea id="setFooterText" placeholder="مثال: MS Store © 2026
+جميع الحقوق محفوظة"></textarea><div class="helper-inline">اضغط Enter لبدء سطر جديد داخل الحقوق.</div></div>
 
       <div class="section-divider"></div>
       <div class="sub-title">إعدادات شاشة البداية</div>
@@ -490,14 +486,7 @@ let currentAd = null;
 let modalStack = [];
 let pendingAdminReason = "";
 let pendingSplashLogoFile = null;
-const PRODUCTS_CACHE_KEY = 'msProductsCacheV1';
-
-function saveProductsCache(list){
-  try{ localStorage.setItem(PRODUCTS_CACHE_KEY, JSON.stringify(Array.isArray(list) ? list : [])); }catch(e){}
-}
-function loadProductsCache(){
-  try{ const raw = localStorage.getItem(PRODUCTS_CACHE_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; }
-}
+const PRODUCT_CACHE_KEY = 'msstore_products_cache_v4';
 
 const defaultSettings = {
   storeName: "MS Store",
@@ -700,9 +689,7 @@ function applyStoreSettings(){
   setText('footerStoreTitle', storeSettings.storeName);
   setText('footerAboutText', storeSettings.storeAbout);
   setText('aboutModalText', storeSettings.storeAbout);
-  setText('footerVersion', storeSettings.footerText || defaultSettings.footerText);
-  const footerEl = document.getElementById('footerVersion');
-  if(footerEl) footerEl.style.fontSize = String(Number(storeSettings.footerFontSize || defaultSettings.footerFontSize || 11)) + 'px';
+  applyFooterSettings();
   setText('splashTitle', storeSettings.splashTitle || storeSettings.storeName);
   document.getElementById('splashSubtitle').innerHTML = formatDisplayText(storeSettings.splashText || defaultSettings.splashText);
   document.getElementById('whatsappLink').href = 'https://wa.me/' + cleanupNumber(storeSettings.whatsapp);
@@ -711,6 +698,15 @@ function applyStoreSettings(){
   applyBrandLogo(storeSettings.splashLogo || '');
   applyMaintenanceMode();
 }
+
+function applyFooterSettings(){
+  const footer = document.getElementById('footerVersion');
+  if(!footer) return;
+  const size = Math.max(10, Number(storeSettings.footerFontSize || defaultSettings.footerFontSize || 11));
+  footer.style.fontSize = size + 'px';
+  footer.innerHTML = formatDisplayText(storeSettings.footerText || defaultSettings.footerText);
+}
+
 function applyBrandLogo(logoUrl){
   const splashBox = document.getElementById('splashLogoBox');
   const brandBadge = document.getElementById('brandBadge');
@@ -764,7 +760,7 @@ async function saveStoreSettings(){
     telegram: val('setTelegram') || defaultSettings.telegram,
     tiktok: val('setTiktok') || defaultSettings.tiktok,
     footerText: val('setFooterText') || defaultSettings.footerText,
-    footerFontSize: Math.max(10, Math.min(40, Number(val('setFooterFontSize') || defaultSettings.footerFontSize || 11))),
+    footerFontSize: Math.max(10, Number(val('setFooterFontSize') || defaultSettings.footerFontSize || 11)),
     splashEnabled: !!document.getElementById('setSplashEnabled').checked,
     splashSeconds: Math.max(1, Number(val('setSplashSeconds') || defaultSettings.splashSeconds)),
     splashTitle: val('setSplashTitle') || val('setStoreName') || defaultSettings.storeName,
@@ -900,25 +896,41 @@ function renderAdminCategories(){
 }
 
 function listenProducts(){
+  try{
+    const cached = JSON.parse(localStorage.getItem(PRODUCT_CACHE_KEY) || '[]');
+    if(Array.isArray(cached) && cached.length){
+      allProducts = cached.map(p => normalizeProduct(p.id || ('local_' + Date.now()), p));
+      renderProducts();
+      renderAdminProducts();
+      updateStatsCards();
+    }
+  }catch(e){}
+
   db.ref('products').on('value', snap => {
     const list = [];
     snap.forEach(child => list.push(normalizeProduct(child.key, child.val() || {})));
     if(list.length){
       allProducts = list;
-      saveProductsCache(list);
-    }else{
-      const cached = loadProductsCache();
-      allProducts = Array.isArray(cached) ? cached.map(p => normalizeProduct(p.id || ('local_' + Date.now()), p)) : [];
+      try{ localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(list)); }catch(e){}
+    }else if(!list.length && !allProducts.length){
+      try{
+        const cached = JSON.parse(localStorage.getItem(PRODUCT_CACHE_KEY) || '[]');
+        if(Array.isArray(cached) && cached.length) allProducts = cached.map(p => normalizeProduct(p.id || ('local_' + Date.now()), p));
+      }catch(e){}
     }
     renderProducts();
     renderAdminProducts();
     updateStatsCards();
   }, () => {
-    const cached = loadProductsCache();
-    allProducts = Array.isArray(cached) ? cached.map(p => normalizeProduct(p.id || ('local_' + Date.now()), p)) : [];
-    renderProducts();
-    renderAdminProducts();
-    updateStatsCards();
+    try{
+      const cached = JSON.parse(localStorage.getItem(PRODUCT_CACHE_KEY) || '[]');
+      if(Array.isArray(cached) && cached.length){
+        allProducts = cached.map(p => normalizeProduct(p.id || ('local_' + Date.now()), p));
+        renderProducts();
+        renderAdminProducts();
+        updateStatsCards();
+      }
+    }catch(e){}
   });
 }
 function normalizeProduct(id, p){
@@ -938,7 +950,7 @@ function normalizeProduct(id, p){
     category: p.category || 'عام',
     stock: p.stock || 'متوفر',
     featured: !!p.featured,
-    active: p.active !== false,
+    active: p.active === false ? false : true,
     createdAt: p.createdAt || 0,
     images
   };
@@ -974,7 +986,13 @@ function renderProducts(){
 function getShortDescription(desc){
   const clean = String(desc || '').trim();
   if(!clean) return 'لا يوجد وصف';
-  return clean.length > 120 ? clean.slice(0, 120) + '...' : clean;
+  return clean.length > 90 ? clean.slice(0, 90) + '...' : clean;
+}
+function getDescriptionClasses(desc){
+  const clean = String(desc || '').trim();
+  if(clean && clean.length <= 5) return 'short-price';
+  if(clean.length > 40) return 'long-desc';
+  return '';
 }
 function buildOrderMessage(p){
   return (storeSettings.orderMessageTemplate || defaultSettings.orderMessageTemplate)
@@ -1038,7 +1056,8 @@ function buildProductCard(p){
   const stockClass = p.stock === 'متوفر' ? 'in' : 'out';
   const shortDesc = escapeHtml(getShortDescription(p.desc || 'لا يوجد وصف'));
   const fullDesc = escapeHtml(String(p.desc || 'لا يوجد وصف'));
-  const hasMoreClass = String(p.desc || '').trim().length > 120 ? 'has-more' : '';
+  const descModeClass = getDescriptionClasses(p.desc || '');
+  const hasMoreClass = String(p.desc || '').trim().length > 90 ? 'has-more' : '';
   const thumbs = images.map((img, index) => `<img class="gallery-thumb ${index === 0 ? 'active' : ''}" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onclick="switchCardImage(this,'${escapeJsString(img)}','${escapeJsString(p.name)}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />`).join('');
   card.innerHTML = `
     <div class="card-top-badges">${featuredBadge}</div>
@@ -1053,7 +1072,7 @@ function buildProductCard(p){
     </div>
     <div class="product-info">
       <h3 class="p-name" onclick="openProductDetails('${p.id}')">${escapeHtml(p.name)}</h3>
-      <p class="p-desc ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
+      <p class="p-desc ${descModeClass} ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
       <div class="meta-row"><span class="stock ${stockClass}">${escapeHtml(p.stock)}</span><span class="section-note">${escapeHtml(p.category)}</span></div>
       <div class="price-tag">${formatPrice(p.price)}</div>
       <div class="card-actions"><a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a><button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button></div>
@@ -1097,13 +1116,13 @@ async function saveProduct(){
       const uploaded = await uploadImagesToImgbb(currentUploadFiles.map(item => item.file || item));
       images = [...images, ...uploaded].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i);
     }
-    const payload = { name, price, category, stock, desc, featured, active, images, createdAt: id ? ((allProducts.find(p => p.id === id) || {}).createdAt || Date.now()) : Date.now(), updatedAt: Date.now() };
+    const payload = { name, price, category, stock, desc, featured, active: active !== false, images, createdAt: id ? ((allProducts.find(p => p.id === id) || {}).createdAt || Date.now()) : Date.now(), updatedAt: Date.now() };
     const ref = id ? db.ref('products/' + id) : db.ref('products').push();
-    if(!id) payload.id = ref.key; else payload.id = id;
     await ref.set(payload);
-    const cachedNow = loadProductsCache().filter(item => String(item.id) !== String(payload.id));
-    cachedNow.unshift(Object.assign({}, payload));
-    saveProductsCache(cachedNow);
+    const savedId = id || ref.key;
+    const normalizedSaved = normalizeProduct(savedId, payload);
+    allProducts = [normalizedSaved, ...allProducts.filter(p => p.id !== savedId)];
+    try{ localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(allProducts)); }catch(e){}
     setSaveStatus('success', id ? 'تم تحديث المنتج بنجاح.' : 'تم حفظ المنتج بنجاح.');
     alert(id ? 'تم تحديث المنتج' : 'تمت إضافة المنتج');
     resetProductForm();
@@ -1212,7 +1231,8 @@ async function deleteProduct(id, silent){
   const p = allProducts.find(x => x.id === id); if(!p) return;
   if(!silent && !confirm('هل تريد حذف المنتج: ' + p.name + ' ؟')) return;
   await db.ref('products/' + id).remove();
-  saveProductsCache(loadProductsCache().filter(item => String(item.id) !== String(id)));
+  allProducts = allProducts.filter(p => p.id !== id);
+  try{ localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(allProducts)); }catch(e){}
   if(!silent) alert('تم حذف المنتج');
   closeById('productModal');
 }
@@ -1221,7 +1241,7 @@ async function duplicateProduct(id){
   const copy = Object.assign({}, p, { name: p.name + ' - نسخة', createdAt: Date.now(), updatedAt: Date.now() }); delete copy.id;
   await db.ref('products').push(copy); alert('تم نسخ المنتج');
 }
-async function toggleProductVisibility(id, nextState){ await db.ref('products/' + id + '/active').set(nextState); const cache = loadProductsCache(); const idx = cache.findIndex(item => String(item.id) === String(id)); if(idx >= 0){ cache[idx].active = nextState; saveProductsCache(cache); } }
+async function toggleProductVisibility(id, nextState){ await db.ref('products/' + id + '/active').set(nextState); const item = allProducts.find(p => p.id === id); if(item){ item.active = nextState !== false; try{ localStorage.setItem(PRODUCT_CACHE_KEY, JSON.stringify(allProducts)); }catch(e){} renderProducts(); renderAdminProducts(); } }
 function addSingleImageUrl(){
   const url = val('singleImageUrl').trim();
   if(!url) return alert('ألصق رابط الصورة أولاً');
@@ -1277,8 +1297,7 @@ function renderAdsStrip(adOverride){
   const wrap = document.getElementById('adsWrap');
   const strip = document.getElementById('adsStrip');
   const enabled = (storeSettings.adsEnabled !== false) && !!ad.enabled && !!(ad.text || '').trim();
-  if(!enabled){ document.body.classList.remove('ads-active'); wrap.classList.remove('show'); strip.innerHTML = ''; return; }
-  document.body.classList.add('ads-active');
+  if(!enabled){ wrap.classList.remove('show'); strip.innerHTML = ''; return; }
   wrap.classList.add('show'); strip.style.background = ad.color || '#2563eb';
   const text = escapeHtml(ad.text || ''); const speed = escapeHtml(ad.speed || 'medium');
   strip.innerHTML = `<div class="ads-label"><i class="fa-solid fa-bullhorn"></i> إعلان</div><div class="ads-marquee"><div class="ads-track ${speed}"><span class="ads-item-inline">${text}</span><span class="ads-item-inline">${text}</span><span class="ads-item-inline">${text}</span><span class="ads-item-inline">${text}</span></div></div>`;
@@ -1286,7 +1305,9 @@ function renderAdsStrip(adOverride){
 async function saveSingleAd(){
   const enabled = document.getElementById('adsEnabledToggle').checked;
   await db.ref('settings/store/adsEnabled').set(enabled);
-  await db.ref('settings/ad').set({ enabled, text: val('adTextInput').trim(), color: val('adColorInput') || '#2563eb', speed: val('adSpeedInput') || 'medium', updatedAt: Date.now() });
+  currentAd = { enabled, text: val('adTextInput').trim(), color: val('adColorInput') || '#2563eb', speed: val('adSpeedInput') || 'medium', updatedAt: Date.now() };
+  await db.ref('settings/ad').set(currentAd);
+  renderAdsStrip();
   alert('تم حفظ الإعلان');
 }
 async function deleteSingleAd(){ if(!confirm('هل تريد حذف الإعلان؟')) return; await db.ref('settings/ad').remove(); setVal('adTextInput', ''); alert('تم حذف الإعلان'); }
