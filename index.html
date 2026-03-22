@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title> MS</title>
+  <title>MS Store</title>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -64,20 +64,20 @@
     .hero h2,.hero p{position:relative;z-index:1}
     .hero h2{margin:0 0 6px;font-size:26px;font-weight:900;line-height:1.5}
     .hero p{margin:0;font-size:15px;line-height:1.9;opacity:.97;font-weight:500}
-    .section-bar{display:none}
+    .section-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 0;gap:10px;flex-wrap:wrap}
     .section-title{font-size:15px;font-weight:900}
     .section-note{color:var(--muted);font-size:12px}
-    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:10px 14px 12px;scrollbar-width:none;scroll-padding-inline:14px}
+    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}
     .category-strip::-webkit-scrollbar{display:none}
     .cat-btn{border:none;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 16px;white-space:nowrap;font-size:13px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
     .cat-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-    .filters{display:flex;gap:10px;padding:0 14px 12px;align-items:center}
+    .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center}
     .filters select{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;outline:none;box-shadow:var(--shadow)}
     .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
     body.dark-mode .browse-sticky{background:linear-gradient(180deg,var(--bg),rgba(11,18,32,.98))}
     .browse-sticky .section-bar{padding-top:0}
     .browse-sticky .section-bar,.browse-sticky .category-strip,.browse-sticky .filters,.browse-sticky .ads-wrap{position:relative;top:auto}
-    .browse-sticky .ads-wrap{margin:0 14px 8px;border-radius:16px}
+    .browse-sticky .ads-wrap{margin-top:0;margin-bottom:10px;border-radius:16px}
     .browse-sticky .category-strip{padding-top:8px;padding-bottom:10px}
     .browse-sticky .filters{padding-bottom:10px}
     .products{padding-top:6px}
@@ -105,21 +105,20 @@
     .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
     .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
-    .p-desc-preview{font-size:14px;color:var(--muted);margin:0 0 8px;line-height:1.9;font-weight:600;display:block;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
-    .p-desc-box{display:none;margin:0 0 10px;padding:12px 14px;border-radius:16px;background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.10);color:var(--text);line-height:2;overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
-    .p-desc-box.show{display:block}
-    .desc-toggle-btn{display:inline-flex;align-items:center;justify-content:center;border:none;background:transparent;color:var(--accent);font-weight:900;font-size:13px;padding:0 0 10px;cursor:pointer}
-    .desc-toggle-btn.hidden{display:none}
-    #resultCountText{display:none!important}
+    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:600;min-height:58px;display:block;max-height:3.9em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}
+    .p-desc.short-desc{font-size:17px;font-weight:900;color:var(--text);line-height:1.7}
+    .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto}
+    .p-desc.has-more::after{content:" عرض الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
+    .p-desc.expanded::after{content:" إخفاء الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
     .meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
     .stock{font-size:11px;font-weight:800;border-radius:999px;padding:6px 10px}
     .stock.in{background:rgba(22,163,74,.12);color:var(--success)}
     .stock.out{background:rgba(220,38,38,.12);color:var(--danger)}
     .price-tag{color:var(--success);font-size:18px;font-weight:900;margin-bottom:6px}
-    .card-actions{margin-top:auto;display:grid;grid-template-columns:56px 1fr;gap:8px;align-items:center}
+    .card-actions{margin-top:auto;display:flex;gap:8px;align-items:center}
     .btn{border:none;outline:none;cursor:pointer;border-radius:12px;padding:11px 14px;font-weight:900;font-size:13px;transition:.2s}
-    .btn-order{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:52px;text-decoration:none;white-space:nowrap;font-size:16px;padding-inline:10px}
-    .btn-share{width:56px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 56px;min-height:52px}
+    .btn-order{flex:1;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;white-space:nowrap}
+    .btn-share{width:46px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 46px;min-height:46px}
     .empty-state{margin:20px 12px;background:var(--card);border:1px dashed var(--border);border-radius:22px;padding:35px 18px;text-align:center;color:var(--muted);box-shadow:var(--shadow)}
     .footer{background:var(--card);border-top:1px solid var(--border);margin-top:10px;padding:20px 16px 28px;text-align:center}
     .footer .title{font-size:18px;font-weight:900;margin-bottom:8px}
@@ -211,7 +210,7 @@
     .fab-admin{position:fixed;left:14px;bottom:18px;z-index:2500;width:56px;height:56px;border:none;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 18px 30px rgba(37,99,235,.28);font-size:20px;display:none;align-items:center;justify-content:center;cursor:pointer}
     .fab-admin.show{display:flex}
 
-    .ads-wrap{margin:8px 12px 14px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:none;position:sticky;top:86px;z-index:1800}
+    .ads-wrap{margin:8px 12px 10px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:none;position:relative;top:auto;z-index:2}
     .ads-wrap.show{display:block}
     .ads-strip{position:relative;min-height:58px;display:flex;align-items:center;overflow:hidden;color:#fff;padding:0 14px}
     .ads-label{position:relative;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);flex-shrink:0;margin-left:10px}
@@ -297,7 +296,7 @@
 
   <div class="section-bar">
     <div><div class="section-title"></div><div class="section-note">   </div></div>
-    <div class="section-note hidden" id="resultCountText">  ...</div>
+    <div class="section-note" id="resultCountText">  ...</div>
   </div>
 
   <div class="category-strip" id="categoryFilter"></div>
@@ -581,34 +580,38 @@ db.ref(".info/connected").on("value", snap => {
 });
 
 let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
-let allProducts = [], allCategories = [], storeSettings = {}, visitorsCount = 0, selectedCategory = ALL_CATEGORY;
+let allProducts = [], allCategories = [], storeSettings = {}, visitorsCount = 0, selectedCategory = "الكل";
 let searchDebounce = null;
 let currentEditingImages = [];
 let currentUploadFiles = [];
 let currentAd = null;
 let modalStack = [];
-const ALL_CATEGORY = 'الكل';
-const DEFAULT_NO_DESC = 'لا يوجد وصف';
 
 const defaultSettings = {
-  storeName: " MS",
-  storeSubtitle: "     ",
-  storeAbout: " MS                  .   .",
-  heroTitle: "    MS      ",
-  heroDesc: "          .   .",
+  storeName: "MS Store",
+  storeSubtitle: "متجر إلكتروني للمنتجات الرقمية والإكسسوارات",
+  storeAbout: "متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة بسيطة لتحديث المحتوى.",
+  heroTitle: "أهلاً بك في متجر MS",
+  heroDesc: "تصفح المنتجات، افتح الوصف داخل البطاقة، واطلب مباشرة بكل سهولة.",
   whatsapp: "9647712630779",
   telegram: "https://t.me/msstore95",
   tiktok: "https://www.tiktok.com/@msah_95",
-  splashText: "     MS<br>           .<br><span style='font-size:14px;opacity:.92;'>  </span>",
+  splashText: "مرحبًا بك في متجر MS<br>تسوق أسرع، عرض أوضح، وتجربة أفضل.<br><span style='font-size:14px;opacity:.92;'>جاري تحميل المنتجات...</span>",
   adminPin: "1",
   maintenanceMode: false,
-  maintenanceMessage: "        .",
+  maintenanceMessage: "المتجر تحت الصيانة حاليًا، يرجى المحاولة لاحقًا.",
   adsEnabled: true,
-  versionText: "MS Store  2026 |  MS v1.0",
-  orderMessageTemplate: " \n   :\n {{name}}\n {{price}}\n {{category}}\n {{desc}}"
+  versionText: "MS Store © 2026 | إصدار المتجر v2.0",
+  orderMessageTemplate: "مرحبًا
+أرغب بطلب المنتج التالي:
+- الاسم: {{name}}
+- السعر: {{price}}
+- القسم: {{category}}
+- الوصف: {{desc}}"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+  localizeStaticTexts();
   applySavedTheme();
   initAdminState();
   showProductSkeletons();
@@ -627,12 +630,15 @@ function startSplash(){
   const bar = document.getElementById("progressFill");
   const splash = document.getElementById("splashScreen");
   if(bar) setTimeout(() => { bar.style.width = "100%"; }, 50);
-  setTimeout(() => {
+  const hide = () => {
     if(!splash) return;
     splash.style.opacity = "0";
     splash.style.pointerEvents = "none";
-    setTimeout(() => splash.style.display = "none", 500);
-  }, 3500);
+    setTimeout(() => { if(splash) splash.style.display = "none"; }, 350);
+  };
+  setTimeout(hide, 1200);
+  window.addEventListener('load', hide, { once:true });
+  setTimeout(hide, 2500);
 }
 
 function showProductSkeletons(){
@@ -668,6 +674,55 @@ function updateAdminUI(){
   renderProducts();
   renderAdminProducts();
   applyMaintenanceMode();
+}
+
+
+function localizeStaticTexts(){
+  document.title = 'MS Store';
+  setText('splashTitle','MS Store');
+  const splashSubtitle = document.getElementById('splashSubtitle');
+  if(splashSubtitle) splashSubtitle.innerHTML = 'مرحبًا بك في متجر MS<br>تسوق أسرع، عرض أوضح، وتجربة أفضل.<br><span style="font-size:14px;opacity:.92;">جاري تحميل المنتجات...</span>';
+  setText('maintenanceText','المتجر تحت الصيانة حاليًا، يرجى المحاولة لاحقًا.');
+  const maintTitle = document.querySelector('.maint-title'); if(maintTitle) maintTitle.textContent = 'المتجر تحت الصيانة';
+  const maintNote = document.querySelector('.maint-note'); if(maintNote) maintNote.textContent = 'للدخول للإدارة اضغط على الأداة 10 مرات';
+  setText('storeTitleTop','MS Store');
+  setText('storeSubTop','متجر إلكتروني للمنتجات الرقمية والإكسسوارات');
+  setText('heroTitle','أهلاً بك في متجر MS');
+  setText('heroDesc','تصفح المنتجات، افتح الوصف داخل البطاقة، واطلب مباشرة بكل سهولة.');
+  const secTitle = document.querySelector('.section-title'); if(secTitle) secTitle.textContent = 'الأقسام';
+  const secNote = document.querySelector('.section-bar .section-note'); if(secNote) secNote.textContent = 'اختر القسم أو ابحث عن المنتج';
+  setText('resultCountText','جاري تحميل المنتجات...');
+  const search = document.getElementById('searchInput'); if(search) search.placeholder = 'ابحث عن منتج...';
+  const sort = document.getElementById('sortSelect');
+  if(sort && sort.options.length >= 5){
+    sort.options[0].text = 'الأحدث';
+    sort.options[1].text = 'المميزة أولاً';
+    sort.options[2].text = 'السعر: من الأقل للأعلى';
+    sort.options[3].text = 'السعر: من الأعلى للأقل';
+    sort.options[4].text = 'الاسم: أ - ي';
+  }
+  const emptyTitle = document.querySelector('#emptyState div'); if(emptyTitle) emptyTitle.textContent = 'لا توجد منتجات مطابقة';
+  const emptyDesc = document.querySelectorAll('#emptyState div')[1]; if(emptyDesc) emptyDesc.textContent = 'جرّب البحث بكلمة مختلفة أو اختر قسمًا آخر.';
+  setText('footerStoreTitle','MS Store');
+  setText('footerAboutText','متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.');
+  setText('footerVersion','MS Store © 2026 | إصدار المتجر v2.0');
+  const aboutTitle = document.querySelector('#aboutModal .modal-title'); if(aboutTitle) aboutTitle.textContent = 'عن المتجر';
+  setText('aboutModalText','متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.');
+  const aboutBtns = document.querySelectorAll('#aboutModal .btn');
+  if(aboutBtns[0]) aboutBtns[0].textContent = 'العودة للرئيسية';
+  if(aboutBtns[1]) aboutBtns[1].textContent = 'إغلاق';
+  const zoomTop = document.querySelector('#zoomOverlay .zoom-top div'); if(zoomTop) zoomTop.textContent = 'معرض الصور';
+  const notice = document.querySelector('#adminPanel .notice'); if(notice) notice.textContent = 'يمكنك إدارة المنتجات والأقسام والإعدادات من هنا.';
+  const adminTitle = document.querySelector('#adminPanel .modal-title'); if(adminTitle) adminTitle.textContent = 'لوحة إدارة متجر MS';
+  const statLabels = document.querySelectorAll('.stat-card .label');
+  const labels = ['عدد المنتجات','عدد الأقسام','عدد الزيارات','المنتجات المميزة'];
+  statLabels.forEach((el,i)=>{ if(labels[i]) el.textContent = labels[i]; });
+  const tabs = document.querySelectorAll('#adminPanel .tab-btn');
+  const tabText = ['الرئيسية','المنتجات','الأقسام','الإعدادات','الإعلانات','الصيانة'];
+  tabs.forEach((el,i)=>{ if(tabText[i]) el.textContent = tabText[i]; });
+  const dashboardBtns = document.querySelectorAll('#tabDashboard .btn');
+  const dashTexts = ['إضافة منتج','إضافة قسم','إعدادات المتجر','تسجيل الخروج'];
+  dashboardBtns.forEach((el,i)=>{ if(dashTexts[i]) el.textContent = dashTexts[i]; });
 }
 
 document.getElementById("brandTapArea").onclick = function(){
@@ -830,13 +885,9 @@ async function seedDefaultCategories(){
 function renderCategories(){
   const wrap = document.getElementById("categoryFilter");
   wrap.innerHTML = "";
-  wrap.appendChild(createCatButton(ALL_CATEGORY));
+  wrap.appendChild(createCatButton("الكل"));
   allCategories.forEach(cat => wrap.appendChild(createCatButton(cat.name)));
   highlightActiveCategory();
-  requestAnimationFrame(() => {
-    const active = wrap.querySelector('.cat-btn.active');
-    if(active) active.scrollIntoView({inline:'nearest', block:'nearest'});
-  });
 }
 function createCatButton(name){
   const btn = document.createElement("button");
@@ -931,22 +982,6 @@ function listenProducts(){
   });
 }
 
-function sanitizeImageUrl(url){
-  const clean = String(url || '').trim();
-  if(!clean) return '';
-  if(/^file:\/\//i.test(clean)) return '';
-  if(/^content:\/\//i.test(clean)) return '';
-  return clean;
-}
-function sanitizeImageList(list){
-  const out = [];
-  (Array.isArray(list) ? list : []).forEach(item => {
-    const clean = sanitizeImageUrl(item);
-    if(clean && !out.includes(clean)) out.push(clean);
-  });
-  return out;
-}
-
 function normalizeProduct(id, p){
   let images = [];
   if(Array.isArray(p.images)) images = p.images.filter(Boolean);
@@ -954,14 +989,19 @@ function normalizeProduct(id, p){
   else if(Array.isArray(p.imgs)) images = p.imgs.filter(Boolean);
   else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
   else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
-  images = sanitizeImageList(images);
+  images = images.filter(img => {
+    const s = String(img || '').trim();
+    if(!s) return false;
+    if(s.startsWith('file:') || s.startsWith('content:')) return false;
+    return /^https?:/i.test(s) || s.startsWith('data:image/');
+  });
   return {
     id,
-    name: p.name || "منتج بدون اسم",
+    name: p.name || "  ",
     price: Number(p.price || 0),
     desc: p.desc || p.description || "",
-    category: p.category || "عام",
-    stock: p.stock || "متوفر",
+    category: p.category || "",
+    stock: p.stock || "",
     featured: !!p.featured,
     active: p.active !== false,
     createdAt: p.createdAt || 0,
@@ -980,7 +1020,7 @@ function renderProducts(){
   const sort = document.getElementById("sortSelect").value;
 
   let items = allProducts.filter(p => p.active !== false);
-  if(selectedCategory !== ALL_CATEGORY) items = items.filter(p => p.category === selectedCategory);
+  if(selectedCategory !== "الكل") items = items.filter(p => p.category === selectedCategory);
   if(q) items = items.filter(p =>
     (p.name || "").toLowerCase().includes(q) ||
     (p.desc || "").toLowerCase().includes(q) ||
@@ -999,7 +1039,7 @@ function renderProducts(){
     items.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   }
 
-  document.getElementById("resultCountText").textContent = "";
+  document.getElementById("resultCountText").textContent = items.length ? `  : ${items.length}` : "  ";
 
   if(items.length === 0){
     container.innerHTML = "";
@@ -1015,13 +1055,15 @@ function renderProducts(){
   initAutoGalleries();
 }
 
+function getDescriptionClass(desc){
+  const clean = String(desc || "").trim();
+  if(clean.length && clean.length <= 5) return "short-desc";
+  return "long-desc";
+}
 function getShortDescription(desc){
   const clean = String(desc || "").trim();
-  if(!clean) return DEFAULT_NO_DESC;
+  if(!clean) return "  ";
   return clean.length > 90 ? clean.slice(0, 90) + "..." : clean;
-}
-function hasLongDescription(desc){
-  return String(desc || "").trim().length > 90;
 }
 function buildOrderMessage(p){
   const template = storeSettings.orderMessageTemplate || defaultSettings.orderMessageTemplate;
@@ -1029,7 +1071,7 @@ function buildOrderMessage(p){
     .replaceAll("{{name}}", p.name || "")
     .replaceAll("{{price}}", formatPrice(p.price))
     .replaceAll("{{category}}", p.category || "")
-    .replaceAll("{{desc}}", p.desc || DEFAULT_NO_DESC);
+    .replaceAll("{{desc}}", p.desc || "  ");
 }
 
 function initAutoGalleries(){
@@ -1082,12 +1124,10 @@ function changeGalleryImage(btn, direction){
   wrapper._galleryIndex = (current + direction + total) % total;
   updateGalleryUI(wrapper);
 }
-function toggleCardDescription(btn){
-  if(!btn) return;
-  const box = btn.parentElement.querySelector('.p-desc-box');
-  if(!box) return;
-  const open = box.classList.toggle('show');
-  btn.textContent = open ? 'إخفاء الوصف' : 'عرض الوصف';
+function toggleCardDescription(el){
+  if(!el) return;
+  const isExpanded = el.classList.toggle('expanded');
+  el.textContent = isExpanded ? (el.dataset.full || '  ') : (el.dataset.short || '  ');
 }
 function openProductDetails(productId){
   const p = allProducts.find(x => x.id === productId);
@@ -1113,7 +1153,11 @@ function buildProductCard(p){
   }
 
   const featuredBadge = p.featured ? '<span class="badge featured">مميز</span>' : '';
-  const stockClass = p.stock === "متوفر" ? "in" : "out";
+  const stockClass = p.stock === "" ? "in" : "out";
+  const descClass = getDescriptionClass(p.desc || "");
+  const shortDesc = escapeHtml(getShortDescription(p.desc || '  '));
+  const fullDesc = escapeHtml(String(p.desc || '  '));
+  const hasMoreClass = String(p.desc || '').trim().length > 90 ? 'has-more' : '';
   const thumbs = images.map((img, index) =>
     `<img class="gallery-thumb ${index === 0 ? "active" : ""}" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onclick="switchCardImage(this,'${escapeJsString(img)}','${escapeJsString(p.name)}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />`
   ).join("");
@@ -1131,17 +1175,15 @@ function buildProductCard(p){
     </div>
     <div class="product-info">
       <h3 class="p-name" onclick="openProductDetails('${p.id}')">${escapeHtml(p.name)}</h3>
-      <div class="p-desc-preview">${escapeHtml(getShortDescription(p.desc || DEFAULT_NO_DESC))}</div>
-      <button type="button" class="desc-toggle-btn ${hasLongDescription(p.desc) ? '' : 'hidden'}" onclick="toggleCardDescription(this); event.stopPropagation();">عرض الوصف</button>
-      <div class="p-desc-box">${escapeHtml(String(p.desc || DEFAULT_NO_DESC))}</div>
+      <p class="p-desc ${descClass} ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
       <div class="meta-row">
         <span class="stock ${stockClass}">${escapeHtml(p.stock)}</span>
         <span class="section-note">${escapeHtml(p.category)}</span>
       </div>
       <div class="price-tag">${formatPrice(p.price)}</div>
       <div class="card-actions">
-        <button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button>
         <a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a>
+        <button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button>
       </div>
     </div>
   `;
@@ -1216,7 +1258,6 @@ async function saveProduct(){
     try{
       images = typeof getImageListFromForm === "function" ? getImageListFromForm() : [];
       if(!Array.isArray(images)) images = [];
-      images = sanitizeImageList(images);
     }catch(imgErr){
       console.error("getImageListFromForm error:", imgErr);
       images = [];
@@ -1231,7 +1272,7 @@ async function saveProduct(){
     if(currentUploadFiles.length){
       setSaveStatus("success", "    ImgBB...");
       const uploadedUrls = await uploadImagesToImgbb(currentUploadFiles);
-      images = sanitizeImageList([...images, ...uploadedUrls]);
+      images = [...images, ...uploadedUrls];
     }
 
     const payload = {
@@ -1398,10 +1439,13 @@ async function uploadImagesToImgbb(files){
 }
 
 function getImageListFromForm(){
-  const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => sanitizeImageUrl(v)).filter(Boolean);
-  const merged = sanitizeImageList([...currentEditingImages, ...urlsFromTextarea]);
-  currentEditingImages = [...merged];
-  return merged;
+  const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
+  const merged = [...currentEditingImages, ...urlsFromTextarea];
+  const unique = [];
+  merged.forEach(img => {
+    if(img && !unique.includes(img)) unique.push(img);
+  });
+  return unique;
 }
 
 function clearPendingUploads(){
@@ -1448,8 +1492,8 @@ function editProduct(id){
   setVal("categorySelect", p.category);
   document.getElementById("pFeatured").checked = !!p.featured;
   document.getElementById("pActive").checked = p.active !== false;
-  currentEditingImages = sanitizeImageList([...(p.images || [])]);
-  setVal("pImgUrls", currentEditingImages.join("\n"));
+  currentEditingImages = [...(p.images || [])];
+  setVal("pImgUrls", "");
   setVal("singleImageUrl", "");
   clearPendingUploads();
   setText("selectedFileName", "        ");
@@ -1485,11 +1529,10 @@ async function toggleProductVisibility(id, nextState){
 
 function addSingleImageUrl(){
   const input = document.getElementById("singleImageUrl");
-  const url = sanitizeImageUrl((input.value || "").trim());
-  if(!url){ alert("أدخل رابط صورة صحيح"); return; }
-  if(!currentEditingImages.includes(url)) currentEditingImages.push(url);
+  const url = (input.value || "").trim();
+  if(!url){ alert("   "); return; }
+  currentEditingImages.push(url);
   input.value = "";
-  setVal("pImgUrls", currentEditingImages.join("\n"));
   renderPreviewImages();
 }
 
@@ -1531,7 +1574,7 @@ function removePreviewImage(index){
   if(index < urls.length){
     const mergedUrls = [...urls];
     mergedUrls.splice(index, 1);
-    currentEditingImages = sanitizeImageList(mergedUrls);
+    currentEditingImages = mergedUrls.filter(Boolean);
     setVal("pImgUrls", currentEditingImages.join("\n"));
   }else{
     const fileIndex = index - urls.length;
@@ -1691,7 +1734,7 @@ function closeModal(event, id){
   if(event.target.id === id) closeById(id);
 }
 function goHome(){
-  selectedCategory = "";
+  selectedCategory = "الكل";
   setVal("searchInput", "");
   highlightActiveCategory();
   renderProducts();
