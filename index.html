@@ -104,8 +104,10 @@
     .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
     .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
-    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:700;min-height:58px;display:block;max-height:7.8em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}
-    .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto}
+    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:700;min-height:58px;display:block;max-height:7.8em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease,font-size .2s ease,font-weight .2s ease;border-radius:14px}
+    .p-desc.long-tight{font-size:13px;line-height:1.9;font-weight:700}
+    .p-desc.short-price{font-size:18px;line-height:1.55;font-weight:900;color:var(--text)}
+    .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto;font-size:15px;line-height:1.9;font-weight:700}
     .p-desc.has-more::after{content:" عرض الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
     .p-desc.expanded::after{content:" إخفاء الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
     .meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
@@ -939,6 +941,12 @@ function renderProducts(){
   container.appendChild(frag);
   initAutoGalleries();
 }
+function getDescriptionVariant(desc){
+  const clean = String(desc || '').trim();
+  if(clean && clean.length <= 5) return 'short-price';
+  if(clean.length > 70) return 'long-tight';
+  return '';
+}
 function getShortDescription(desc){
   const clean = String(desc || '').trim();
   if(!clean) return 'لا يوجد وصف';
@@ -1006,6 +1014,7 @@ function buildProductCard(p){
   const stockClass = p.stock === 'متوفر' ? 'in' : 'out';
   const shortDesc = escapeHtml(getShortDescription(p.desc || 'لا يوجد وصف'));
   const fullDesc = escapeHtml(String(p.desc || 'لا يوجد وصف'));
+  const descVariantClass = getDescriptionVariant(p.desc || '');
   const hasMoreClass = String(p.desc || '').trim().length > 120 ? 'has-more' : '';
   const thumbs = images.map((img, index) => `<img class="gallery-thumb ${index === 0 ? 'active' : ''}" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onclick="switchCardImage(this,'${escapeJsString(img)}','${escapeJsString(p.name)}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />`).join('');
   card.innerHTML = `
@@ -1021,7 +1030,7 @@ function buildProductCard(p){
     </div>
     <div class="product-info">
       <h3 class="p-name" onclick="openProductDetails('${p.id}')">${escapeHtml(p.name)}</h3>
-      <p class="p-desc ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
+      <p class="p-desc ${descVariantClass} ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
       <div class="meta-row"><span class="stock ${stockClass}">${escapeHtml(p.stock)}</span><span class="section-note">${escapeHtml(p.category)}</span></div>
       <div class="price-tag">${formatPrice(p.price)}</div>
       <div class="card-actions"><a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a><button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button></div>
@@ -1285,7 +1294,10 @@ function initKeyboardHelpers(){
     if(!target || !target.matches('input, textarea, select')) return;
     const modalCard = target.closest('.modal-card');
     if(!modalCard) return;
-    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 220);
+    setTimeout(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      modalCard.scrollBy({ top: 80, behavior: 'smooth' });
+    }, 220);
   };
   document.addEventListener('focusin', event => ensureVisible(event.target));
   if(window.visualViewport){
