@@ -1,6 +1,3 @@
-export default {
-  async fetch(request) {
-    const fullHtml = `
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -28,9 +25,11 @@ export default {
 
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
     html{scroll-behavior:smooth}
-    body{margin:0;font-family:'Tajawal',sans-serif;background:linear-gradient(180deg,var(--bg),#eef4ff 180%);color:var(--text);direction:rtl;}
+    body{margin:0;font-family:'Tajawal',sans-serif;background:linear-gradient(180deg,var(--bg),#eef4ff 180%);color:var(--text)}
     body.dark-mode{background:linear-gradient(180deg,var(--bg),#09101d 180%)}
-    
+    button,input,textarea,select{font-family:'Tajawal',sans-serif}
+    .hidden{display:none!important}
+
     #splashScreen{
       position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;
       background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.6s ease;
@@ -40,110 +39,1841 @@ export default {
       display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:900;box-shadow:0 15px 40px rgba(0,0,0,0.2);
       margin-bottom:16px;backdrop-filter:blur(8px);
     }
+    #splashScreen h1{margin:0;font-size:40px;font-weight:900;line-height:1.4}
+    #splashScreen p{margin:14px 0 0;font-size:18px;opacity:.98;line-height:1.95;max-width:360px}
     #progressBar{width:80%;max-width:260px;height:6px;background:rgba(255,255,255,.2);border-radius:999px;margin-top:22px;overflow:hidden}
-    #progressFill{height:100%;width:0%;background:#fff;border-radius:999px;transition:width 3s linear}
+    #progressFill{height:100%;width:0%;background:#fff;border-radius:999px;transition:width 9s linear}
 
     .header{position:sticky;top:0;z-index:2000;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:10px 12px 8px}
-    .brand{display:flex;align-items:center;gap:10px;cursor:pointer}
-    .brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;}
-    
-    .hero{margin:12px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:20px;padding:20px;box-shadow:0 12px 24px rgba(0,0,0,0.10);position:relative;overflow:hidden}
-    .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px;}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative;}
-    .gallery-img{width:100%;height:180px;object-fit:cover;background:#fff;cursor:pointer;}
-    .product-info{padding:10px;flex:1;display:flex;flex-direction:column;}
-    .price-tag{color:var(--success);font-size:18px;font-weight:900;margin:5px 0;}
-    .btn-order{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:11px;border-radius:12px;font-weight:900;text-decoration:none;text-align:center;display:block;margin-top:auto;}
-    
+    body.dark-mode .header{background:rgba(17,24,39,.9)}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .brand{display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer}
+    .brand-badge{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;box-shadow:var(--shadow);flex-shrink:0}
+    .brand-text{min-width:0}
+    .brand-title{font-size:20px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brand-sub{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .icon-btn{width:40px;height:40px;border-radius:14px;border:1px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);font-size:16px}
+    .search-wrap{margin-top:10px;display:flex;gap:10px;align-items:center}
+    .search-box{flex:1;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:0 14px;box-shadow:var(--shadow)}
+    .search-box i{color:var(--muted);font-size:14px}
+    .search-box input{width:100%;border:none;outline:none;background:transparent;padding:13px 0;color:var(--text);font-size:14px}
+    .hero{margin:12px 12px 6px;background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:20px;padding:20px 18px;box-shadow:0 12px 24px rgba(0,0,0,0.10);position:relative;overflow:hidden}
+    .hero::before{content:"";position:absolute;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);left:-25px;bottom:-40px}
+    .hero::after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.06);top:-25px;right:-20px}
+    .hero h2,.hero p{position:relative;z-index:1}
+    .hero h2{margin:0 0 6px;font-size:26px;font-weight:900;line-height:1.5}
+    .hero p{margin:0;font-size:15px;line-height:1.9;opacity:.97;font-weight:500}
+    .section-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 0;gap:10px;flex-wrap:wrap}
+    .section-title{font-size:15px;font-weight:900}
+    .section-note{color:var(--muted);font-size:12px}
+    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}
+    .category-strip::-webkit-scrollbar{display:none}
+    .cat-btn{border:none;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 16px;white-space:nowrap;font-size:13px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
+    .cat-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+    .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center}
+    .filters select{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;outline:none;box-shadow:var(--shadow)}
+    .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+    body.dark-mode .browse-sticky{background:linear-gradient(180deg,var(--bg),rgba(11,18,32,.98))}
+    .browse-sticky .section-bar{padding-top:0}
+    .browse-sticky .section-bar,.browse-sticky .category-strip,.browse-sticky .filters,.browse-sticky .ads-wrap{position:relative;top:auto}
+    .browse-sticky .ads-wrap{margin-top:0;margin-bottom:10px;border-radius:16px}
+    .browse-sticky .category-strip{padding-top:8px;padding-bottom:10px}
+    .browse-sticky .filters{padding-bottom:10px}
+    .products{padding-top:6px}
+
+    .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 12px 20px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 8px 18px rgba(0,0,0,0.05);display:flex;flex-direction:column;position:relative;height:auto}
+    .card-top-badges{position:absolute;top:10px;right:10px;z-index:3;display:flex;flex-direction:column;gap:6px}
+    .badge{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;color:#fff;box-shadow:0 8px 18px rgba(0,0,0,0.12)}
+    .badge.featured{background:linear-gradient(135deg,#f59e0b,#f97316)}
+    .admin-delete-btn,.admin-edit-btn{position:absolute;z-index:4;width:34px;height:34px;border:none;border-radius:12px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .admin-delete-btn{top:10px;left:10px;background:rgba(220,38,38,.95)}
+    .admin-edit-btn{top:52px;left:10px;background:rgba(37,99,235,.95)}
+    .gallery-wrapper{width:100%;height:210px;background:linear-gradient(180deg,#fff,#f8fafc);position:relative;overflow:hidden}
+    .gallery-main{width:100%;height:150px;position:relative}
+    .gallery-img{width:100%;height:100%;object-fit:cover;background:#fff;cursor:pointer;transition:transform .25s ease}
+    .gallery-img:hover{transform:scale(1.02)}
+    .gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:38px;height:38px;border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.68);color:#fff;cursor:pointer;box-shadow:0 8px 18px rgba(0,0,0,.18);backdrop-filter:blur(4px)}
+    .gallery-arrow.right{right:10px}
+    .gallery-arrow.left{left:10px}
+    .gallery-arrow i{font-size:15px}
+    .gallery-thumbs{display:flex;gap:6px;padding:8px;overflow-x:auto;scrollbar-width:none;background:rgba(255,255,255,.96);min-height:60px;align-items:center}
+    .gallery-thumbs::-webkit-scrollbar{display:none}
+    .gallery-thumb{width:50px;height:50px;border-radius:12px;border:2px solid transparent;object-fit:cover;background:#fff;cursor:pointer;flex-shrink:0}
+    .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
+    .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
+    .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
+    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:600;min-height:58px;display:block;max-height:3.9em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}
+    .p-desc.short-desc{font-size:17px;font-weight:900;color:var(--text);line-height:1.7}
+    .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto}
+    .p-desc.has-more::after{content:" عرض الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
+    .p-desc.expanded::after{content:" إخفاء الوصف";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
+    .meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+    .stock{font-size:11px;font-weight:800;border-radius:999px;padding:6px 10px}
+    .stock.in{background:rgba(22,163,74,.12);color:var(--success)}
+    .stock.out{background:rgba(220,38,38,.12);color:var(--danger)}
+    .price-tag{color:var(--success);font-size:18px;font-weight:900;margin-bottom:6px}
+    .card-actions{margin-top:auto;display:flex;gap:8px;align-items:center}
+    .btn{border:none;outline:none;cursor:pointer;border-radius:12px;padding:11px 14px;font-weight:900;font-size:13px;transition:.2s}
+    .btn-order{flex:1;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;white-space:nowrap}
+    .btn-share{width:46px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 46px;min-height:46px}
+    .empty-state{margin:20px 12px;background:var(--card);border:1px dashed var(--border);border-radius:22px;padding:35px 18px;text-align:center;color:var(--muted);box-shadow:var(--shadow)}
+    .footer{background:var(--card);border-top:1px solid var(--border);margin-top:10px;padding:20px 16px 28px;text-align:center}
+    .footer .title{font-size:18px;font-weight:900;margin-bottom:8px}
+    .footer .desc{color:var(--muted);font-size:13px;line-height:1.7}
+    .socials{display:flex;justify-content:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+    .social-btn{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--accent);display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:var(--shadow);font-size:16px}
+    .mini-text{font-size:11px;color:var(--muted);margin-top:12px}
+
+    .modal{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:14px}
+    .modal.show{display:flex}
+    .modal-card{width:100%;max-width:760px;max-height:92vh;overflow-y:auto;background:var(--card);border:1px solid var(--border);border-radius:26px;box-shadow:0 30px 60px rgba(0,0,0,.25);padding:18px 18px calc(24px + env(safe-area-inset-bottom, 0px));color:var(--text);overscroll-behavior:contain}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+    .modal-title{font-size:20px;font-weight:900;margin:0}
+    .close-btn{width:40px;height:40px;border:none;border-radius:14px;background:var(--bg);color:var(--text);cursor:pointer;border:1px solid var(--border)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{margin-bottom:12px}
+    .field label{display:block;font-size:13px;font-weight:800;margin-bottom:8px}
+    .field input,.field textarea,.field select{width:100%;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:14px;padding:13px 14px;outline:none;font-size:16px}
+    .field textarea{resize:none;min-height:95px}
+    .switches{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .toggle-box,.ad-toggle-box{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .toggle-box span,.ad-toggle-box span{font-size:13px;font-weight:800}
+    .toggle-switch{appearance:none;-webkit-appearance:none;position:relative;cursor:pointer;width:58px !important;height:32px !important;border-radius:999px;background:#cbd5e1;border:1px solid rgba(0,0,0,.08);transition:.25s ease}
+    .toggle-switch:checked{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .toggle-switch::before{content:"";position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.25s ease}
+    .toggle-switch:checked::before{right:29px}
+    .preview-images{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+    .preview-item{position:relative;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;height:92px}
+    .preview-item img{width:100%;height:100%;object-fit:cover}
+    .preview-item button{position:absolute;top:6px;left:6px;border:none;width:24px;height:24px;border-radius:8px;background:rgba(220,38,38,.95);color:#fff;cursor:pointer;font-size:11px}
+    .row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+    .btn-secondary{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+    .btn-success{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff}
+    .btn-warning{background:linear-gradient(135deg,#f59e0b,#f97316);color:#fff}
+
+    .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px}
+    .stat-card{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .stat-card .icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;margin-bottom:10px}
+    .stat-card .num{font-size:24px;font-weight:900}
+    .stat-card .label{font-size:12px;color:var(--muted);margin-top:4px;font-weight:700}
+    .panel-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;scrollbar-width:none}
+    .panel-tabs::-webkit-scrollbar{display:none}
+    .tab-btn{border:none;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 14px;font-weight:900;white-space:nowrap;cursor:pointer}
+    .tab-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
+    .tab-content{display:none}
+    .tab-content.active{display:block}
+    .admin-list{display:flex;flex-direction:column;gap:10px}
+    .admin-item{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:12px}
+    .admin-item-top{display:flex;gap:10px;align-items:center}
+    .admin-thumb{width:60px;height:60px;border-radius:14px;background:#fff;border:1px solid var(--border);object-fit:cover;flex-shrink:0}
+    .admin-item-main{min-width:0;flex:1}
+    .admin-item-name{font-size:15px;font-weight:900;margin-bottom:6px;word-break:break-word}
+    .admin-item-meta{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+    .admin-item-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .admin-small-btn{border:none;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer;font-size:12px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .chip{padding:9px 12px;border-radius:999px;background:var(--bg);border:1px solid var(--border);font-size:12px;font-weight:800;display:flex;align-items:center;gap:8px}
+    .chip-actions{display:flex;align-items:center;gap:4px}
+    .chip-edit-btn,.chip-delete-btn{border:none;background:none;cursor:pointer;font-size:13px}
+    .chip-edit-btn{color:var(--accent)} .chip-delete-btn{color:var(--danger)}
+    .notice{background:rgba(37,99,235,.09);color:var(--accent);border:1px solid rgba(37,99,235,.15);border-radius:16px;padding:12px 14px;font-size:13px;font-weight:700;margin-bottom:14px;line-height:1.8}
+    .helper-box{background:rgba(22,163,74,.08);color:var(--success);border:1px solid rgba(22,163,74,.16);border-radius:16px;padding:12px 14px;font-size:13px;font-weight:700;line-height:1.8;margin:12px 0}
+    .muted-text{font-size:12px;color:var(--muted);line-height:1.8}
+    .status-box{margin-top:12px;padding:12px 14px;border-radius:14px;font-size:13px;font-weight:800;display:none;line-height:1.8}
+    .status-box.show{display:block}
+    .status-box.success{background:rgba(22,163,74,.12);color:var(--success);border:1px solid rgba(22,163,74,.25)}
+    .status-box.error{background:rgba(220,38,38,.12);color:var(--danger);border:1px solid rgba(220,38,38,.25)}
+    .file-note{font-size:12px;color:var(--muted);margin-top:8px;font-weight:700}
+    .helper-inline{font-size:12px;color:var(--muted);line-height:1.8;margin-top:6px}
+
+    .section-divider{height:1px;background:var(--border);margin:14px 0}
+    .sub-title{font-size:15px;font-weight:900;margin:6px 0 10px}
+    .image-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .image-counter{font-size:12px;color:var(--muted);font-weight:800;margin-top:6px}
+
+    .desc-modal-text{font-size:16px;line-height:2;color:var(--text);white-space:pre-wrap}
+    .back-chip{position:fixed;right:14px;bottom:18px;z-index:2400;min-width:56px;height:56px;border:none;border-radius:20px;background:linear-gradient(135deg,#0f172a,#2563eb);color:#fff;box-shadow:0 18px 30px rgba(15,23,42,.24);font-size:18px;display:none;align-items:center;justify-content:center;cursor:pointer;padding:0 16px;font-weight:900}
+    .back-chip.show{display:flex}
+
+    #zoomOverlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.96);flex-direction:column}
+    #zoomOverlay.show{display:flex}
+    .zoom-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;color:#fff;font-weight:900}
+    .zoom-gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;height:100%;width:100%;scrollbar-width:none}
+    .zoom-gal::-webkit-scrollbar{display:none}
+    .z-img{flex:0 0 100%;width:100%;height:100%;object-fit:contain;scroll-snap-align:start;background:#000}
+
     .fab-admin{position:fixed;left:14px;bottom:18px;z-index:2500;width:56px;height:56px;border:none;border-radius:20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 18px 30px rgba(37,99,235,.28);font-size:20px;display:none;align-items:center;justify-content:center;cursor:pointer}
     .fab-admin.show{display:flex}
+
+    .ads-wrap{margin:8px 12px 10px;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);display:none;position:relative;top:auto;z-index:2}
+    .ads-wrap.show{display:block}
+    .ads-strip{position:relative;min-height:58px;display:flex;align-items:center;overflow:hidden;color:#fff;padding:0 14px}
+    .ads-label{position:relative;z-index:2;display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:900;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);flex-shrink:0;margin-left:10px}
+    .ads-marquee{position:relative;z-index:1;overflow:hidden;white-space:nowrap;flex:1;direction:ltr}
+    .ads-track{display:inline-flex;align-items:center;white-space:nowrap;will-change:transform;animation:adsTickerBack 18s linear infinite;font-size:15px;font-weight:800;padding-inline:8px;transform:translateX(-50%)}
+    .ads-track.fast{animation-duration:7s}.ads-track.medium{animation-duration:15s}.ads-track.slow{animation-duration:28s}
+    .ads-item-inline{display:inline-flex;align-items:center;gap:10px;margin-left:56px;direction:rtl;unicode-bidi:plaintext;flex-shrink:0}
+    @keyframes adsTickerBack{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+    .maint-overlay{position:fixed;inset:0;z-index:999998;display:none;align-items:center;justify-content:center;background:linear-gradient(135deg,#0b1220,#102552,#0f172a);color:#fff;padding:20px;text-align:center}
+    .maint-overlay.show{display:flex}
+    .maint-card{width:100%;max-width:420px}
+    .maint-wrench{width:88px;height:88px;border-radius:28px;margin:0 auto 18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:34px;color:#facc15;box-shadow:0 18px 40px rgba(0,0,0,.22);user-select:none}
+    .maint-title{font-size:28px;font-weight:900;margin-bottom:10px}
+    .maint-text{font-size:15px;line-height:1.9;opacity:.96}.maint-note{margin-top:14px;font-size:12px;opacity:.82}
+    .color-speed-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+    .skeleton{background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%);background-size:400% 100%;animation:shimmer 1.3s infinite}
+    body.dark-mode .skeleton{background:linear-gradient(90deg,#1f2937 25%,#334155 37%,#1f2937 63%);background-size:400% 100%}
+    .sk-card{height:290px;border-radius:18px;border:1px solid var(--border);background:var(--card);overflow:hidden}
+    .sk-img{height:170px}.sk-line{height:14px;margin:10px;border-radius:8px}.sk-line.small{width:55%}
+    @keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+
+    @media (max-width:640px){
+      .grid-2,.switches,.stats-grid,.color-speed-row{grid-template-columns:1fr}
+      .products{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .gallery-wrapper{height:170px}
+      .browse-sticky{top:74px}
+    }
   </style>
 </head>
 <body>
 
   <div id="splashScreen">
     <div class="logo">MS</div>
-    <h1>متجر MS</h1>
-    <p>جاري تحميل المنتجات...</p>
+    <h1 id="splashTitle">MS Store</h1>
+    <p id="splashSubtitle">
+      مرحبًا بك في متجر MS<br>
+      تسوق أسرع، عرض أوضح، وتجربة أفضل لمنتجاتك المفضلة.<br>
+      <span style="font-size:14px;opacity:.92;">جاري تحميل المنتجات...</span>
+    </p>
     <div id="progressBar"><div id="progressFill"></div></div>
   </div>
 
+  <div id="maintenanceOverlay" class="maint-overlay">
+    <div class="maint-card">
+      <div id="maintenanceWrench" class="maint-wrench" title="اضغط عدة مرات للدخول للإدارة أثناء الصيانة"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+      <div class="maint-title">المتجر تحت الصيانة</div>
+      <div class="maint-text" id="maintenanceText">المتجر تحت الصيانة حاليًا، يرجى المحاولة لاحقًا.</div>
+      <div class="maint-note">للدخول للإدارة اضغط على الأداة 10 مرات</div>
+    </div>
+  </div>
+
   <header class="header">
-    <div class="brand" id="brandTapArea">
-      <div class="brand-badge">MS</div>
-      <div class="brand-text">
-        <div style="font-size:20px;font-weight:900;">MS Store</div>
+    <div class="topbar">
+      <div class="brand" id="brandTapArea" title="اضغط عدة مرات للدخول للإدارة">
+        <div class="brand-badge">MS</div>
+        <div class="brand-text">
+          <div class="brand-title" id="storeTitleTop">MS Store</div>
+          <div class="brand-sub" id="storeSubTop">متجر إلكتروني للمنتجات الرقمية والإكسسوارات</div>
+        </div>
       </div>
+      <div class="top-actions">
+        <button class="icon-btn" onclick="openModal('aboutModal')" title="عن المتجر"><i class="fa-solid fa-circle-info"></i></button>
+        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="ابحث عن منتج..." oninput="debouncedRenderProducts()" />
+      </div>
+      <button class="icon-btn" onclick="goHome()"><i class="fa-solid fa-house"></i></button>
     </div>
   </header>
 
   <section class="hero">
-    <h2>أهلاً بك في متجر MS</h2>
-    <p>تصفح المنتجات واطلب مباشرة بكل سهولة.</p>
+    <h2 id="heroTitle">أهلاً بك في متجر MS</h2>
+    <p id="heroDesc">تصفح المنتجات، افتح الوصف داخل البطاقة، واطلب مباشرة بكل سهولة.</p>
   </section>
+
+  <div class="browse-sticky">
+    <section id="adsWrap" class="ads-wrap"><div id="adsStrip" class="ads-strip"></div></section>
+
+    <div class="section-bar">
+      <div><div class="section-title">الأقسام</div><div class="section-note">اختر القسم أو ابحث عن المنتج</div></div>
+      <div class="section-note" id="resultCountText">جاري تحميل المنتجات...</div>
+    </div>
+
+    <div class="category-strip" id="categoryFilter"></div>
+
+    <div class="filters">
+      <select id="sortSelect" onchange="renderProducts()">
+        <option value="newest">الأحدث</option>
+        <option value="featured">المميزة أولاً</option>
+        <option value="priceAsc">السعر: من الأقل للأعلى</option>
+        <option value="priceDesc">السعر: من الأعلى للأقل</option>
+        <option value="nameAsc">الاسم: أ - ي</option>
+      </select>
+    </div>
+  </div>
 
   <main id="productsContainer" class="products"></main>
 
-  <button id="fabAdmin" class="fab-admin"><i class="fa-solid fa-gear"></i></button>
+  <div id="emptyState" class="empty-state hidden">
+    <i class="fa-solid fa-box-open" style="font-size:34px; margin-bottom:10px;"></i>
+    <div style="font-size:18px; font-weight:900; color:var(--text); margin-bottom:6px;">لا توجد منتجات مطابقة</div>
+    <div style="font-size:13px;">جرّب البحث بكلمة مختلفة أو اختر قسمًا آخر.</div>
+  </div>
 
-  <script>
-    const firebaseConfig = {
-      databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com/"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+  <footer class="footer">
+    <div class="title" id="footerStoreTitle">MS Store</div>
+    <div class="desc" id="footerAboutText">متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.</div>
+    <div class="socials">
+      <a class="social-btn" id="whatsappLink" href="https://wa.me/9647712630779" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      <a class="social-btn" id="telegramLink" href="https://t.me/msstore95" target="_blank"><i class="fab fa-telegram"></i></a>
+      <a class="social-btn" id="tiktokLink" href="https://www.tiktok.com/@msah_95" target="_blank"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <div class="mini-text" id="footerVersion">MS Store © 2026 | إصدار المتجر v2.0</div>
+  </footer>
 
-    // أنيميشن التحميل
-    document.getElementById("progressFill").style.width = "100%";
-    setTimeout(() => {
-      const splash = document.getElementById("splashScreen");
-      splash.style.opacity = "0";
-      setTimeout(() => splash.style.display = "none", 500);
-    }, 2500);
+  <button id="fabAdmin" class="fab-admin" onclick="openAdminPanel()"><i class="fa-solid fa-gear"></i></button>
 
-    // جلب المنتجات
-    db.ref("products").on("value", snap => {
-      const container = document.getElementById("productsContainer");
-      container.innerHTML = "";
-      snap.forEach(child => {
-        const p = child.val();
-        const img = (p.images && p.images[0]) ? p.images[0] : "https://via.placeholder.com/300";
-        
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = \`
-          <img class="gallery-img" src="\${img}" alt="\${p.name}">
-          <div class="product-info">
-            <h3 style="margin:0;font-size:15px;font-weight:900;">\${p.name}</h3>
-            <div class="price-tag">\${Number(p.price).toLocaleString()} د.ع</div>
-            <a href="https://wa.me/9647712630779?text=اريد طلب: \${p.name}" class="btn-order">اطلب الآن</a>
+  <div id="aboutModal" class="modal" onclick="closeModal(event,'aboutModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title">عن المتجر</h3><button class="close-btn" onclick="closeById('aboutModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="notice" id="aboutModalText">متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.</div>
+      <div class="row-actions"><button class="btn btn-primary" onclick="goHome()">العودة للرئيسية</button><button class="btn btn-secondary" onclick="closeById('aboutModal')">إغلاق</button></div>
+    </div>
+  </div>
+
+  <div id="zoomOverlay" onclick="closeZoom()">
+    <div class="zoom-top">
+      <div>معرض الصور</div>
+      <button class="close-btn" onclick="closeZoom(); event.stopPropagation();" style="color:#fff; background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.15);"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="zoom-gal" id="zGal" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <div id="adminPanel" class="modal" onclick="closeModal(event,'adminPanel')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title">لوحة إدارة متجر MS</h3><button class="close-btn" onclick="closeById('adminPanel')"><i class="fa-solid fa-xmark"></i></button></div>
+
+      <div class="notice">يمكنك إدارة المنتجات والأقسام والإعدادات من هنا. يفضّل نقل مفاتيح الخدمات الحساسة إلى جهة خلفية أكثر أمانًا.</div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="icon"><i class="fa-solid fa-box"></i></div><div class="num" id="statProducts">0</div><div class="label">عدد المنتجات</div></div>
+        <div class="stat-card"><div class="icon"><i class="fa-solid fa-layer-group"></i></div><div class="num" id="statCategories">0</div><div class="label">عدد الأقسام</div></div>
+        <div class="stat-card"><div class="icon"><i class="fa-solid fa-eye"></i></div><div class="num" id="statVisitors">0</div><div class="label">عدد الزيارات</div></div>
+        <div class="stat-card"><div class="icon"><i class="fa-solid fa-star"></i></div><div class="num" id="statFeatured">0</div><div class="label">المنتجات المميزة</div></div>
+      </div>
+
+      <div class="panel-tabs">
+        <button class="tab-btn active" onclick="switchAdminTab('tabDashboard', this)">الرئيسية</button>
+        <button class="tab-btn" onclick="switchAdminTab('tabProducts', this)">المنتجات</button>
+        <button class="tab-btn" onclick="switchAdminTab('tabCategories', this)">الأقسام</button>
+        <button class="tab-btn" onclick="switchAdminTab('tabSettings', this)">الإعدادات</button>
+        <button class="tab-btn" onclick="switchAdminTab('tabAds', this)">الإعلانات</button>
+        <button class="tab-btn" onclick="switchAdminTab('tabMaintenance', this)">الصيانة</button>
+      </div>
+
+      <div id="tabDashboard" class="tab-content active">
+        <div class="row-actions">
+          <button class="btn btn-primary" onclick="resetProductForm(); openModal('productModal')"><i class="fa-solid fa-plus"></i> إضافة منتج</button>
+          <button class="btn btn-secondary" onclick="openModal('categoryModal')"><i class="fa-solid fa-folder-plus"></i> إضافة قسم</button>
+          <button class="btn btn-warning" onclick="openModal('settingsModal')"><i class="fa-solid fa-store"></i> إعدادات المتجر</button>
+          <button class="btn btn-danger" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج</button>
+        </div>
+        <div class="helper-box">للدخول السريع إلى الإدارة اضغط على اسم المتجر 8 مرات، وللدخول أثناء وضع الصيانة اضغط على الأداة 10 مرات.</div>
+      </div>
+
+      <div id="tabProducts" class="tab-content">
+        <div class="field"><label>بحث داخل المنتجات</label><input type="text" id="adminProductSearch" placeholder="ابحث باسم المنتج..." oninput="renderAdminProducts()" /></div>
+        <div class="row-actions"><button class="btn btn-success" onclick="resetProductForm(); openModal('productModal')">إضافة منتج جديد</button></div>
+        <div id="adminProductsList" class="admin-list" style="margin-top:12px;"></div>
+      </div>
+
+      <div id="tabCategories" class="tab-content">
+        <div class="field"><label>اسم القسم الجديد</label><input type="text" id="newCategoryName" placeholder="مثال: إكسسوارات الهواتف" /></div>
+        <div class="row-actions"><button class="btn btn-primary" onclick="addCategory(false)">إضافة قسم</button></div>
+        <div class="chips" id="adminCategoriesList"></div>
+      </div>
+
+      <div id="tabSettings" class="tab-content">
+        <div class="row-actions">
+          <button class="btn btn-warning" onclick="openModal('settingsModal')">فتح إعدادات المتجر</button>
+          <button class="btn btn-secondary" onclick="openModal('passwordModal')">تغيير رمز الإدارة</button>
+        </div>
+      </div>
+
+      <div id="tabAds" class="tab-content">
+        <div class="notice">يمكنك عرض شريط إعلان متحرك أعلى المنتجات لعرض تنبيه أو عرض ترويجي.</div>
+
+        <div class="ad-toggle-box">
+          <span>تفعيل الإعلانات</span>
+          <input type="checkbox" id="adsEnabledToggle" class="toggle-switch" onchange="saveSingleAd()" />
+        </div>
+
+        <div class="field">
+          <label>نص الإعلان</label>
+          <textarea id="adTextInput" placeholder="اكتب نص الإعلان هنا" oninput="previewSingleAd()"></textarea>
+        </div>
+
+        <div class="color-speed-row">
+          <div class="field">
+            <label>لون الإعلان</label>
+            <input type="color" id="adColorInput" style="background:#2563eb;" value="#2563eb" oninput="previewSingleAd(); this.style.background = this.value;" />
           </div>
-        \`;
-        container.appendChild(card);
-      });
-    });
+          <div class="field">
+            <label>السرعة</label>
+            <select id="adSpeedInput" onchange="previewSingleAd()">
+              <option value="slow">بطيئة</option>
+              <option value="medium" selected>متوسطة</option>
+              <option value="fast">سريعة</option>
+            </select>
+          </div>
+        </div>
 
-    // تفعيل وضع الأدمن (8 ضغطات على اللوجو)
-    let tapCount = 0;
-    document.getElementById("brandTapArea").onclick = function() {
-      tapCount++;
-      if(tapCount >= 8) {
-        document.getElementById("fabAdmin").classList.add("show");
-        alert("تم تفعيل زر الإدارة");
-        tapCount = 0;
-      }
-    };
-  </script>
-</body>
-</html>
-    `;
+        <div class="row-actions">
+          <button class="btn btn-primary" onclick="saveSingleAd()">حفظ / تحديث الإعلان</button>
+          <button class="btn btn-danger" onclick="deleteSingleAd()">حذف الإعلان</button>
+        </div>
+      </div>
 
-    return new Response(fullHtml, {
-      headers: { 
-        "content-type": "text/html;charset=UTF-8",
-        "Access-Control-Allow-Origin": "*" 
-      },
-    });
-  },
+      <div id="tabMaintenance" class="tab-content">
+        <div class="notice">يمكنك تفعيل وضع الصيانة لإخفاء المتجر عن الزوار مع إبقاء باب الدخول للإدارة عبر الضغط 10 مرات على الأداة.</div>
+
+        <div class="ad-toggle-box">
+          <span>تفعيل وضع الصيانة</span>
+          <input type="checkbox" id="maintenanceToggle" class="toggle-switch" onchange="saveMaintenanceSettings()" />
+        </div>
+
+        <div class="field">
+          <label>رسالة الصيانة</label>
+          <textarea id="maintenanceMessageInput" placeholder="مثال: المتجر تحت الصيانة حاليًا، سيتم العودة قريبًا."></textarea>
+        </div>
+
+        <div class="row-actions">
+          <button class="btn btn-warning" onclick="saveMaintenanceSettings()">حفظ إعدادات الصيانة</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="productModal" class="modal" onclick="closeModal(event,'productModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title" id="productModalTitle">إضافة منتج</h3><button class="close-btn" onclick="closeById('productModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <input type="hidden" id="editingProductId" />
+      <div class="grid-2">
+        <div class="field"><label>اسم المنتج</label><input type="text" id="pName" placeholder="اكتب اسم المنتج" /></div>
+        <div class="field"><label>السعر</label><input type="number" id="pPrice" placeholder="مثال: 15000" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>القسم</label><select id="categorySelect"></select></div>
+        <div class="field"><label>حالة توفر المنتج</label><select id="pStock"><option value="متوفر">متوفر</option><option value="غير متوفر">غير متوفر</option></select></div>
+      </div>
+      <div class="field"><label>وصف المنتج</label><textarea id="pDesc" placeholder="اكتب وصفًا واضحًا للمنتج"></textarea></div>
+      <div class="switches">
+        <div class="toggle-box"><span>منتج مميز</span><input type="checkbox" id="pFeatured" class="toggle-switch" /></div>
+        <div class="toggle-box"><span>إظهار المنتج في المتجر</span><input type="checkbox" id="pActive" class="toggle-switch" checked /></div>
+      </div>
+
+      <div class="section-divider"></div>
+      <div class="sub-title">صور المنتج</div>
+      <div class="field">
+        <label>روابط الصور المباشرة</label>
+        <textarea id="pImgUrls" placeholder="ضع كل رابط في سطر منفصل"></textarea>
+        <div class="helper-inline">يمكنك أيضًا رفع الصور من الجهاز وسيتم رفعها تلقائيًا عند الحفظ.</div>
+      </div>
+
+      <div class="grid-2">
+        <div class="field">
+          <label>رفع صور من الجهاز</label>
+          <input type="file" id="pImageFile" accept="image/*" multiple onchange="handleImageFileUpload(event)" />
+          <div class="file-note" id="selectedFileName">لم يتم اختيار أي ملفات بعد</div>
+          <div class="muted-text">سيتم ضغط الصور ثم رفعها إلى ImgBB أثناء حفظ المنتج.</div>
+        </div>
+        <div class="field">
+          <label>إضافة رابط صورة واحدة</label>
+          <input type="text" id="singleImageUrl" placeholder="الصق رابط الصورة هنا" />
+          <div class="row-actions">
+            <button class="btn btn-secondary" type="button" onclick="addSingleImageUrl()"><i class="fa-solid fa-image"></i> إضافة صورة</button>
+            <button class="btn btn-primary" type="button" onclick="resetProductForm(); openModal('productModal')"><i class="fa-solid fa-box-open"></i> منتج جديد</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-tools">
+        <button class="btn btn-secondary" type="button" onclick="clearAllImages()">حذف كل الصور</button>
+      </div>
+      <div class="image-counter" id="imageCounterText">عدد الصور الحالية: 0</div>
+      <div class="preview-images" id="previewImages"></div>
+      <div id="saveStatusBox" class="status-box"></div><div id="firebaseStateNote" class="file-note"></div>
+      <div class="row-actions">
+        <button class="btn btn-success" onclick="saveProduct()">حفظ المنتج</button>
+        <button class="btn btn-secondary" onclick="resetProductForm()">إعادة تعيين</button>
+        <button class="btn btn-danger hidden" id="deleteEditingBtn" onclick="deleteEditingProduct()">حذف هذا المنتج</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="categoryModal" class="modal" onclick="closeModal(event,'categoryModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title">إضافة قسم جديد</h3><button class="close-btn" onclick="closeById('categoryModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="field"><label>اسم القسم</label><input type="text" id="newCategoryNameModal" placeholder="مثال: سماعات - كيبورد - هواتف" /></div>
+      <div class="row-actions"><button class="btn btn-primary" onclick="addCategory(true)">إضافة قسم</button></div>
+      <div class="chips" id="adminCategoriesListModal"></div>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal" onclick="closeModal(event,'settingsModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title">إعدادات المتجر</h3><button class="close-btn" onclick="closeById('settingsModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="grid-2">
+        <div class="field"><label>اسم المتجر</label><input type="text" id="setStoreName" /></div>
+        <div class="field"><label>الوصف المختصر</label><input type="text" id="setStoreSubtitle" /></div>
+      </div>
+      <div class="field"><label>نبذة المتجر / وصف المتجر</label><textarea id="setStoreAbout"></textarea></div>
+      <div class="grid-2">
+        <div class="field"><label>عنوان الواجهة الرئيسية</label><input type="text" id="setHeroTitle" /></div>
+        <div class="field"><label>وصف الواجهة الرئيسية</label><input type="text" id="setHeroDesc" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>رقم واتساب لاستقبال الطلبات</label><input type="text" id="setWhatsapp" placeholder="9647xxxxxxxx" /></div>
+        <div class="field"><label>رابط تيليجرام</label><input type="text" id="setTelegram" placeholder="https://t.me/username" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>رابط تيك توك</label><input type="text" id="setTiktok" placeholder="https://www.tiktok.com/@username" /></div>
+        <div class="field"><label>نص شاشة البداية</label><textarea id="setSplashText" placeholder="يمكنك كتابة أكثر من سطر داخل شاشة البداية"></textarea><div class="helper-inline">يمكنك كتابة أسطر متعددة. السطر الجديد يظهر عند الضغط على Enter.</div></div>
+      </div>
+      <div class="field"><label>قالب رسالة واتساب عند الطلب</label><textarea id="setOrderTemplate" placeholder="مثال: أرغب بطلب المنتج: {{name}}"></textarea><div class="helper-inline">المتغيرات المتاحة: {{name}} {{price}} {{category}} {{desc}}</div></div>
+      <div class="row-actions"><button class="btn btn-success" onclick="saveStoreSettings()">حفظ الإعدادات</button></div>
+    </div>
+  </div>
+
+  <div id="passwordModal" class="modal" onclick="closeModal(event,'passwordModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title">تغيير رمز الإدارة</h3><button class="close-btn" onclick="closeById('passwordModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div class="field"><label>الرمز الحالي</label><input type="password" id="oldPin" /></div>
+      <div class="field"><label>الرمز الجديد</label><input type="password" id="newPin" /></div>
+      <div class="row-actions"><button class="btn btn-primary" onclick="changeAdminPin()">حفظ رمز الإدارة</button></div>
+    </div>
+  </div>
+
+  <div id="descModal" class="modal" onclick="closeModal(event,'descModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-head"><h3 class="modal-title" id="descModalTitle">وصف المنتج</h3><button class="close-btn" onclick="closeById('descModal')"><i class="fa-solid fa-xmark"></i></button></div>
+      <div id="descModalText" class="desc-modal-text"></div>
+    </div>
+  </div>
+
+  <button id="backChip" class="back-chip" onclick="handleBackAction()"><i class="fa-solid fa-arrow-right"></i></button>
+
+<script>
+const firebaseConfig = {
+  databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com/"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const IMGBB_API_KEY = "17ce7ef832ce751d7760244683606c20";
+
+db.ref(".info/connected").on("value", snap => {
+  window.msFirebaseConnected = !!snap.val();
+  const note = document.getElementById("firebaseStateNote");
+  if(note){
+    note.textContent = snap.val() ? "حالة الاتصال بقاعدة البيانات: متصل" : "حالة الاتصال بقاعدة البيانات: غير متصل";
+  }
+});
+
+let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
+let allProducts = [], allCategories = [], storeSettings = {}, visitorsCount = 0, selectedCategory = "الكل";
+let searchDebounce = null;
+let currentEditingImages = [];
+let currentUploadFiles = [];
+let currentAd = null;
+let modalStack = [];
+
+const defaultSettings = {
+  storeName: "MS Store",
+  storeSubtitle: "متجر إلكتروني للمنتجات الرقمية والإكسسوارات",
+  storeAbout: "متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة بسيطة لتحديث المحتوى.",
+  heroTitle: "أهلاً بك في متجر MS",
+  heroDesc: "تصفح المنتجات، افتح الوصف داخل البطاقة، واطلب مباشرة بكل سهولة.",
+  whatsapp: "9647712630779",
+  telegram: "https://t.me/msstore95",
+  tiktok: "https://www.tiktok.com/@msah_95",
+  splashText: "مرحبًا بك في متجر MS<br>تسوق أسرع، عرض أوضح، وتجربة أفضل.<br><span style='font-size:14px;opacity:.92;'>جاري تحميل المنتجات...</span>",
+  adminPin: "1",
+  maintenanceMode: false,
+  maintenanceMessage: "المتجر تحت الصيانة حاليًا، يرجى المحاولة لاحقًا.",
+  adsEnabled: true,
+  versionText: "MS Store © 2026 | إصدار المتجر v2.0",
+  orderMessageTemplate: `مرحبًا
+أرغب بطلب المنتج التالي:
+- الاسم: {{name}}
+- السعر: {{price}}
+- القسم: {{category}}
+- الوصف: {{desc}}`
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+  localizeStaticTexts();
+  applySavedTheme();
+  initAdminState();
+  showProductSkeletons();
+  countVisitor();
+  listenStoreSettings();
+  listenCategories();
+  listenProducts();
+  listenAds();
+  initMaintenanceAccess();
+  initKeyboardHelpers();
+  initBackHandler();
+  startSplash();
+});
+
+function startSplash(){
+  const bar = document.getElementById("progressFill");
+  const splash = document.getElementById("splashScreen");
+  if(bar) setTimeout(() => { bar.style.width = "100%"; }, 50);
+  const hide = () => {
+    if(!splash) return;
+    splash.style.opacity = "0";
+    splash.style.pointerEvents = "none";
+    setTimeout(() => { if(splash) splash.style.display = "none"; }, 350);
+  };
+  setTimeout(hide, 1200);
+  window.addEventListener('load', hide, { once:true });
+  setTimeout(hide, 2500);
+}
+
+function showProductSkeletons(){
+  const container = document.getElementById("productsContainer");
+  let html = "";
+  for(let i=0;i<6;i++){
+    html += '<div class="sk-card"><div class="sk-img skeleton"></div><div class="sk-line skeleton"></div><div class="sk-line skeleton small"></div><div class="sk-line skeleton"></div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function applySavedTheme(){
+  const mode = localStorage.getItem("msTheme") || "light";
+  if(mode === "dark") document.body.classList.add("dark-mode");
+  updateThemeIcon();
+}
+function toggleTheme(){
+  document.body.classList.toggle("dark-mode");
+  localStorage.setItem("msTheme", document.body.classList.contains("dark-mode") ? "dark" : "light");
+  updateThemeIcon();
+}
+function updateThemeIcon(){
+  const icon = document.querySelector("#themeBtn i");
+  if(icon) icon.className = document.body.classList.contains("dark-mode") ? "fa-solid fa-sun" : "fa-solid fa-moon";
+}
+
+function initAdminState(){
+  isAdmin = localStorage.getItem("msAdmin") === "true";
+  updateAdminUI();
+}
+function updateAdminUI(){
+  document.getElementById("fabAdmin").classList.toggle("show", isAdmin);
+  renderProducts();
+  renderAdminProducts();
+  applyMaintenanceMode();
+}
+
+function localizeStaticTexts(){
+  document.title = 'MS Store';
+  setText('splashTitle','MS Store');
+  const splashSubtitle = document.getElementById('splashSubtitle');
+  if(splashSubtitle) splashSubtitle.innerHTML = 'مرحبًا بك في متجر MS<br>تسوق أسرع، عرض أوضح، وتجربة أفضل.<br><span style="font-size:14px;opacity:.92;">جاري تحميل المنتجات...</span>';
+  setText('maintenanceText','المتجر تحت الصيانة حاليًا، يرجى المحاولة لاحقًا.');
+  const maintTitle = document.querySelector('.maint-title'); if(maintTitle) maintTitle.textContent = 'المتجر تحت الصيانة';
+  const maintNote = document.querySelector('.maint-note'); if(maintNote) maintNote.textContent = 'للدخول للإدارة اضغط على الأداة 10 مرات';
+  setText('storeTitleTop','MS Store');
+  setText('storeSubTop','متجر إلكتروني للمنتجات الرقمية والإكسسوارات');
+  setText('heroTitle','أهلاً بك في متجر MS');
+  setText('heroDesc','تصفح المنتجات، افتح الوصف داخل البطاقة، واطلب مباشرة بكل سهولة.');
+  const secTitle = document.querySelector('.section-title'); if(secTitle) secTitle.textContent = 'الأقسام';
+  const secNote = document.querySelector('.section-bar .section-note'); if(secNote) secNote.textContent = 'اختر القسم أو ابحث عن المنتج';
+  setText('resultCountText','جاري تحميل المنتجات...');
+  const search = document.getElementById('searchInput'); if(search) search.placeholder = 'ابحث عن منتج...';
+  const sort = document.getElementById('sortSelect');
+  if(sort && sort.options.length >= 5){
+    sort.options[0].text = 'الأحدث';
+    sort.options[1].text = 'المميزة أولاً';
+    sort.options[2].text = 'السعر: من الأقل للأعلى';
+    sort.options[3].text = 'السعر: من الأعلى للأقل';
+    sort.options[4].text = 'الاسم: أ - ي';
+  }
+  const emptyTitle = document.querySelector('#emptyState div'); if(emptyTitle) emptyTitle.textContent = 'لا توجد منتجات مطابقة';
+  const emptyDesc = document.querySelectorAll('#emptyState div')[1]; if(emptyDesc) emptyDesc.textContent = 'جرّب البحث بكلمة مختلفة أو اختر قسمًا آخر.';
+  setText('footerStoreTitle','MS Store');
+  setText('footerAboutText','متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.');
+  setText('footerVersion','MS Store © 2026 | إصدار المتجر v2.0');
+  const aboutTitle = document.querySelector('#aboutModal .modal-title'); if(aboutTitle) aboutTitle.textContent = 'عن المتجر';
+  setText('aboutModalText','متجر MS يوفر عرضًا مرتبًا للمنتجات مع إمكانية الطلب المباشر عبر واتساب ولوحة إدارة سهلة.');
+  const aboutBtns = document.querySelectorAll('#aboutModal .btn');
+  if(aboutBtns[0]) aboutBtns[0].textContent = 'العودة للرئيسية';
+  if(aboutBtns[1]) aboutBtns[1].textContent = 'إغلاق';
+  const zoomTop = document.querySelector('#zoomOverlay .zoom-top div'); if(zoomTop) zoomTop.textContent = 'معرض الصور';
+  const notice = document.querySelector('#adminPanel .notice'); if(notice) notice.textContent = 'يمكنك إدارة المنتجات والأقسام والإعدادات من هنا.';
+  const adminTitle = document.querySelector('#adminPanel .modal-title'); if(adminTitle) adminTitle.textContent = 'لوحة إدارة متجر MS';
+  const statLabels = document.querySelectorAll('.stat-card .label');
+  const labels = ['عدد المنتجات','عدد الأقسام','عدد الزيارات','المنتجات المميزة'];
+  statLabels.forEach((el,i)=>{ if(labels[i]) el.textContent = labels[i]; });
+  const tabs = document.querySelectorAll('#adminPanel .tab-btn');
+  const tabText = ['الرئيسية','المنتجات','الأقسام','الإعدادات','الإعلانات','الصيانة'];
+  tabs.forEach((el,i)=>{ if(tabText[i]) el.textContent = tabText[i]; });
+  const dashboardBtns = document.querySelectorAll('#tabDashboard .btn');
+  const dashTexts = ['إضافة منتج','إضافة قسم','إعدادات المتجر','تسجيل الخروج'];
+  dashboardBtns.forEach((el,i)=>{ if(dashTexts[i]) el.textContent = dashTexts[i]; });
+}
+
+document.getElementById("brandTapArea").onclick = function(){
+  tapCounter++;
+  if(tapCounter >= 8){
+    tapCounter = 0;
+    const pin = prompt("أدخل رمز الإدارة");
+    if(pin === null) return;
+    const savedPin = storeSettings.adminPin || defaultSettings.adminPin;
+    if(pin === savedPin){
+      isAdmin = true;
+      localStorage.setItem("msAdmin","true");
+      updateAdminUI();
+      openAdminPanel();
+    }else alert("رمز الإدارة غير صحيح");
+  }
+};
+
+function initMaintenanceAccess(){
+  const wrench = document.getElementById("maintenanceWrench");
+  wrench.addEventListener("click", () => {
+    maintenanceTapCounter++;
+    if(maintenanceTapCounter >= 10){
+      maintenanceTapCounter = 0;
+      document.getElementById("maintenanceOverlay").classList.remove("show");
+      document.getElementById("brandTapArea").click();
+    }
+  });
+}
+
+function applyMaintenanceMode(){
+  const overlay = document.getElementById("maintenanceOverlay");
+  const msg = document.getElementById("maintenanceText");
+  if(msg) msg.textContent = storeSettings.maintenanceMessage || defaultSettings.maintenanceMessage;
+  if(storeSettings.maintenanceMode && !isAdmin) overlay.classList.add("show");
+  else overlay.classList.remove("show");
+}
+
+function openAdminPanel(){
+  if(!isAdmin){ alert("يجب تسجيل الدخول للإدارة أولاً"); return; }
+  openModal("adminPanel");
+  renderAdminProducts();
+  renderAdminCategories();
+  fillSettingsForm();
+  fillMaintenanceForm();
+  renderAdminAds();
+  updateStatsCards();
+  document.getElementById("maintenanceOverlay").classList.remove("show");
+}
+function logoutAdmin(){
+  if(!confirm("هل تريد تسجيل الخروج من لوحة الإدارة؟")) return;
+  isAdmin = false;
+  localStorage.setItem("msAdmin","false");
+  closeById("adminPanel");
+  updateAdminUI();
+}
+
+function listenStoreSettings(){
+  db.ref("settings/store").on("value", snap => {
+    storeSettings = Object.assign({}, defaultSettings, snap.val() || {});
+    applyStoreSettings();
+    fillSettingsForm();
+    fillMaintenanceForm();
+  });
+}
+function applyStoreSettings(){
+  document.title = storeSettings.storeName || "MS Store";
+  setText("storeTitleTop", storeSettings.storeName);
+  setText("storeSubTop", storeSettings.storeSubtitle);
+  setText("heroTitle", storeSettings.heroTitle);
+  setText("heroDesc", storeSettings.heroDesc);
+  setText("footerStoreTitle", storeSettings.storeName);
+  setText("footerAboutText", storeSettings.storeAbout);
+  setText("aboutModalText", storeSettings.storeAbout);
+  setText("splashTitle", storeSettings.storeName);
+  document.getElementById("splashSubtitle").innerHTML = formatDisplayText(storeSettings.splashText || defaultSettings.splashText);
+  document.getElementById("whatsappLink").href = "https://wa.me/" + cleanupNumber(storeSettings.whatsapp);
+  document.getElementById("telegramLink").href = storeSettings.telegram || "https://t.me/";
+  document.getElementById("tiktokLink").href = storeSettings.tiktok || "https://www.tiktok.com/@msah_95";
+  setText("footerVersion", storeSettings.versionText || defaultSettings.versionText);
+  applyMaintenanceMode();
+}
+function fillSettingsForm(){
+  setVal("setStoreName", storeSettings.storeName);
+  setVal("setStoreSubtitle", storeSettings.storeSubtitle);
+  setVal("setStoreAbout", storeSettings.storeAbout);
+  setVal("setHeroTitle", storeSettings.heroTitle);
+  setVal("setHeroDesc", storeSettings.heroDesc);
+  setVal("setWhatsapp", storeSettings.whatsapp);
+  setVal("setTelegram", storeSettings.telegram);
+  setVal("setTiktok", storeSettings.tiktok);
+  setVal("setSplashText", storeSettings.splashText);
+  setVal("setOrderTemplate", storeSettings.orderMessageTemplate || defaultSettings.orderMessageTemplate);
+}
+function fillMaintenanceForm(){
+  const mt = document.getElementById("maintenanceToggle");
+  const mm = document.getElementById("maintenanceMessageInput");
+  const at = document.getElementById("adsEnabledToggle");
+  if(mt) mt.checked = !!storeSettings.maintenanceMode;
+  if(mm) mm.value = storeSettings.maintenanceMessage || defaultSettings.maintenanceMessage;
+  if(at) at.checked = storeSettings.adsEnabled !== false;
+}
+async function saveStoreSettings(){
+  const data = Object.assign({}, storeSettings, {
+    storeName: val("setStoreName") || defaultSettings.storeName,
+    storeSubtitle: val("setStoreSubtitle") || defaultSettings.storeSubtitle,
+    storeAbout: val("setStoreAbout") || defaultSettings.storeAbout,
+    heroTitle: val("setHeroTitle") || defaultSettings.heroTitle,
+    heroDesc: val("setHeroDesc") || defaultSettings.heroDesc,
+    whatsapp: cleanupNumber(val("setWhatsapp") || defaultSettings.whatsapp),
+    telegram: val("setTelegram") || defaultSettings.telegram,
+    tiktok: val("setTiktok") || defaultSettings.tiktok,
+    splashText: val("setSplashText") || defaultSettings.splashText,
+    orderMessageTemplate: val("setOrderTemplate") || defaultSettings.orderMessageTemplate
+  });
+  await db.ref("settings/store").set(data);
+  alert("تم حفظ إعدادات المتجر بنجاح");
+  closeById("settingsModal");
+}
+async function changeAdminPin(){
+  const oldPin = val("oldPin"), newPin = val("newPin");
+  if(oldPin !== (storeSettings.adminPin || defaultSettings.adminPin)){ alert("الرمز الحالي غير صحيح"); return; }
+  if(!newPin){ alert("أدخل الرمز الجديد"); return; }
+  await db.ref("settings/store/adminPin").set(newPin);
+  setVal("oldPin",""); setVal("newPin","");
+  alert("تم تغيير رمز الإدارة");
+  closeById("passwordModal");
+}
+
+function countVisitor(){
+  const visited = sessionStorage.getItem("msVisited");
+  if(!visited){
+    db.ref("settings/visitors").transaction(c => (c || 0) + 1);
+    sessionStorage.setItem("msVisited","true");
+  }
+  db.ref("settings/visitors").on("value", s => {
+    visitorsCount = s.val() || 0;
+    updateStatsCards();
+  });
+}
+
+function listenCategories(){
+  db.ref("categories").on("value", snap => {
+    allCategories = [];
+    snap.forEach(child => {
+      const v = child.val();
+      allCategories.push({ id: child.key, name: v.name || v });
+    });
+    if(allCategories.length === 0){ seedDefaultCategories(); return; }
+    renderCategories();
+    fillCategorySelect();
+    renderAdminCategories();
+    updateStatsCards();
+  });
+}
+async function seedDefaultCategories(){
+  const defaults = ["هواتف", "إكسسوارات", "سماعات", "ساعات", "شواحن", "متنوعات"];
+  for(const c of defaults) await db.ref("categories").push({ name: c, createdAt: Date.now() });
+}
+function renderCategories(){
+  const wrap = document.getElementById("categoryFilter");
+  wrap.innerHTML = "";
+  wrap.appendChild(createCatButton("الكل"));
+  allCategories.forEach(cat => wrap.appendChild(createCatButton(cat.name)));
+  highlightActiveCategory();
+}
+function createCatButton(name){
+  const btn = document.createElement("button");
+  btn.className = "cat-btn";
+  btn.innerText = name;
+  btn.onclick = () => { selectedCategory = name; highlightActiveCategory(); renderProducts(); };
+  return btn;
+}
+function highlightActiveCategory(){
+  document.querySelectorAll(".cat-btn").forEach(btn => btn.classList.toggle("active", btn.innerText === selectedCategory));
+}
+function fillCategorySelect(){
+  const select = document.getElementById("categorySelect");
+  if(!select) return;
+  select.innerHTML = "";
+  allCategories.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat.name;
+    option.textContent = cat.name;
+    select.appendChild(option);
+  });
+  if(!allCategories.length){
+    const option = document.createElement("option");
+    option.value = "عام";
+    option.textContent = "عام";
+    select.appendChild(option);
+  }
+}
+async function addCategory(fromModal){
+  const inputId = fromModal ? "newCategoryNameModal" : "newCategoryName";
+  const input = document.getElementById(inputId);
+  const name = (input.value || "").trim();
+  if(!name){ alert("أدخل اسم القسم"); input.focus(); return; }
+  const exists = allCategories.some(c => String(c.name || "").trim() === name);
+  if(exists){ alert("هذا القسم موجود مسبقًا"); return; }
+
+  try{
+    await Promise.race([
+      db.ref("categories").push({ name, createdAt: Date.now() }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("انتهت مهلة الاتصال. تأكد من Firebase ثم أعد المحاولة.")), 15000))
+    ]);
+    input.value = "";
+    alert("تمت إضافة القسم بنجاح");
+  }catch(err){
+    console.error("addCategory error:", err);
+    alert("تعذر إضافة القسم\n" + (err && err.message ? err.message : "تحقق من إعدادات Firebase"));
+  }
+}
+async function editCategory(id, oldName){
+  const newName = prompt("تعديل اسم القسم", oldName);
+  if(newName === null) return;
+  const clean = newName.trim();
+  if(!clean){ alert("اسم القسم غير صالح"); return; }
+  await db.ref("categories/" + id + "/name").set(clean);
+}
+async function deleteCategory(id, name){
+  if(!confirm("هل تريد حذف القسم: " + name + " ؟")) return;
+  const used = allProducts.some(p => p.category === name);
+  if(used){ alert("لا يمكن حذف هذا القسم لأنه مرتبط بمنتجات. احذف المنتجات أو غيّر أقسامها أولاً."); return; }
+  await db.ref("categories/" + id).remove();
+}
+function renderAdminCategories(){
+  const ids = ["adminCategoriesList", "adminCategoriesListModal"];
+  ids.forEach(id => {
+    const wrap = document.getElementById(id);
+    if(!wrap) return;
+    wrap.innerHTML = "";
+    allCategories.forEach(cat => {
+      const chip = document.createElement("div");
+      chip.className = "chip";
+      chip.innerHTML = `<span>${escapeHtml(cat.name)}</span>
+        <div class="chip-actions">
+          <button class="chip-edit-btn" onclick="editCategory('${cat.id}','${jsEscape(cat.name)}')"><i class="fa-solid fa-pen"></i></button>
+          <button class="chip-delete-btn" onclick="deleteCategory('${cat.id}','${jsEscape(cat.name)}')"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+      wrap.appendChild(chip);
+    });
+  });
+}
+
+function listenProducts(){
+  db.ref("products").on("value", snap => {
+    const list = [];
+    snap.forEach(child => {
+      const p = child.val() || {};
+      list.push(normalizeProduct(child.key, p));
+    });
+    allProducts = list;
+    renderProducts();
+    renderAdminProducts();
+    updateStatsCards();
+  });
+}
+
+function normalizeProduct(id, p){
+  let images = [];
+  if(Array.isArray(p.images)) images = p.images.filter(Boolean);
+  else if(typeof p.images === "object" && p.images) images = Object.values(p.images).filter(Boolean);
+  else if(Array.isArray(p.imgs)) images = p.imgs.filter(Boolean);
+  else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
+  else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
+  images = images.filter(img => {
+    const s = String(img || '').trim();
+    if(!s) return false;
+    if(s.startsWith('file:') || s.startsWith('content:')) return false;
+    return /^https?:/i.test(s) || s.startsWith('data:image/');
+  });
+  return {
+    id,
+    name: p.name || "منتج بدون اسم",
+    price: Number(p.price || 0),
+    desc: p.desc || p.description || "",
+    category: p.category || "عام",
+    stock: p.stock || "متوفر",
+    featured: !!p.featured,
+    active: p.active !== false,
+    createdAt: p.createdAt || 0,
+    images
+  };
+}
+
+function debouncedRenderProducts(){
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(renderProducts, 180);
+}
+function renderProducts(){
+  const container = document.getElementById("productsContainer");
+  const empty = document.getElementById("emptyState");
+  const q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
+  const sort = document.getElementById("sortSelect").value;
+
+  let items = allProducts.filter(p => p.active !== false);
+  if(selectedCategory !== "الكل") items = items.filter(p => p.category === selectedCategory);
+  if(q) items = items.filter(p =>
+    (p.name || "").toLowerCase().includes(q) ||
+    (p.desc || "").toLowerCase().includes(q) ||
+    (p.category || "").toLowerCase().includes(q)
+  );
+
+  if(sort === "featured"){
+    items.sort((a,b) => Number(b.featured) - Number(a.featured) || (b.createdAt||0) - (a.createdAt||0));
+  }else if(sort === "priceAsc"){
+    items.sort((a,b) => a.price - b.price);
+  }else if(sort === "priceDesc"){
+    items.sort((a,b) => b.price - a.price);
+  }else if(sort === "nameAsc"){
+    items.sort((a,b) => (a.name||"").localeCompare(b.name||"", "ar"));
+  }else{
+    items.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+  }
+
+  document.getElementById("resultCountText").textContent = items.length ? `عدد المنتجات المعروضة: ${items.length}` : "لا توجد منتجات";
+
+  if(items.length === 0){
+    container.innerHTML = "";
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+  const frag = document.createDocumentFragment();
+  items.forEach(p => frag.appendChild(buildProductCard(p)));
+  container.innerHTML = "";
+  container.appendChild(frag);
+  initAutoGalleries();
+}
+
+function getDescriptionClass(desc){
+  const clean = String(desc || "").trim();
+  if(clean.length && clean.length <= 5) return "short-desc";
+  return "long-desc";
+}
+function getShortDescription(desc){
+  const clean = String(desc || "").trim();
+  if(!clean) return "لا يوجد وصف";
+  return clean.length > 90 ? clean.slice(0, 90) + "..." : clean;
+}
+function buildOrderMessage(p){
+  const template = storeSettings.orderMessageTemplate || defaultSettings.orderMessageTemplate;
+  return template
+    .replaceAll("{{name}}", p.name || "")
+    .replaceAll("{{price}}", formatPrice(p.price))
+    .replaceAll("{{category}}", p.category || "")
+    .replaceAll("{{desc}}", p.desc || "لا يوجد وصف");
+}
+
+function initAutoGalleries(){
+  document.querySelectorAll('.gallery-wrapper[data-images]').forEach(wrapper => {
+    let images = [];
+    try{ images = JSON.parse(decodeURIComponent(wrapper.dataset.images || '%5B%5D')); }catch(e){ images = []; }
+    wrapper._galleryImages = images;
+    if(typeof wrapper._galleryIndex !== "number") wrapper._galleryIndex = 0;
+    updateGalleryUI(wrapper);
+  });
+}
+
+function updateGalleryUI(wrapper){
+  if(!wrapper) return;
+  const images = wrapper._galleryImages || [];
+  const main = wrapper.querySelector('.gallery-img');
+  const thumbs = Array.from(wrapper.querySelectorAll('.gallery-thumb'));
+  const current = images.length ? images[wrapper._galleryIndex] : '';
+  if(main && current){
+    main.src = current;
+  }
+  thumbs.forEach((thumb, i) => thumb.classList.toggle('active', i === wrapper._galleryIndex));
+}
+
+function switchCardImage(el, src, name){
+  const wrapper = el.closest(".gallery-wrapper");
+  if(!wrapper) return;
+  const thumbs = Array.from(wrapper.querySelectorAll(".gallery-thumb"));
+  const idx = thumbs.indexOf(el);
+  if(idx >= 0) wrapper._galleryIndex = idx;
+  const main = wrapper.querySelector(".gallery-img");
+  if(main){
+    main.src = src;
+    main.alt = name;
+  }
+  thumbs.forEach((t, i) => t.classList.toggle("active", i === wrapper._galleryIndex));
+}
+
+function changeGalleryImage(btn, direction){
+  const wrapper = btn.closest(".gallery-wrapper");
+  if(!wrapper) return;
+  let images = wrapper._galleryImages;
+  if(!Array.isArray(images)){
+    try{ images = JSON.parse(decodeURIComponent(wrapper.dataset.images || '%5B%5D')); }catch(e){ images = []; }
+    wrapper._galleryImages = images;
+  }
+  if(images.length < 2) return;
+  const total = images.length;
+  const current = typeof wrapper._galleryIndex === "number" ? wrapper._galleryIndex : 0;
+  wrapper._galleryIndex = (current + direction + total) % total;
+  updateGalleryUI(wrapper);
+}
+function toggleCardDescription(el){
+  if(!el) return;
+  const isExpanded = el.classList.toggle('expanded');
+  el.textContent = isExpanded ? (el.dataset.full || 'لا يوجد وصف') : (el.dataset.short || 'لا يوجد وصف');
+}
+function openProductDetails(productId){
+  const p = allProducts.find(x => x.id === productId);
+  if(!p) return;
+  openZoom(p.images && p.images.length ? p.images : [placeholderImage(p.name)]);
+}
+function buildProductCard(p){
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const images = p.images && p.images.length ? p.images : [placeholderImage(p.name)];
+  const firstImage = images[0];
+  const canOrder = cleanupNumber(storeSettings.whatsapp || defaultSettings.whatsapp);
+  const orderMessage = buildOrderMessage(p);
+  const orderLink = `https://wa.me/${canOrder}?text=${encodeURIComponent(orderMessage)}`;
+
+  let adminButtons = "";
+  if(isAdmin){
+    adminButtons = `
+      <button class="admin-delete-btn" onclick="deleteProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-trash"></i></button>
+      <button class="admin-edit-btn" onclick="editProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-pen"></i></button>
+    `;
+  }
+
+  const featuredBadge = p.featured ? '<span class="badge featured">مميز</span>' : '';
+  const stockClass = p.stock === "متوفر" ? "in" : "out";
+  const descClass = getDescriptionClass(p.desc || "");
+  const shortDesc = escapeHtml(getShortDescription(p.desc || 'لا يوجد وصف'));
+  const fullDesc = escapeHtml(String(p.desc || 'لا يوجد وصف'));
+  const hasMoreClass = String(p.desc || '').trim().length > 90 ? 'has-more' : '';
+  const thumbs = images.map((img, index) =>
+    `<img class="gallery-thumb ${index === 0 ? "active" : ""}" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onclick="switchCardImage(this,'${escapeJsString(img)}','${escapeJsString(p.name)}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />`
+  ).join("");
+
+  card.innerHTML = `
+    <div class="card-top-badges">${featuredBadge}</div>
+    ${adminButtons}
+    <div class="gallery-wrapper" data-images="${encodeURIComponent(JSON.stringify(images))}">
+      <div class="gallery-main">
+        ${images.length > 1 ? `<button class="gallery-arrow left" type="button" onclick="changeGalleryImage(this,-1); event.stopPropagation();"><i class="fa-solid fa-chevron-left"></i></button>` : ""}
+        ${images.length > 1 ? `<button class="gallery-arrow right" type="button" onclick="changeGalleryImage(this,1); event.stopPropagation();"><i class="fa-solid fa-chevron-right"></i></button>` : ""}
+        <img class="gallery-img" src="${escapeAttr(firstImage)}" alt="${escapeAttr(p.name)}" onclick="openProductDetails('${p.id}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />
+      </div>
+      ${images.length > 1 ? `<div class="gallery-thumbs">${thumbs}</div>` : ""}
+    </div>
+    <div class="product-info">
+      <h3 class="p-name" onclick="openProductDetails('${p.id}')">${escapeHtml(p.name)}</h3>
+      <p class="p-desc ${descClass} ${hasMoreClass}" data-short="${escapeAttr(shortDesc)}" data-full="${escapeAttr(fullDesc)}" onclick="toggleCardDescription(this); event.stopPropagation();">${shortDesc}</p>
+      <div class="meta-row">
+        <span class="stock ${stockClass}">${escapeHtml(p.stock)}</span>
+        <span class="section-note">${escapeHtml(p.category)}</span>
+      </div>
+      <div class="price-tag">${formatPrice(p.price)}</div>
+      <div class="card-actions">
+        <a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a>
+        <button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button>
+      </div>
+    </div>
+  `;
+  return card;
+}
+
+function renderAdminProducts(){
+  const wrap = document.getElementById("adminProductsList");
+  if(!wrap) return;
+  const q = (document.getElementById("adminProductSearch")?.value || "").trim().toLowerCase();
+  const list = allProducts.filter(p =>
+    !q || (p.name || "").toLowerCase().includes(q) || (p.category || "").toLowerCase().includes(q)
+  ).sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+  wrap.innerHTML = "";
+  if(!list.length){
+    wrap.innerHTML = '<div class="notice">لا توجد منتجات مطابقة للبحث.</div>';
+    return;
+  }
+
+  list.forEach(p => {
+    const item = document.createElement("div");
+    item.className = "admin-item";
+    const img = p.images && p.images.length ? p.images[0] : placeholderImage(p.name);
+    item.innerHTML = `
+      <div class="admin-item-top">
+        <img class="admin-thumb" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />
+        <div class="admin-item-main">
+          <div class="admin-item-name">${escapeHtml(p.name)}</div>
+          <div class="admin-item-meta">
+            <span>القسم: ${escapeHtml(p.category)}</span>
+            <span>السعر: ${formatPrice(p.price)}</span>
+            <span>التوفر: ${escapeHtml(p.stock)}</span>
+            <span>${p.active ? 'ظاهر' : 'مخفي'}</span>
+            <span>${p.featured ? 'مميز' : 'عادي'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="admin-item-actions">
+        <button class="admin-small-btn btn-primary" onclick="editProduct('${p.id}')">تعديل</button>
+        <button class="admin-small-btn btn-secondary" onclick="duplicateProduct('${p.id}')">نسخ المنتج</button>
+        <button class="admin-small-btn btn-warning" onclick="toggleProductVisibility('${p.id}', ${p.active ? 'false' : 'true'})">${p.active ? 'إخفاء' : 'إظهار'}</button>
+        <button class="admin-small-btn btn-danger" onclick="deleteProduct('${p.id}')">حذف</button>
+      </div>
+    `;
+    wrap.appendChild(item);
+  });
+}
+
+async function saveProduct(){
+  const saveBtn = document.querySelector('#productModal .btn-success');
+  try{
+    setSaveStatus("", "");
+
+    if(saveBtn){
+      saveBtn.disabled = true;
+      saveBtn.dataset.originalText = saveBtn.textContent;
+      saveBtn.textContent = "جاري الحفظ...";
+      saveBtn.style.opacity = "0.75";
+    }
+
+    const id = val("editingProductId");
+    const name = val("pName").trim();
+    const price = Number(val("pPrice") || 0);
+    const category = val("categorySelect") || "عام";
+    const stock = val("pStock") || "متوفر";
+    const desc = val("pDesc").trim();
+    const featured = !!document.getElementById("pFeatured")?.checked;
+    const active = !!document.getElementById("pActive")?.checked;
+
+    let images = [];
+    try{
+      images = typeof getImageListFromForm === "function" ? getImageListFromForm() : [];
+      if(!Array.isArray(images)) images = [];
+    }catch(imgErr){
+      console.error("getImageListFromForm error:", imgErr);
+      images = [];
+    }
+
+    if(!name){
+      setSaveStatus("error", "يرجى كتابة اسم المنتج أولاً.");
+      alert("أدخل اسم المنتج");
+      return;
+    }
+
+    if(currentUploadFiles.length){
+      setSaveStatus("success", "جاري رفع الصور إلى ImgBB...");
+      const uploadedUrls = await uploadImagesToImgbb(currentUploadFiles);
+      images = [...images, ...uploadedUrls];
+    }
+
+    const payload = {
+      name,
+      price,
+      category,
+      stock,
+      desc,
+      featured,
+      active,
+      images,
+      createdAt: id ? ((allProducts.find(p => p.id === id) || {}).createdAt || Date.now()) : Date.now(),
+      updatedAt: Date.now()
+    };
+
+    setSaveStatus("success", "جاري حفظ البيانات...");
+    const ref = id ? db.ref("products/" + id) : db.ref("products").push();
+
+    await Promise.race([
+      ref.set(payload),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("انتهت مهلة الحفظ. تأكد من Firebase ثم أعد المحاولة.")), 25000))
+    ]);
+
+    setSaveStatus("success", id ? "تم تحديث المنتج بنجاح." : "تم حفظ المنتج بنجاح.");
+    alert(id ? "تم تحديث المنتج بنجاح" : "تم حفظ المنتج بنجاح");
+    resetProductForm();
+    closeById("productModal");
+  }catch(err){
+    console.error("saveProduct error:", err);
+    const msg = err && err.message ? err.message : "";
+    const extra = msg ? "\n" + msg : "";
+    setSaveStatus("error", "تعذر حفظ المنتج. تحقق من الاتصال أو من إعدادات الرفع." + extra);
+    alert("تعذر حفظ المنتج\nتحقق من الاتصال أو من إعدادات الرفع." + extra);
+  }finally{
+    if(saveBtn){
+      saveBtn.disabled = false;
+      saveBtn.textContent = saveBtn.dataset.originalText || "حفظ المنتج";
+      saveBtn.style.opacity = "1";
+    }
+  }
+}
+
+function updateImageCounter(){
+  const el = document.getElementById("imageCounterText");
+  if(!el) return;
+  const urls = getImageListFromForm();
+  const pending = getPendingPreviewList();
+  el.textContent = "عدد الصور الحالية: " + (urls.length + pending.length);
+}
+
+function clearAllImages(){
+  currentEditingImages = [];
+  setVal("pImgUrls", "");
+  clearPendingUploads();
+  setText("selectedFileName", "لم يتم اختيار أي ملفات بعد");
+  renderPreviewImages();
+}
+
+function fileToBase64Pure(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || "");
+      const commaIndex = result.indexOf(",");
+      resolve(commaIndex >= 0 ? result.slice(commaIndex + 1) : result);
+    };
+    reader.onerror = () => reject(new Error("تعذر قراءة الصورة من الجهاز"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function compressImage(file, maxWidth = 1600, quality = 0.82){
+  return new Promise((resolve) => {
+    if(!file.type || !file.type.startsWith("image/")) {
+      resolve(file);
+      return;
+    }
+
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+
+    img.onload = () => {
+      let width = img.width;
+      let height = img.height;
+
+      if(width > maxWidth){
+        height = Math.round((height * maxWidth) / width);
+        width = maxWidth;
+      }
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(url);
+        if(blob){
+          const compressed = new File([blob], (file.name || "image").replace(/\.[^.]+$/, "") + ".jpg", {type: "image/jpeg"});
+          resolve(compressed);
+        }else{
+          resolve(file);
+        }
+      }, "image/jpeg", quality);
+    };
+
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      resolve(file);
+    };
+
+    img.src = url;
+  });
+}
+
+async function uploadImagesToImgbb(files){
+  const urls = [];
+
+  for(let i = 0; i < files.length; i++){
+    const item = files[i];
+    const originalFile = item.file || item;
+    setSaveStatus("success", "جاري رفع الصور إلى ImgBB... (" + (i + 1) + "/" + files.length + ")");
+    const file = await compressImage(originalFile);
+    const base64Image = await fileToBase64Pure(file);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 90000);
+
+    try{
+      const body = new URLSearchParams();
+      body.append("key", IMGBB_API_KEY);
+      body.append("image", base64Image);
+      body.append("name", (file.name || ("image_" + Date.now())).replace(/[^a-zA-Z0-9._-]/g, "_"));
+
+      const response = await fetch("https://api.imgbb.com/1/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+        },
+        body: body.toString(),
+        signal: controller.signal
+      });
+
+      const data = await response.json();
+
+      if(!response.ok || !data || !data.success || !data.data || !data.data.url){
+        throw new Error((data && data.error && data.error.message) ? data.error.message : "فشل رفع الصورة إلى ImgBB");
+      }
+
+      urls.push(data.data.url);
+    }catch(err){
+      if(err && err.name === "AbortError"){
+        throw new Error("انتهت مهلة رفع الصورة. حاول صورة أصغر أو تحقق من سرعة الإنترنت.");
+      }
+      throw err;
+    }finally{
+      clearTimeout(timeoutId);
+    }
+  }
+
+  return urls;
+}
+
+function getImageListFromForm(){
+  const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
+  const merged = [...currentEditingImages, ...urlsFromTextarea];
+  const unique = [];
+  merged.forEach(img => {
+    if(img && !unique.includes(img)) unique.push(img);
+  });
+  return unique;
+}
+
+function clearPendingUploads(){
+  currentUploadFiles.forEach(item => {
+    if(item && item.previewUrl){
+      try{ URL.revokeObjectURL(item.previewUrl); }catch(e){}
+    }
+  });
+  currentUploadFiles = [];
+  const fileInput = document.getElementById("pImageFile");
+  if(fileInput) fileInput.value = "";
+}
+function getPendingPreviewList(){
+  return currentUploadFiles.map(item => item.previewUrl).filter(Boolean);
+}
+function resetProductForm(){
+  setVal("editingProductId", "");
+  setVal("pName", "");
+  setVal("pPrice", "");
+  setVal("pDesc", "");
+  setVal("pImgUrls", "");
+  setVal("singleImageUrl", "");
+  clearPendingUploads();
+  setText("selectedFileName", "لم يتم اختيار أي ملفات بعد");
+  setSaveStatus("", "");
+  document.getElementById("pFeatured").checked = false;
+  document.getElementById("pActive").checked = true;
+  document.getElementById("pStock").value = "متوفر";
+  if(allCategories.length) document.getElementById("categorySelect").value = allCategories[0].name;
+  currentEditingImages = [];
+  clearPendingUploads();
+  document.getElementById("productModalTitle").textContent = "إضافة منتج";
+  document.getElementById("deleteEditingBtn").classList.add("hidden");
+  renderPreviewImages();
+}
+function editProduct(id){
+  const p = allProducts.find(x => x.id === id);
+  if(!p) return;
+  setVal("editingProductId", p.id);
+  setVal("pName", p.name);
+  setVal("pPrice", p.price);
+  setVal("pDesc", p.desc);
+  setVal("pStock", p.stock);
+  setVal("categorySelect", p.category);
+  document.getElementById("pFeatured").checked = !!p.featured;
+  document.getElementById("pActive").checked = p.active !== false;
+  currentEditingImages = [...(p.images || [])];
+  setVal("pImgUrls", "");
+  setVal("singleImageUrl", "");
+  clearPendingUploads();
+  setText("selectedFileName", "يمكنك إضافة صور جديدة أو حذف الصور الحالية من هنا");
+  document.getElementById("productModalTitle").textContent = "تعديل المنتج";
+  document.getElementById("deleteEditingBtn").classList.remove("hidden");
+  renderPreviewImages();
+  openModal("productModal");
+}
+async function deleteEditingProduct(){
+  const id = val("editingProductId");
+  if(!id) return;
+  await deleteProduct(id, true);
+}
+async function deleteProduct(id, silent){
+  const p = allProducts.find(x => x.id === id);
+  if(!p) return;
+  if(!silent && !confirm("هل تريد حذف المنتج: " + p.name + " ؟")) return;
+  await db.ref("products/" + id).remove();
+  if(!silent) alert("تم حذف المنتج");
+  closeById("productModal");
+}
+async function duplicateProduct(id){
+  const p = allProducts.find(x => x.id === id);
+  if(!p) return;
+  const copy = Object.assign({}, p, { name: p.name + " - نسخة", createdAt: Date.now(), updatedAt: Date.now() });
+  delete copy.id;
+  await db.ref("products").push(copy);
+  alert("تم نسخ المنتج");
+}
+async function toggleProductVisibility(id, nextState){
+  await db.ref("products/" + id + "/active").set(nextState);
+}
+
+function addSingleImageUrl(){
+  const input = document.getElementById("singleImageUrl");
+  const url = (input.value || "").trim();
+  if(!url){ alert("أدخل رابط الصورة أولاً"); return; }
+  currentEditingImages.push(url);
+  input.value = "";
+  renderPreviewImages();
+}
+
+function handleImageFileUpload(event){
+  const files = Array.from(event.target.files || []);
+  if(!files.length){
+    setText("selectedFileName", "لم يتم اختيار أي ملفات بعد");
+    return;
+  }
+
+  files.forEach(file => {
+    const previewUrl = URL.createObjectURL(file);
+    currentUploadFiles.push({ file, previewUrl });
+  });
+
+  setText("selectedFileName", "تم اختيار " + currentUploadFiles.length + " صورة للرفع");
+  renderPreviewImages();
+  setSaveStatus("success", "تمت إضافة الصور محليًا. سيتم رفعها إلى ImgBB عند حفظ المنتج.");
+}
+
+function renderPreviewImages(){
+  const wrap = document.getElementById("previewImages");
+  wrap.innerHTML = "";
+  const urls = getImageListFromForm();
+  const pending = getPendingPreviewList();
+  const merged = [...urls, ...pending];
+  updateImageCounter();
+
+  merged.forEach((src, index) => {
+    const div = document.createElement("div");
+    div.className = "preview-item";
+    div.innerHTML = `<img src="${escapeAttr(src)}" alt="preview" onerror="this.src='${escapeAttr(placeholderImage('صورة'))}'" />
+      <button onclick="removePreviewImage(${index})"><i class="fa-solid fa-xmark"></i></button>`;
+    wrap.appendChild(div);
+  });
+}
+function removePreviewImage(index){
+  const urls = getImageListFromForm();
+  if(index < urls.length){
+    const mergedUrls = [...urls];
+    mergedUrls.splice(index, 1);
+    currentEditingImages = mergedUrls.filter(Boolean);
+    setVal("pImgUrls", currentEditingImages.join("\n"));
+  }else{
+    const fileIndex = index - urls.length;
+    const item = currentUploadFiles[fileIndex];
+    if(item && item.previewUrl){
+      try{ URL.revokeObjectURL(item.previewUrl); }catch(e){}
+    }
+    currentUploadFiles.splice(fileIndex, 1);
+    setText("selectedFileName", currentUploadFiles.length ? ("تم اختيار " + currentUploadFiles.length + " صورة للرفع") : "لم يتم اختيار أي ملفات بعد");
+  }
+  renderPreviewImages();
+}
+
+function listenAds(){
+  db.ref("settings/ad").on("value", snap => {
+    currentAd = snap.val() || null;
+    renderAdsStrip();
+    renderAdminAds();
+  });
+}
+function renderAdminAds(){
+  const ad = currentAd || {};
+  setVal("adTextInput", ad.text || "");
+  setVal("adColorInput", ad.color || "#2563eb");
+  setVal("adSpeedInput", ad.speed || "medium");
+  const c = document.getElementById("adColorInput");
+  if(c) c.style.background = c.value;
+  previewSingleAd();
+}
+function previewSingleAd(){
+  const tempAd = {
+    enabled: document.getElementById("adsEnabledToggle").checked,
+    text: val("adTextInput"),
+    color: val("adColorInput") || "#2563eb",
+    speed: val("adSpeedInput") || "medium"
+  };
+  renderAdsStrip(tempAd);
+}
+function renderAdsStrip(adOverride){
+  const ad = adOverride || currentAd || {};
+  const wrap = document.getElementById("adsWrap");
+  const strip = document.getElementById("adsStrip");
+  const enabled = (storeSettings.adsEnabled !== false) && !!ad.enabled && !!(ad.text || "").trim();
+
+  if(!enabled){
+    wrap.classList.remove("show");
+    strip.innerHTML = "";
+    return;
+  }
+
+  wrap.classList.add("show");
+  strip.style.background = ad.color || "#2563eb";
+  const text = escapeHtml(ad.text || "");
+  const speed = escapeHtml(ad.speed || "medium");
+  strip.innerHTML = `
+    <div class="ads-label"><i class="fa-solid fa-bullhorn"></i> إعلان</div>
+    <div class="ads-marquee">
+      <div class="ads-track ${speed}">
+        <span class="ads-item-inline">${text}</span>
+        <span class="ads-item-inline">${text}</span>
+        <span class="ads-item-inline">${text}</span>
+        <span class="ads-item-inline">${text}</span>
+        <span class="ads-item-inline">${text}</span>
+        <span class="ads-item-inline">${text}</span>
+      </div>
+    </div>
+  `;
+}
+async function saveSingleAd(){
+  const enabled = document.getElementById("adsEnabledToggle").checked;
+  await db.ref("settings/store/adsEnabled").set(enabled);
+  const payload = {
+    enabled,
+    text: val("adTextInput").trim(),
+    color: val("adColorInput") || "#2563eb",
+    speed: val("adSpeedInput") || "medium",
+    updatedAt: Date.now()
+  };
+  await db.ref("settings/ad").set(payload);
+  alert("تم حفظ الإعلان");
+}
+async function deleteSingleAd(){
+  if(!confirm("هل تريد حذف الإعلان الحالي؟")) return;
+  await db.ref("settings/ad").remove();
+  setVal("adTextInput", "");
+  alert("تم حذف الإعلان");
+}
+
+async function saveMaintenanceSettings(){
+  await db.ref("settings/store").update({
+    maintenanceMode: document.getElementById("maintenanceToggle").checked,
+    maintenanceMessage: val("maintenanceMessageInput").trim() || defaultSettings.maintenanceMessage
+  });
+  alert("تم حفظ إعدادات الصيانة");
+}
+
+function updateStatsCards(){
+  setText("statProducts", allProducts.length);
+  setText("statCategories", allCategories.length);
+  setText("statVisitors", visitorsCount);
+  setText("statFeatured", allProducts.filter(p => p.featured).length);
+}
+
+function openZoom(images){
+  const list = Array.isArray(images) && images.length ? images : [placeholderImage("صورة")];
+  const gal = document.getElementById("zGal");
+  gal.innerHTML = list.map(src => `<img class="z-img" src="${escapeAttr(src)}" alt="zoom" />`).join("");
+  document.getElementById("zoomOverlay").classList.add("show");
+  if(!modalStack.length || modalStack[modalStack.length - 1] !== "zoom"){
+    modalStack.push("zoom");
+    history.pushState({ modal: "zoom" }, "", location.href);
+  }
+  updateBackChip();
+}
+function closeZoom(){
+  document.getElementById("zoomOverlay").classList.remove("show");
+  modalStack = modalStack.filter(item => item !== "zoom");
+  updateBackChip();
+}
+
+function shareProduct(id){
+  const p = allProducts.find(x => x.id === id);
+  if(!p) return;
+  const txt = `${p.name}\n${formatPrice(p.price)}\n${p.desc || ""}`;
+  if(navigator.share){
+    navigator.share({ title: p.name, text: txt }).catch(() => {});
+  }else{
+    navigator.clipboard.writeText(txt).then(() => alert("تم نسخ تفاصيل المنتج"));
+  }
+}
+
+function switchAdminTab(tabId, btn){
+  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+  btn.classList.add("active");
+}
+
+function openModal(id){
+  const el = document.getElementById(id);
+  if(el){
+    el.classList.add("show");
+    if(!modalStack.length || modalStack[modalStack.length - 1] !== id){
+      modalStack.push(id);
+      history.pushState({ modal: id }, "", location.href);
+    }
+    updateBackChip();
+  }
+}
+function closeById(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.remove("show");
+  modalStack = modalStack.filter(item => item !== id);
+  updateBackChip();
+}
+function closeModal(event, id){
+  if(event.target.id === id) closeById(id);
+}
+function goHome(){
+  selectedCategory = "الكل";
+  setVal("searchInput", "");
+  highlightActiveCategory();
+  renderProducts();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+  closeById("aboutModal");
+}
+
+function initKeyboardHelpers(){
+  document.addEventListener("focusin", event => {
+    const target = event.target;
+    if(!target || !target.matches("input, textarea, select")) return;
+    const modalCard = target.closest(".modal-card");
+    setTimeout(() => {
+      if(modalCard){
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 250);
+  });
+  if(window.visualViewport){
+    window.visualViewport.addEventListener("resize", () => {
+      const active = document.activeElement;
+      if(active && active.matches("input, textarea")){
+        const modalCard = active.closest(".modal-card");
+        if(modalCard){
+          setTimeout(() => active.scrollIntoView({ behavior: "smooth", block: "center" }), 120);
+        }
+      }
+    });
+  }
+}
+function initBackHandler(){
+  history.replaceState({root:true}, "", location.href);
+  const footerVersion = document.getElementById("footerVersion");
+  let hiddenTapCount = 0;
+  if(footerVersion){
+    footerVersion.addEventListener("click", () => {
+      hiddenTapCount++;
+      if(hiddenTapCount >= 6){
+        hiddenTapCount = 0;
+        if(!isAdmin) document.getElementById("brandTapArea").click();
+      }
+      setTimeout(() => hiddenTapCount = 0, 1600);
+    });
+  }
+  window.addEventListener("popstate", () => {
+    if(document.getElementById("zoomOverlay").classList.contains("show")){
+      closeZoom();
+      history.pushState({root:true}, "", location.href);
+      return;
+    }
+    if(modalStack.length){
+      const last = modalStack[modalStack.length - 1];
+      closeById(last);
+      history.pushState({root:true}, "", location.href);
+      return;
+    }
+  });
+  updateBackChip();
+}
+function updateBackChip(){
+  const chip = document.getElementById("backChip");
+  if(!chip) return;
+  const show = modalStack.length || document.getElementById("zoomOverlay").classList.contains("show");
+  chip.classList.toggle("show", !!show);
+}
+function handleBackAction(){
+  if(document.getElementById("zoomOverlay").classList.contains("show")){
+    closeZoom();
+    return;
+  }
+  if(modalStack.length){
+    closeById(modalStack[modalStack.length - 1]);
+  }
+}
+function formatDisplayText(value){
+  const text = String(value || "").trim();
+  if(!text) return "";
+  const noScript = text.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "");
+  const hasHtml = /<br\s*\/?>|<span|<b>|<strong>|<i>|<em>/i.test(noScript);
+  return hasHtml ? noScript : escapeHtml(noScript).replace(/\n/g, "<br>");
+}
+function setText(id, value){
+  const el = document.getElementById(id);
+  if(el) el.textContent = value ?? "";
+}
+function setVal(id, value){
+  const el = document.getElementById(id);
+  if(el) el.value = value ?? "";
+}
+function val(id){
+  const el = document.getElementById(id);
+  return el ? el.value : "";
+}
+function cleanupNumber(num){
+  return String(num || "").replace(/[^\d]/g, "");
+}
+function formatPrice(price){
+  try{
+    return Number(price || 0).toLocaleString("ar-IQ") + " د.ع";
+  }catch{
+    return (price || 0) + " د.ع";
+  }
+}
+function escapeHtml(str){
+  return String(str ?? "").replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+function escapeAttr(str){
+  return escapeHtml(str).replace(/`/g, "&#96;");
+}
+function jsEscape(str){
+  return String(str ?? "").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+}
+function escapeJsString(str){
+  return String(str ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\"/g, "&quot;");
+}
+function setSaveStatus(type, message){
+  const box = document.getElementById("saveStatusBox");
+  if(!box) return;
+  box.className = "status-box";
+  if(!type || !message){
+    box.textContent = "";
+    return;
+  }
+  box.classList.add("show", type);
+  box.textContent = message;
+}
+
+function placeholderImage(name){
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="700" height="500">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1d4ed8"/>
+          <stop offset="100%" stop-color="#0ea5e9"/>
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g)"/>
+      <text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal, Arial" font-size="38" fill="#ffffff">MS Store</text>
+      <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal, Arial" font-size="24" fill="#e0f2fe">${escapeHtml(name || "صورة")}</text>
+    </svg>`
+  );
+}
+</script>
+</body>
+</html>
