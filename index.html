@@ -64,15 +64,19 @@
     .hero h2,.hero p{position:relative;z-index:1}
     .hero h2{margin:0 0 6px;font-size:26px;font-weight:900;line-height:1.5}
     .hero p{margin:0;font-size:15px;line-height:1.9;opacity:.97;font-weight:500}
-    .section-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 0;gap:10px;flex-wrap:wrap}
+    .section-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 0;gap:10px;flex-wrap:wrap;position:sticky;z-index:1750;background:rgba(245,247,251,.96);backdrop-filter:blur(10px)}
+    body.dark-mode .section-bar{background:rgba(11,18,32,.96)}
     .section-title{font-size:15px;font-weight:900}
     .section-note{color:var(--muted);font-size:12px}
-    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}
+    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none;position:sticky;z-index:1740;background:rgba(245,247,251,.96);backdrop-filter:blur(10px)}
+    body.dark-mode .category-strip{background:rgba(11,18,32,.96)}
     .category-strip::-webkit-scrollbar{display:none}
     .cat-btn{border:none;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 16px;white-space:nowrap;font-size:13px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
     .cat-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-    .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center}
+    .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center;position:sticky;z-index:1730;background:rgba(245,247,251,.96);backdrop-filter:blur(10px)}
+    body.dark-mode .filters{background:rgba(11,18,32,.96)}
     .filters select{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;outline:none;box-shadow:var(--shadow)}
+    .section-bar::after,.category-strip::after,.filters::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:1px;background:rgba(148,163,184,.12)}
 
     .products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 12px 20px;align-items:start}
     .card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 8px 18px rgba(0,0,0,0.05);display:flex;flex-direction:column;position:relative;height:auto}
@@ -96,7 +100,8 @@
     .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
     .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
-    .p-desc{font-size:13.5px;color:var(--muted);margin:0 0 6px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;font-weight:500;min-height:49px}
+    .p-desc{font-size:13.5px;color:var(--muted);margin:0 0 6px;line-height:1.8;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer;font-weight:500;min-height:49px;transition:.2s ease}
+    .p-desc.expanded{display:block;-webkit-line-clamp:unset;overflow:visible;min-height:auto;color:var(--text);font-size:15px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
     .p-desc.short-desc{font-size:17px;font-weight:900;color:var(--text);line-height:1.55}
     .p-desc.long-desc::after{content:"";position:absolute}
     .meta-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
@@ -604,6 +609,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initKeyboardHelpers();
   initBackHandler();
   startSplash();
+  updateStickyLayout();
 });
 
 function startSplash(){
@@ -936,6 +942,7 @@ function debouncedRenderProducts(){
   searchDebounce = setTimeout(renderProducts, 180);
 }
 function renderProducts(){
+  updateStickyLayout();
   const container = document.getElementById("productsContainer");
   const empty = document.getElementById("emptyState");
   const q = (document.getElementById("searchInput").value || "").trim().toLowerCase();
@@ -1094,7 +1101,7 @@ function buildProductCard(p){
     </div>
     <div class="product-info">
       <h3 class="p-name" onclick="openProductDetails('${p.id}')">${escapeHtml(p.name)}</h3>
-      <p class="p-desc ${descClass}" onclick="openDescriptionModal('${escapeJsString(p.name)}','${escapeJsString(p.desc || "  ")}')">${escapeHtml(getShortDescription(p.desc || '  '))}</p>
+      <p class="p-desc ${descClass}" data-short="${escapeAttr(getShortDescription(p.desc || '  '))}" data-full="${escapeAttr(p.desc || '  ')}" onclick="toggleDescription(this)">${escapeHtml(getShortDescription(p.desc || '  '))}</p>
       <div class="meta-row">
         <span class="stock ${stockClass}">${escapeHtml(p.stock)}</span>
         <span class="section-note">${escapeHtml(p.category)}</span>
@@ -1359,12 +1366,7 @@ async function uploadImagesToImgbb(files){
 
 function getImageListFromForm(){
   const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
-  const merged = [...currentEditingImages, ...urlsFromTextarea];
-  const unique = [];
-  merged.forEach(img => {
-    if(img && !unique.includes(img)) unique.push(img);
-  });
-  return unique;
+  return uniquePreserve([...currentEditingImages, ...urlsFromTextarea]);
 }
 
 function clearPendingUploads(){
@@ -1412,7 +1414,7 @@ function editProduct(id){
   document.getElementById("pFeatured").checked = !!p.featured;
   document.getElementById("pActive").checked = p.active !== false;
   currentEditingImages = [...(p.images || [])];
-  setVal("pImgUrls", "");
+  setVal("pImgUrls", currentEditingImages.join("\n"));
   setVal("singleImageUrl", "");
   clearPendingUploads();
   setText("selectedFileName", "        ");
@@ -1458,7 +1460,7 @@ function addSingleImageUrl(){
 function handleImageFileUpload(event){
   const files = Array.from(event.target.files || []);
   if(!files.length){
-    setText("selectedFileName", "     ");
+    setText("selectedFileName", "     ");
     return;
   }
 
@@ -1467,9 +1469,10 @@ function handleImageFileUpload(event){
     currentUploadFiles.push({ file, previewUrl });
   });
 
-  setText("selectedFileName", "  " + currentUploadFiles.length + "  ");
+  setText("selectedFileName", "  " + currentUploadFiles.length + " /");
   renderPreviewImages();
-  setSaveStatus("success", "      ImgBB  .");
+  event.target.value = "";
+  setSaveStatus("success", "  .    ImgBB  .");
 }
 
 function renderPreviewImages(){
@@ -1491,11 +1494,10 @@ function renderPreviewImages(){
 function removePreviewImage(index){
   const urls = getImageListFromForm();
   if(index < urls.length){
-    const mergedUrls = [...urls];
-    mergedUrls.splice(index, 1);
-    currentEditingImages = mergedUrls.filter(v => /^https?:/i.test(v) || v.startsWith("data:"));
-    setVal("pImgUrls", currentEditingImages.filter(v => /^https?:/i.test(v)).join("\n"));
-    currentEditingImages = currentEditingImages.filter(v => v.startsWith("data:"));
+    const removed = urls[index];
+    currentEditingImages = removeFirstMatch(currentEditingImages, removed);
+    const manualUrls = val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
+    setVal("pImgUrls", removeFirstMatch(manualUrls, removed).join("\n"));
   }else{
     const fileIndex = index - urls.length;
     const item = currentUploadFiles[fileIndex];
@@ -1503,7 +1505,7 @@ function removePreviewImage(index){
       try{ URL.revokeObjectURL(item.previewUrl); }catch(e){}
     }
     currentUploadFiles.splice(fileIndex, 1);
-    setText("selectedFileName", currentUploadFiles.length ? ("  " + currentUploadFiles.length + "  ") : "     ");
+    setText("selectedFileName", currentUploadFiles.length ? ("  " + currentUploadFiles.length + " /") : "     ");
   }
   renderPreviewImages();
 }
@@ -1542,6 +1544,7 @@ function renderAdsStrip(adOverride){
   if(!enabled){
     wrap.classList.remove("show");
     strip.innerHTML = "";
+    updateStickyLayout();
     return;
   }
 
@@ -1562,7 +1565,9 @@ function renderAdsStrip(adOverride){
       </div>
     </div>
   `;
+  updateStickyLayout();
 }
+
 async function saveSingleAd(){
   const enabled = document.getElementById("adsEnabledToggle").checked;
   await db.ref("settings/store/adsEnabled").set(enabled);
@@ -1685,6 +1690,8 @@ function initKeyboardHelpers(){
     });
   }
 }
+window.addEventListener("resize", updateStickyLayout);
+
 function initBackHandler(){
   history.replaceState({root:true}, "", location.href);
   const footerVersion = document.getElementById("footerVersion");
@@ -1770,6 +1777,42 @@ function jsEscape(str){
 function escapeJsString(str){
   return String(str ?? "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
 }
+function uniquePreserve(list){
+  const out = [];
+  list.forEach(item => {
+    const value = String(item || "").trim();
+    if(value && !out.includes(value)) out.push(value);
+  });
+  return out;
+}
+function removeFirstMatch(list, value){
+  const out = [...(list || [])];
+  const idx = out.indexOf(value);
+  if(idx >= 0) out.splice(idx, 1);
+  return out;
+}
+function updateStickyLayout(){
+  const header = document.querySelector('.header');
+  const ads = document.getElementById('adsWrap');
+  const sectionBar = document.querySelector('.section-bar');
+  const categoryStrip = document.getElementById('categoryFilter');
+  const filters = document.querySelector('.filters');
+  if(!header || !sectionBar || !categoryStrip || !filters) return;
+  const headerH = header.offsetHeight || 0;
+  const adsH = ads && ads.classList.contains('show') ? (ads.offsetHeight || 0) + 8 : 0;
+  sectionBar.style.top = `${headerH + adsH}px`;
+  categoryStrip.style.top = `${headerH + adsH + sectionBar.offsetHeight}px`;
+  filters.style.top = `${headerH + adsH + sectionBar.offsetHeight + categoryStrip.offsetHeight}px`;
+}
+function toggleDescription(el){
+  if(!el) return;
+  const expanded = el.classList.toggle('expanded');
+  const shortText = el.dataset.short || el.textContent || '';
+  const fullText = el.dataset.full || shortText;
+  el.textContent = expanded ? fullText : shortText;
+  updateStickyLayout();
+}
+
 function setSaveStatus(type, message){
   const box = document.getElementById("saveStatusBox");
   if(!box) return;
