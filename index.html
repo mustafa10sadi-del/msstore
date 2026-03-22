@@ -64,20 +64,20 @@
     .hero h2,.hero p{position:relative;z-index:1}
     .hero h2{margin:0 0 6px;font-size:26px;font-weight:900;line-height:1.5}
     .hero p{margin:0;font-size:15px;line-height:1.9;opacity:.97;font-weight:500}
-    .section-bar{display:flex;align-items:center;justify-content:space-between;padding:4px 12px 0;gap:10px;flex-wrap:wrap}
+    .section-bar{display:none}
     .section-title{font-size:15px;font-weight:900}
     .section-note{color:var(--muted);font-size:12px}
-    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:12px;scrollbar-width:none}
+    .category-strip{display:flex;gap:8px;overflow-x:auto;padding:10px 14px 12px;scrollbar-width:none;scroll-padding-inline:14px}
     .category-strip::-webkit-scrollbar{display:none}
     .cat-btn{border:none;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:10px 16px;white-space:nowrap;font-size:13px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
     .cat-btn.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent}
-    .filters{display:flex;gap:10px;padding:0 12px 12px;align-items:center}
+    .filters{display:flex;gap:10px;padding:0 14px 12px;align-items:center}
     .filters select{flex:1;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:14px;padding:12px;outline:none;box-shadow:var(--shadow)}
-    .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px}
+    .browse-sticky{position:sticky;top:72px;z-index:1850;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.98));padding-top:6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
     body.dark-mode .browse-sticky{background:linear-gradient(180deg,var(--bg),rgba(11,18,32,.98))}
     .browse-sticky .section-bar{padding-top:0}
     .browse-sticky .section-bar,.browse-sticky .category-strip,.browse-sticky .filters,.browse-sticky .ads-wrap{position:relative;top:auto}
-    .browse-sticky .ads-wrap{margin-top:0;margin-bottom:10px;border-radius:16px}
+    .browse-sticky .ads-wrap{margin:0 14px 8px;border-radius:16px}
     .browse-sticky .category-strip{padding-top:8px;padding-bottom:10px}
     .browse-sticky .filters{padding-bottom:10px}
     .products{padding-top:6px}
@@ -105,7 +105,7 @@
     .gallery-thumb.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(37,99,235,.12)}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1}
     .p-name{font-size:15px;font-weight:900;line-height:1.45;margin:0 0 3px}
-    .p-desc{font-size:15px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:600;min-height:58px;display:block;max-height:3.9em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px}
+    .p-desc{font-size:14px;color:var(--muted);margin:0 0 10px;line-height:1.95;overflow:hidden;cursor:pointer;font-weight:600;min-height:58px;display:block;max-height:4.2em;transition:max-height .25s ease,color .2s ease,background .2s ease,padding .2s ease;border-radius:14px;background:rgba(37,99,235,.04);padding:10px 12px;border:1px solid rgba(37,99,235,.08);overflow-wrap:anywhere;word-break:break-word;white-space:pre-wrap}
     .p-desc.short-desc{font-size:17px;font-weight:900;color:var(--text);line-height:1.7}
     .p-desc.expanded{max-height:260px;background:var(--bg);padding:10px 12px;color:var(--text);overflow:auto}
     .p-desc.has-more::after{content:" عرض المزيد";font-size:12px;font-weight:900;color:var(--accent);margin-right:6px}
@@ -115,10 +115,10 @@
     .stock.in{background:rgba(22,163,74,.12);color:var(--success)}
     .stock.out{background:rgba(220,38,38,.12);color:var(--danger)}
     .price-tag{color:var(--success);font-size:18px;font-weight:900;margin-bottom:6px}
-    .card-actions{margin-top:auto;display:flex;gap:8px;align-items:center}
+    .card-actions{margin-top:auto;display:grid;grid-template-columns:56px 1fr;gap:8px;align-items:center}
     .btn{border:none;outline:none;cursor:pointer;border-radius:12px;padding:11px 14px;font-weight:900;font-size:13px;transition:.2s}
-    .btn-order{flex:1;background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:48px;text-decoration:none;white-space:nowrap}
-    .btn-share{width:46px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 46px;min-height:46px}
+    .btn-order{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;display:inline-flex;align-items:center;justify-content:center;min-height:52px;text-decoration:none;white-space:nowrap;font-size:16px;padding-inline:10px}
+    .btn-share{width:56px;background:var(--bg);color:var(--text);border:1px solid var(--border);flex:0 0 56px;min-height:52px}
     .empty-state{margin:20px 12px;background:var(--card);border:1px dashed var(--border);border-radius:22px;padding:35px 18px;text-align:center;color:var(--muted);box-shadow:var(--shadow)}
     .footer{background:var(--card);border-top:1px solid var(--border);margin-top:10px;padding:20px 16px 28px;text-align:center}
     .footer .title{font-size:18px;font-weight:900;margin-bottom:8px}
@@ -580,12 +580,14 @@ db.ref(".info/connected").on("value", snap => {
 });
 
 let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
-let allProducts = [], allCategories = [], storeSettings = {}, visitorsCount = 0, selectedCategory = "";
+let allProducts = [], allCategories = [], storeSettings = {}, visitorsCount = 0, selectedCategory = ALL_CATEGORY;
 let searchDebounce = null;
 let currentEditingImages = [];
 let currentUploadFiles = [];
 let currentAd = null;
 let modalStack = [];
+const ALL_CATEGORY = 'الكل';
+const DEFAULT_NO_DESC = 'لا يوجد وصف';
 
 const defaultSettings = {
   storeName: " MS",
@@ -827,9 +829,13 @@ async function seedDefaultCategories(){
 function renderCategories(){
   const wrap = document.getElementById("categoryFilter");
   wrap.innerHTML = "";
-  wrap.appendChild(createCatButton(""));
+  wrap.appendChild(createCatButton(ALL_CATEGORY));
   allCategories.forEach(cat => wrap.appendChild(createCatButton(cat.name)));
   highlightActiveCategory();
+  requestAnimationFrame(() => {
+    const active = wrap.querySelector('.cat-btn.active');
+    if(active) active.scrollIntoView({inline:'nearest', block:'nearest'});
+  });
 }
 function createCatButton(name){
   const btn = document.createElement("button");
@@ -924,6 +930,22 @@ function listenProducts(){
   });
 }
 
+function sanitizeImageUrl(url){
+  const clean = String(url || '').trim();
+  if(!clean) return '';
+  if(/^file:\/\//i.test(clean)) return '';
+  if(/^content:\/\//i.test(clean)) return '';
+  return clean;
+}
+function sanitizeImageList(list){
+  const out = [];
+  (Array.isArray(list) ? list : []).forEach(item => {
+    const clean = sanitizeImageUrl(item);
+    if(clean && !out.includes(clean)) out.push(clean);
+  });
+  return out;
+}
+
 function normalizeProduct(id, p){
   let images = [];
   if(Array.isArray(p.images)) images = p.images.filter(Boolean);
@@ -931,13 +953,14 @@ function normalizeProduct(id, p){
   else if(Array.isArray(p.imgs)) images = p.imgs.filter(Boolean);
   else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
   else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
+  images = sanitizeImageList(images);
   return {
     id,
-    name: p.name || "  ",
+    name: p.name || "منتج بدون اسم",
     price: Number(p.price || 0),
     desc: p.desc || p.description || "",
-    category: p.category || "",
-    stock: p.stock || "",
+    category: p.category || "عام",
+    stock: p.stock || "متوفر",
     featured: !!p.featured,
     active: p.active !== false,
     createdAt: p.createdAt || 0,
@@ -956,7 +979,7 @@ function renderProducts(){
   const sort = document.getElementById("sortSelect").value;
 
   let items = allProducts.filter(p => p.active !== false);
-  if(selectedCategory !== "") items = items.filter(p => p.category === selectedCategory);
+  if(selectedCategory !== ALL_CATEGORY) items = items.filter(p => p.category === selectedCategory);
   if(q) items = items.filter(p =>
     (p.name || "").toLowerCase().includes(q) ||
     (p.desc || "").toLowerCase().includes(q) ||
@@ -975,7 +998,7 @@ function renderProducts(){
     items.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
   }
 
-  document.getElementById("resultCountText").textContent = items.length ? `  : ${items.length}` : "  ";
+  document.getElementById("resultCountText").textContent = "";
 
   if(items.length === 0){
     container.innerHTML = "";
@@ -998,8 +1021,8 @@ function getDescriptionClass(desc){
 }
 function getShortDescription(desc){
   const clean = String(desc || "").trim();
-  if(!clean) return "  ";
-  return clean.length > 90 ? clean.slice(0, 90) + "..." : clean;
+  if(!clean) return DEFAULT_NO_DESC;
+  return clean.length > 120 ? clean.slice(0, 120) + "..." : clean;
 }
 function buildOrderMessage(p){
   const template = storeSettings.orderMessageTemplate || defaultSettings.orderMessageTemplate;
@@ -1007,7 +1030,7 @@ function buildOrderMessage(p){
     .replaceAll("{{name}}", p.name || "")
     .replaceAll("{{price}}", formatPrice(p.price))
     .replaceAll("{{category}}", p.category || "")
-    .replaceAll("{{desc}}", p.desc || "  ");
+    .replaceAll("{{desc}}", p.desc || DEFAULT_NO_DESC);
 }
 
 function initAutoGalleries(){
@@ -1063,7 +1086,7 @@ function changeGalleryImage(btn, direction){
 function toggleCardDescription(el){
   if(!el) return;
   const isExpanded = el.classList.toggle('expanded');
-  el.textContent = isExpanded ? (el.dataset.full || 'لا يوجد وصف') : (el.dataset.short || 'لا يوجد وصف');
+  el.textContent = isExpanded ? (el.dataset.full || DEFAULT_NO_DESC) : (el.dataset.short || DEFAULT_NO_DESC);
 }
 function openProductDetails(productId){
   const p = allProducts.find(x => x.id === productId);
@@ -1091,9 +1114,9 @@ function buildProductCard(p){
   const featuredBadge = p.featured ? '<span class="badge featured">مميز</span>' : '';
   const stockClass = p.stock === "متوفر" ? "in" : "out";
   const descClass = getDescriptionClass(p.desc || "");
-  const shortDesc = escapeHtml(getShortDescription(p.desc || 'لا يوجد وصف'));
-  const fullDesc = escapeHtml(String(p.desc || 'لا يوجد وصف'));
-  const hasMoreClass = String(p.desc || '').trim().length > 90 ? 'has-more' : '';
+  const shortDesc = escapeHtml(getShortDescription(p.desc || DEFAULT_NO_DESC));
+  const fullDesc = escapeHtml(String(p.desc || DEFAULT_NO_DESC));
+  const hasMoreClass = String(p.desc || '').trim().length > 120 ? 'has-more' : '';
   const thumbs = images.map((img, index) =>
     `<img class="gallery-thumb ${index === 0 ? "active" : ""}" src="${escapeAttr(img)}" alt="${escapeAttr(p.name)}" onclick="switchCardImage(this,'${escapeJsString(img)}','${escapeJsString(p.name)}')" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />`
   ).join("");
@@ -1118,8 +1141,8 @@ function buildProductCard(p){
       </div>
       <div class="price-tag">${formatPrice(p.price)}</div>
       <div class="card-actions">
-        <a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a>
         <button class="btn btn-share" onclick="shareProduct('${p.id}'); event.stopPropagation();"><i class="fa-solid fa-share-nodes"></i></button>
+        <a class="btn btn-order" href="${orderLink}" target="_blank">اطلب الآن</a>
       </div>
     </div>
   `;
@@ -1194,6 +1217,7 @@ async function saveProduct(){
     try{
       images = typeof getImageListFromForm === "function" ? getImageListFromForm() : [];
       if(!Array.isArray(images)) images = [];
+      images = sanitizeImageList(images);
     }catch(imgErr){
       console.error("getImageListFromForm error:", imgErr);
       images = [];
@@ -1208,7 +1232,7 @@ async function saveProduct(){
     if(currentUploadFiles.length){
       setSaveStatus("success", "    ImgBB...");
       const uploadedUrls = await uploadImagesToImgbb(currentUploadFiles);
-      images = [...images, ...uploadedUrls];
+      images = sanitizeImageList([...images, ...uploadedUrls]);
     }
 
     const payload = {
@@ -1375,13 +1399,10 @@ async function uploadImagesToImgbb(files){
 }
 
 function getImageListFromForm(){
-  const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
-  const merged = [...currentEditingImages, ...urlsFromTextarea];
-  const unique = [];
-  merged.forEach(img => {
-    if(img && !unique.includes(img)) unique.push(img);
-  });
-  return unique;
+  const urlsFromTextarea = val("pImgUrls").split(/\n+/).map(v => sanitizeImageUrl(v)).filter(Boolean);
+  const merged = sanitizeImageList([...currentEditingImages, ...urlsFromTextarea]);
+  currentEditingImages = [...merged];
+  return merged;
 }
 
 function clearPendingUploads(){
@@ -1428,8 +1449,8 @@ function editProduct(id){
   setVal("categorySelect", p.category);
   document.getElementById("pFeatured").checked = !!p.featured;
   document.getElementById("pActive").checked = p.active !== false;
-  currentEditingImages = [...(p.images || [])];
-  setVal("pImgUrls", "");
+  currentEditingImages = sanitizeImageList([...(p.images || [])]);
+  setVal("pImgUrls", currentEditingImages.join("\n"));
   setVal("singleImageUrl", "");
   clearPendingUploads();
   setText("selectedFileName", "        ");
@@ -1465,10 +1486,11 @@ async function toggleProductVisibility(id, nextState){
 
 function addSingleImageUrl(){
   const input = document.getElementById("singleImageUrl");
-  const url = (input.value || "").trim();
-  if(!url){ alert("   "); return; }
-  currentEditingImages.push(url);
+  const url = sanitizeImageUrl((input.value || "").trim());
+  if(!url){ alert("أدخل رابط صورة صحيح"); return; }
+  if(!currentEditingImages.includes(url)) currentEditingImages.push(url);
   input.value = "";
+  setVal("pImgUrls", currentEditingImages.join("\n"));
   renderPreviewImages();
 }
 
@@ -1510,7 +1532,7 @@ function removePreviewImage(index){
   if(index < urls.length){
     const mergedUrls = [...urls];
     mergedUrls.splice(index, 1);
-    currentEditingImages = mergedUrls.filter(Boolean);
+    currentEditingImages = sanitizeImageList(mergedUrls);
     setVal("pImgUrls", currentEditingImages.join("\n"));
   }else{
     const fileIndex = index - urls.length;
