@@ -40,7 +40,7 @@ function toggleDescExpand(el){
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
     :root{
-      --bg:#f5f7fb;--card:#ffffff;--text:#16213e;--muted:#6b7280;--accent:#2563eb;--accent2:#0ea5e9;
+      --bg:#f4f7fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--accent:#2563eb;--accent2:#06b6d4;
       --success:#16a34a;--danger:#dc2626;--warning:#f59e0b;--border:#e5e7eb;
       --shadow:0 10px 25px rgba(0,0,0,0.07);
     }
@@ -100,11 +100,11 @@ function toggleDescExpand(el){
     .ads-wrap.show{display:block !important;visibility:visible !important}
     .ads-strip{min-height:auto;display:flex;align-items:center;gap:8px;padding:8px 10px;font-size:12px;font-weight:800;line-height:1.5;background:#2563eb;color:#fff}
     .ads-label{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);flex-shrink:0;margin-left:4px}
-    .ads-marquee{flex:1;white-space:normal;overflow:hidden;direction:rtl}
-    .ads-track{display:block;font-size:12px;font-weight:800;animation:none}
-    .ads-track.fast{}.ads-track.medium{}.ads-track.slow{}
+    .ads-marquee{flex:1;overflow:hidden;direction:rtl;position:relative;white-space:nowrap}
+    .ads-track{display:inline-flex;align-items:center;gap:40px;white-space:nowrap;will-change:transform;animation:adsTicker 18s linear infinite}
+    .ads-track.fast{animation-duration:10s}.ads-track.medium{animation-duration:16s}.ads-track.slow{animation-duration:24s}
     .ads-item-inline{display:inline;direction:rtl;unicode-bidi:plaintext}
-    @keyframes adsTicker{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+    @keyframes adsTicker{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}100%{transform:translateX(0)}}
 
     .section-bar{display:flex;align-items:center;justify-content:space-between;padding:2px 12px 0;gap:10px;flex-wrap:wrap;background:var(--bg)}
     .section-title{font-size:12px;font-weight:900}
@@ -1093,6 +1093,168 @@ body.dark-mode .footer{
   margin-top:0 !important;
 }
 
+
+/* Auto size for store logo */
+#storeLogo{
+  width:auto !important;
+  height:auto !important;
+  max-width:100% !important;
+  object-fit:contain !important;
+}
+
+
+/* natural logo sizing inside badge */
+.brand-badge img,
+#headerLogoBox img,
+#splashLogoBox img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:cover !important;
+}
+
+
+/* prevent background page scroll while modals/admin are open */
+body.modal-open{
+  overflow:hidden !important;
+  height:100vh !important;
+}
+
+
+/* compact upload UI */
+.hidden-file-input{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.upload-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.upload-pick-btn{min-width:120px}
+.upload-status{font-size:12px;color:var(--muted);font-weight:700}
+
+.preview-images{
+  display:flex !important;
+  gap:8px !important;
+  margin-top:10px !important;
+  overflow-x:auto !important;
+  padding-bottom:4px !important;
+  scrollbar-width:none !important;
+}
+.preview-images::-webkit-scrollbar{display:none}
+.preview-item{
+  position:relative;
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+  width:72px !important;
+  min-width:72px !important;
+  height:72px !important;
+  box-shadow:var(--shadow);
+}
+.preview-item img{width:100%;height:100%;object-fit:cover}
+.preview-item button{
+  position:absolute;top:4px;left:4px;border:none;width:22px;height:22px;border-radius:999px;
+  background:rgba(220,38,38,.96);color:#fff;cursor:pointer;font-size:11px
+}
+
+/* better mobile keyboard behavior in modals */
+body.keyboard-open .modal{align-items:flex-start;padding-top:8px;padding-bottom:8px}
+body.keyboard-open .modal-card{
+  max-height:calc(var(--vvh, 100vh) - 16px) !important;
+  padding-bottom:180px !important;
+}
+.modal-card input,.modal-card textarea,.modal-card select{
+  scroll-margin-bottom:180px;
+}
+
+
+/* tighter modal with keyboard */
+body.keyboard-open .modal{
+  align-items:flex-start !important;
+  padding:6px !important;
+}
+body.keyboard-open .modal-card{
+  max-height:calc(var(--vvh, 100vh) - 8px) !important;
+  padding-bottom:24px !important;
+  margin-bottom:0 !important;
+}
+.modal-card{
+  overscroll-behavior:contain;
+}
+
+
+/* show full product image without cropping */
+.gallery-wrapper{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:#fff !important;
+  overflow:hidden !important;
+}
+.gallery-img{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain !important;
+  background:#fff !important;
+}
+
+
+/* ===== small premium visual refresh ===== */
+.header{
+  box-shadow:0 8px 20px rgba(15,23,42,.06);
+}
+body.dark-mode .header{
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+}
+.brand-badge{
+  box-shadow:0 12px 26px rgba(37,99,235,.20);
+}
+.icon-btn{
+  border-radius:14px !important;
+  box-shadow:0 8px 18px rgba(15,23,42,.08) !important;
+}
+body.dark-mode .icon-btn{
+  box-shadow:0 8px 18px rgba(0,0,0,.20) !important;
+}
+.card{
+  border-radius:22px !important;
+  box-shadow:0 12px 28px rgba(15,23,42,.08) !important;
+}
+body.dark-mode .card{
+  box-shadow:0 12px 28px rgba(0,0,0,.24) !important;
+}
+.btn-order{
+  box-shadow:0 8px 18px rgba(34,197,94,.18) !important;
+}
+
+/* settings modal */
+.settings-mini-card{
+  max-width:420px !important;
+}
+.settings-tile{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px;
+  border:1px solid var(--border);
+  background:var(--bg);
+  border-radius:18px;
+  margin-bottom:12px;
+}
+.settings-label{
+  font-size:14px;
+  font-weight:900;
+}
+.settings-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+.settings-action-btn{
+  min-width:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border-radius:14px !important;
+}
+
 </style>
 </head>
 <body>
@@ -1113,7 +1275,7 @@ body.dark-mode .footer{
       <div id="maintenanceWrench" class="maint-wrench" title="اضغط عدة مرات للدخول للإدارة"><i class="fa-solid fa-screwdriver-wrench"></i></div>
       <div class="maint-title">المتجر تحت الصيانة</div>
       <div class="maint-text" id="maintenanceText">نقوم حاليًا ببعض التحسينات داخل المتجر، يرجى العودة لاحقًا.</div>
-      <div class="maint-note">للدخول إلى الإدارة: اضغط 10 ضغطات على السبانة</div>
+      <div class="maint-note">للدخول إلى الإدارة: اضغط 8 ضغطات على السبانة</div>
     </div>
   </div>
   <div id="topFixedShell" class="top-fixed-shell">
@@ -1131,7 +1293,7 @@ body.dark-mode .footer{
       </div>
       <div class="top-actions">
         <button class="icon-btn" onclick="openModal('aboutModal')" title="حول المتجر"><i class="fa-solid fa-circle-info"></i></button>
-        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><span id="themeIcon" style="font-size:18px;line-height:1">🌙</span></button>
+        <button class="icon-btn" id="settingsBtn" onclick="openModal('uiSettingsModal')" title="الإعدادات"><i class="fa-solid fa-sliders"></i></button>
       </div>
     </div>
     <div class="search-sort-row">
@@ -1256,7 +1418,7 @@ body.dark-mode .footer{
         <div class="notice">من هنا تقدر تشغل أو توقف الإعلان، وتكتب النص، وتتحكم باللون والسرعة.</div>
         <div class="ad-toggle-box">
           <span>تشغيل الإعلان</span>
-          <input type="checkbox" id="adsEnabledToggle" class="toggle-switch" onchange="saveSingleAd()" />
+          <input type="checkbox" id="adsEnabledToggle" class="toggle-switch" />
         </div>
         <div class="field">
           <label>نص الإعلان</label>
@@ -1266,6 +1428,14 @@ body.dark-mode .footer{
           <div class="field">
             <label>لون الإعلان</label>
             <input type="color" id="adColorInput" style="background:#2563eb;" value="#2563eb" oninput="previewSingleAd(); this.style.background = this.value;" />
+          </div>
+          <div class="field">
+            <label>سرعة الإعلان</label>
+            <select id="adSpeedInput" onchange="previewSingleAd()">
+              <option value="slow">بطيء</option>
+              <option value="medium">وسط</option>
+              <option value="fast">سريع</option>
+            </select>
           </div>
         </div>
         <div class="row-actions">
@@ -1278,7 +1448,7 @@ body.dark-mode .footer{
         <div class="notice">عند تشغيل الصيانة سيظهر للمستخدمين شاشة صيانة، وللدخول للإدارة اضغط 10 ضغطات على السبانة.</div>
         <div class="ad-toggle-box">
           <span>تشغيل وضع الصيانة</span>
-          <input type="checkbox" id="maintenanceToggle" class="toggle-switch" onchange="saveMaintenanceSettings()" />
+          <input type="checkbox" id="maintenanceToggle" class="toggle-switch" />
         </div>
         <div class="field">
           <label>نص الصيانة</label>
@@ -1313,12 +1483,12 @@ body.dark-mode .footer{
       </div>
       <div class="field">
         <label>إضافة صور من الاستوديو</label>
-        <input type="file" id="pImageFiles" accept="image/*" multiple />
+        <input type="file" id="pImageFiles" accept="image/*" multiple class="hidden-file-input" />
+        <div class="upload-row">
+          <button type="button" class="btn btn-secondary upload-pick-btn" onclick="document.getElementById('pImageFiles').click()">اختيار الصور</button>
+          <div id="pImageStatus" class="upload-status">لم يتم اختيار صور بعد</div>
+        </div>
         <div class="helper">الصور سترفع إلى ImgBB ثم يُحفظ الرابط فقط، وهذا أسرع وأخف.</div>
-      </div>
-      <div class="field">
-        <label>روابط صور مباشرة إضافية (اختياري، كل رابط بسطر)</label>
-        <textarea id="pImgUrls" placeholder="ضع روابط الصور هنا إن أردت"></textarea>
       </div>
       <div class="preview-images" id="previewImages"></div>
       <div class="row-actions">
@@ -1356,6 +1526,14 @@ body.dark-mode .footer{
       <div class="grid-2">
         <div class="field"><label>رابط تيك توك</label><input type="text" id="setTiktok" placeholder="https://www.tiktok.com/@username" /></div>
         <div class="field"><label>نص الشاشة الافتتاحية</label><input type="text" id="setSplashText" placeholder="بإدارة مصطفى سعدي ✨" /></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>مدة رسالة الترحيب (بالثواني)</label><input type="number" id="setSplashDuration" min="1" max="15" step="1" placeholder="مثال: 3" /></div>
+        <div class="field">
+          <label>تغيير صورة الشعار</label>
+          <input type="file" id="setLogoFile" accept="image/*" />
+          <div class="helper">اختَر صورة للشعار، سيتم رفعها وحفظها في المتجر.</div>
+        </div>
       </div>
       <div class="grid-2">
         <div class="field"><label>نص الحقوق أسفل المتجر</label><textarea id="setFooterRights" style="white-space:pre-line;" placeholder="مثال: جميع الحقوق محفوظة لمتجر MS"></textarea></div>
@@ -1413,6 +1591,7 @@ const defaultSettings = {
   telegram: "https://t.me/",
   tiktok: "https://www.tiktok.com/",
   splashText: "✨ أهلاً بك في متجر MS<br>نوفر لك منتجات مختارة بعناية وتجربة تسوق سهلة وسريعة من داخل المتجر.",
+  splashDuration: "3",
   adminPin: "1",
   maintenanceMode: false,
   maintenanceMessage: "نقوم حاليًا ببعض التحسينات داخل المتجر، يرجى العودة لاحقًا.",
@@ -1444,7 +1623,7 @@ function setupMobileKeyboardFix(){
     if(keyboardOpen && active){
       setTimeout(() => {
         try{
-          active.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'});
+          active.scrollIntoView({behavior:'smooth', block:'nearest', inline:'nearest'});
         }catch(e){}
       }, 120);
     }
@@ -1465,9 +1644,10 @@ function setupMobileKeyboardFix(){
       document.body.classList.add('keyboard-open');
       setTimeout(() => {
         try{
-          t.scrollIntoView({behavior:'smooth', block:'center', inline:'nearest'});
+          const field = t.closest('.field, .toggle-box, .ad-toggle-box') || t;
+          field.scrollIntoView({behavior:'smooth', block:'nearest', inline:'nearest'});
         }catch(e){}
-      }, 180);
+      }, 120);
     }
   });
 
@@ -1572,6 +1752,7 @@ function updateTopFixedShellSpacer(){
 
 document.addEventListener("DOMContentLoaded", () => {
   applySavedTheme();
+  updateSoundUI();
   applyCachedData();
   initAdminState();
   showProductSkeletons();
@@ -1595,7 +1776,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function startSplash(){
   const bar = document.getElementById("progressFill");
   if(bar) setTimeout(() => { bar.style.width = "100%"; }, 50);
-  scheduleSplashHide(300);
+  const sec = Number(storeSettings.splashDuration || defaultSettings.splashDuration || 3);
+  scheduleSplashHide(Math.max(1, sec) * 1000);
 }
 function scheduleSplashHide(delay = 3500){
   clearTimeout(splashHideTimer);
@@ -1631,9 +1813,68 @@ function toggleTheme(){
   updateThemeIcon();
 }
 function updateThemeIcon(){
-  const icon = document.getElementById("themeIcon");
-  if(icon) icon.textContent = document.body.classList.contains("dark-mode") ? "🌙" : "🌞";
+  const dark = document.body.classList.contains("dark-mode");
+  const modeText = document.getElementById("themeModeText");
+  const modeBtnText = document.getElementById("themeModeBtnText");
+  const modeEmoji = document.getElementById("themeModeEmoji");
+  if(modeText) modeText.textContent = dark ? "ليلي" : "نهاري";
+  if(modeBtnText) modeBtnText.textContent = dark ? "ليلي" : "نهاري";
+  if(modeEmoji) modeEmoji.textContent = dark ? "🌙" : "🌞";
 }
+
+function toggleThemeFromSettings(){
+  toggleTheme();
+}
+
+function getClickSoundEnabled(){
+  const saved = localStorage.getItem("msClickSound");
+  return saved === null ? true : saved === "true";
+}
+
+function updateSoundUI(){
+  const enabled = getClickSoundEnabled();
+  const emoji = document.getElementById("soundModeEmoji");
+  const textEl = document.getElementById("soundModeText");
+  if(emoji) emoji.textContent = enabled ? "🔊" : "🔇";
+  if(textEl) textEl.textContent = enabled ? "عام" : "صامت";
+}
+
+function toggleClickSound(){
+  const next = !getClickSoundEnabled();
+  localStorage.setItem("msClickSound", String(next));
+  updateSoundUI();
+}
+
+function playClickSound(){
+  if(!getClickSoundEnabled()) return;
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return;
+    if(!window._msAudioCtx) window._msAudioCtx = new Ctx();
+    const ctx = window._msAudioCtx;
+    if(ctx.state === "suspended") ctx.resume();
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(680, ctx.currentTime);
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.04, ctx.currentTime + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.06);
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.065);
+  }catch(e){}
+}
+
+document.addEventListener("click", function(e){
+  const target = e.target.closest("button, a, .cat-btn, .icon-btn, .tab-btn, .admin-small-btn, .social-btn, .close-btn");
+  if(!target) return;
+  playClickSound();
+}, true);
+
 
 function initAdminState(){
   isAdmin = localStorage.getItem("msAdmin") === "true";
@@ -1668,10 +1909,20 @@ function initMaintenanceAccess(){
   const wrench = document.getElementById("maintenanceWrench");
   wrench.addEventListener("click", () => {
     maintenanceTapCounter++;
-    if(maintenanceTapCounter >= 10){
+    if(maintenanceTapCounter >= 8){
       maintenanceTapCounter = 0;
-      document.getElementById("maintenanceOverlay").classList.remove("show");
-      document.getElementById("brandTapArea").click();
+      const pin = prompt("أدخل رمز الإدارة");
+      if(pin === null) return;
+      const savedPin = storeSettings.adminPin || defaultSettings.adminPin;
+      if(pin === savedPin){
+        isAdmin = true;
+        localStorage.setItem("msAdmin","true");
+        updateAdminUI();
+        document.getElementById("maintenanceOverlay").classList.remove("show");
+        openAdminPanel();
+      }else{
+        showToast("رمز الإدارة غير صحيح", true);
+      }
     }
   });
 }
@@ -1750,7 +2001,7 @@ function applyLogo(targetId, url, fallbackText){
   if(!box) return;
   const clean = String(url || "").trim();
   if(clean){
-    box.innerHTML = `<img src="${escapeAttr(clean)}" alt="logo" onerror="this.parentNode.textContent='${escapeJsString((fallbackText || 'MS').slice(0,2))}'" />`;
+    box.innerHTML = `<img src="${escapeAttr(clean)}" alt="logo" onerror="this.parentNode.textContent='${escapeJsString((fallbackText || 'MS').slice(0,2))}'" / id="storeLogo">`;
   }else{
     box.textContent = (fallbackText || "MS").slice(0,2);
   }
@@ -1765,6 +2016,7 @@ function fillSettingsForm(){
   setVal("setTelegram", storeSettings.telegram);
   setVal("setTiktok", storeSettings.tiktok);
   setVal("setSplashText", storeSettings.splashText);
+  setVal("setSplashDuration", String(storeSettings.splashDuration || defaultSettings.splashDuration || "3"));
   setVal("setFooterRights", storeSettings.footerRights || "");
   setVal("setFooterRightsSize", String(storeSettings.footerRightsSize || defaultSettings.footerRightsSize || "12"));
   setVal("setFooterIconSize", String(storeSettings.footerIconSize || defaultSettings.footerIconSize || "42"));
@@ -1778,6 +2030,20 @@ function fillMaintenanceForm(){
   if(at) at.checked = storeSettings.adsEnabled !== false;
 }
 async function saveStoreSettings(){
+  let logoUrl = storeSettings.logoUrl || "";
+  const logoFileInput = document.getElementById("setLogoFile");
+  const logoFile = logoFileInput && logoFileInput.files && logoFileInput.files[0];
+
+  if(logoFile){
+    try{
+      logoUrl = await uploadImageToImgBB(logoFile);
+    }catch(err){
+      console.error(err);
+      showToast("فشل رفع صورة الشعار", true);
+      return;
+    }
+  }
+
   const data = Object.assign({}, storeSettings, {
     storeName: val("setStoreName") || defaultSettings.storeName,
     storeSubtitle: val("setStoreSubtitle") || defaultSettings.storeSubtitle,
@@ -1788,11 +2054,15 @@ async function saveStoreSettings(){
     telegram: val("setTelegram") || defaultSettings.telegram,
     tiktok: val("setTiktok") || defaultSettings.tiktok,
     splashText: val("setSplashText") || defaultSettings.splashText,
+    splashDuration: val("setSplashDuration") || defaultSettings.splashDuration,
+    logoUrl: logoUrl,
+    splashLogoUrl: logoUrl || storeSettings.splashLogoUrl || "",
     footerRights: val("setFooterRights") || defaultSettings.footerRights,
     footerRightsSize: val("setFooterRightsSize") || defaultSettings.footerRightsSize,
     footerIconSize: val("setFooterIconSize") || defaultSettings.footerIconSize
   });
   await db.ref("settings/store").set(data);
+  if(logoFileInput) logoFileInput.value = "";
   showToast("تم حفظ الإعدادات بنجاح");
   closeById("settingsModal");
 }
@@ -2213,20 +2483,17 @@ function setSaveButtonsDisabled(disabled){
 function initImagePicker(){
   const input = document.getElementById("pImageFiles");
   if(!input) return;
-  document.getElementById("pImgUrls")?.addEventListener("input", renderPreviewImages);
   input.addEventListener("change", async (event) => {
     const files = Array.from(event.target.files || []);
     if(!files.length) return;
 
     try{
       setSaveButtonsDisabled(true);
-      showToast("جاري رفع الصور...");
       for(const file of files){
         const imageUrl = await uploadImageToImgBB(file);
         currentEditingImages.push(imageUrl);
       }
       renderPreviewImages();
-      showToast("تم رفع الصور بنجاح");
     }catch(err){
       console.error(err);
       showToast("فشل رفع صورة أو أكثر", true);
@@ -2257,7 +2524,6 @@ function editProduct(id){
   document.getElementById("pFeatured").checked = !!p.featured;
   document.getElementById("pActive").checked = p.active !== false;
   currentEditingImages = [...(p.images || [])];
-  setVal("pImgUrls", "");
   renderPreviewImages();
   document.getElementById("productModalTitle").textContent = "تعديل المنتج";
   document.getElementById("deleteEditingBtn").classList.remove("hidden");
@@ -2268,7 +2534,6 @@ function resetProductForm(){
   setVal("pName", "");
   setVal("pPrice", "");
   setVal("pDesc", "");
-  setVal("pImgUrls", "");
   document.getElementById("pFeatured").checked = false;
   document.getElementById("pActive").checked = true;
   if(allCategories.length) document.getElementById("categorySelect").value = allCategories[0].name;
@@ -2280,11 +2545,15 @@ function resetProductForm(){
   document.getElementById("deleteEditingBtn").classList.add("hidden");
 }
 function getDirectImageUrls(){
-  return val("pImgUrls").split(/\n+/).map(v => v.trim()).filter(Boolean);
+  return [];
 }
 function renderPreviewImages(){
   const wrap = document.getElementById("previewImages");
+  const status = document.getElementById("pImageStatus");
   const all = [...currentEditingImages, ...getDirectImageUrls()];
+  if(status){
+    status.textContent = all.length ? `تمت إضافة ${all.length} صورة` : "لم يتم اختيار صور بعد";
+  }
   wrap.innerHTML = all.map((src, i) => `
     <div class="preview-item">
       <img loading="lazy" decoding="async" src="${escapeAttr(src)}" alt="preview" onerror="this.src='${escapeAttr(placeholderImage('صورة'))}'" />
@@ -2295,10 +2564,6 @@ function renderPreviewImages(){
 function removePreviewImage(index){
   if(index < currentEditingImages.length){
     currentEditingImages.splice(index, 1);
-  }else{
-    const urls = getDirectImageUrls();
-    urls.splice(index - currentEditingImages.length, 1);
-    setVal("pImgUrls", urls.join("\n"));
   }
   renderPreviewImages();
 }
@@ -2346,6 +2611,7 @@ function renderAdminAds(){
   const ad = currentAd || {};
   setVal("adTextInput", ad.text || "");
   setVal("adColorInput", ad.color || "#2563eb");
+  setVal("adSpeedInput", ad.speed || "medium");
   const c = document.getElementById("adColorInput");
   if(c) c.style.background = c.value;
 }
@@ -2353,7 +2619,8 @@ function previewSingleAd(){
   renderAdsStrip({
     enabled: document.getElementById("adsEnabledToggle").checked,
     text: val("adTextInput"),
-    color: val("adColorInput") || "#2563eb"
+    color: val("adColorInput") || "#2563eb",
+    speed: val("adSpeedInput") || "medium"
   });
 }
 function renderAdsStrip(override){
@@ -2375,6 +2642,7 @@ function renderAdsStrip(override){
   }
 
   const bg = ad.color || "#2563eb";
+  const speed = ad.speed || "medium";
   wrap.classList.add("show");
   wrap.style.display = "block";
   wrap.style.visibility = "visible";
@@ -2386,7 +2654,8 @@ function renderAdsStrip(override){
   strip.innerHTML = `
     <div class="ads-label"><i class="fa-solid fa-bullhorn"></i> إعلان</div>
     <div class="ads-marquee">
-      <div class="ads-track">
+      <div class="ads-track ${speed}">
+        <span class="ads-item-inline">${text}</span>
         <span class="ads-item-inline">${text}</span>
       </div>
     </div>`;
@@ -2397,7 +2666,8 @@ async function saveSingleAd(){
   await db.ref("settings/ad").set({
     enabled,
     text: val("adTextInput").trim(),
-    color: val("adColorInput") || "#2563eb"
+    color: val("adColorInput") || "#2563eb",
+    speed: val("adSpeedInput") || "medium"
   });
   showToast("تم حفظ الإعلان بنجاح");
 }
@@ -2487,7 +2757,9 @@ function closeZoom(){
   }
   zoomImages = [];
   zoomIndex = 0;
-  if(!document.querySelector('.modal.show')) document.body.classList.remove("modal-open");
+  if(!document.querySelector('.modal.show')){
+    document.body.classList.remove("modal-open");
+  }
 }
 
 function shareProduct(id){
@@ -2502,11 +2774,17 @@ function shareProduct(id){
 }
 function openModal(id){
   const el = document.getElementById(id);
-  if(el) el.classList.add("show");
+  if(el){
+    el.classList.add("show");
+    document.body.classList.add("modal-open");
+  }
 }
 function closeById(id){
   const el = document.getElementById(id);
   if(el) el.classList.remove("show");
+  if(!document.querySelector('.modal.show') && !document.getElementById("zoomOverlay")?.classList.contains("show")){
+    document.body.classList.remove("modal-open");
+  }
 }
 function closeModal(event, id){
   if(event.target.id === id) closeById(id);
@@ -2611,5 +2889,40 @@ function toggleDescExpand(el){
 }
 
 </script>
+
+
+
+
+  <div id="uiSettingsModal" class="modal" onclick="closeModal(event,'uiSettingsModal')">
+    <div class="modal-card settings-mini-card" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <h3 class="modal-title">إعدادات الواجهة</h3>
+        <button class="close-btn" onclick="closeById('uiSettingsModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="settings-tile">
+        <div>
+          <div class="settings-label">الوضع</div>
+          <div class="settings-sub" id="themeModeText">نهاري</div>
+        </div>
+        <button class="btn btn-secondary settings-action-btn" onclick="toggleThemeFromSettings()">
+          <span id="themeModeEmoji">🌞</span>
+          <span id="themeModeBtnText">نهاري</span>
+        </button>
+      </div>
+
+      <div class="settings-tile">
+        <div>
+          <div class="settings-label">الصوت</div>
+          <div class="settings-sub">صوت نقرة خفيف عند الضغط</div>
+        </div>
+        <button class="btn btn-secondary settings-action-btn" onclick="toggleClickSound()">
+          <span id="soundModeEmoji">🔊</span>
+          <span id="soundModeText">عام</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
