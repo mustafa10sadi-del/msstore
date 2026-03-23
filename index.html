@@ -6,8 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>متجر MS</title>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
+document.addEventListener("DOMContentLoaded", ()=>{
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay){
+    document.body.appendChild(overlay);
+  }
+});
+
+</script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js">
+document.addEventListener("DOMContentLoaded", ()=>{
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay){
+    document.body.appendChild(overlay);
+  }
+});
+
+</script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
@@ -117,12 +133,12 @@
     .btn-share{width:46px;background:var(--bg);color:var(--text);border:1px solid var(--border)}
     .empty-state{margin:20px 12px;background:var(--card);border:1px dashed var(--border);border-radius:22px;padding:35px 18px;text-align:center;color:var(--muted);box-shadow:var(--shadow)}
 
-    .footer{background:var(--card);border-top:1px solid var(--border);margin-top:12px;padding:20px 16px 28px;text-align:center}
+    .footer{background:var(--card);border-top:1px solid var(--border);margin-top:8px;padding:12px 16px 16px;text-align:center}
     .footer .title{font-size:18px;font-weight:900;margin-bottom:8px}
     .footer .desc{color:var(--muted);font-size:13px;line-height:1.7}
-    .socials{display:flex;justify-content:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+    .socials{display:flex;justify-content:center;gap:10px;margin-top:10px;flex-wrap:wrap}
     .social-btn{width:42px;height:42px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--accent);display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:var(--shadow);font-size:16px}
-    .mini-text{font-size:11px;color:var(--muted);margin-top:12px}
+    .mini-text{font-size:11px;color:var(--muted);margin-top:8px}
 
     .modal{display:none;position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:14px;overflow:auto;-webkit-overflow-scrolling:touch}
     .modal.show{display:flex}
@@ -187,8 +203,8 @@
     .chip-edit-btn{color:var(--accent)} .chip-delete-btn{color:var(--danger)}
     .notice{background:rgba(37,99,235,.09);color:var(--accent);border:1px solid rgba(37,99,235,.15);border-radius:16px;padding:12px 14px;font-size:13px;font-weight:700;margin-bottom:14px;line-height:1.8}
 
-    #zoomOverlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.96);flex-direction:column}
-    #zoomOverlay.show{display:flex}
+    #zoomOverlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999999999;background:rgba(0,0,0,0.98);display:none;flex-direction:column;pointer-events:auto}
+    #zoomOverlay.show{display:flex !important;opacity:1 !important}
     .zoom-top{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;color:#fff;font-weight:900}
     .zoom-gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;height:100%;width:100%;scrollbar-width:none}
     .zoom-gal::-webkit-scrollbar{display:none}
@@ -221,7 +237,6 @@
       .category-strip{top:82px}
     }
   
-.back-btn, .btn-back, #backBtn{display:none !important;}
 
     .fixed-top-area{position:sticky;top:0;z-index:2000;background:linear-gradient(180deg,var(--bg),rgba(245,247,251,.96));padding-bottom:2px}
     body.dark-mode .fixed-top-area{background:linear-gradient(180deg,var(--bg),rgba(11,18,32,.96))}
@@ -354,8 +369,6 @@
   </div>
 
   <footer class="footer">
-    <div class="title" id="footerStoreTitle">متجر MS</div>
-    <div class="desc" id="footerAboutText">متجر MS يقدم لك تجربة تسوق أنيقة وسهلة.</div>
     <div class="socials">
       <a class="social-btn" id="whatsappLink" href="https://wa.me/9647712630779" target="_blank"><i class="fab fa-whatsapp"></i></a>
       <a class="social-btn" id="telegramLink" href="https://t.me/" target="_blank"><i class="fab fa-telegram"></i></a>
@@ -528,7 +541,6 @@
         <div class="field"><label>اسم المتجر</label><input type="text" id="setStoreName" /></div>
         <div class="field"><label>وصف أعلى الصفحة</label><input type="text" id="setStoreSubtitle" /></div>
       </div>
-      <div class="field"><label>وصف المتجر / حول المتجر</label><textarea id="setStoreAbout"></textarea></div>
       <div class="grid-2">
         <div class="field"><label>عنوان البانر الرئيسي</label><input type="text" id="setHeroTitle" /></div>
         <div class="field"><label>وصف البانر الرئيسي</label><input type="text" id="setHeroDesc" /></div>
@@ -545,6 +557,9 @@
         <div class="field"><label>نص الحقوق أسفل المتجر</label><textarea id="setFooterRights" style="white-space:pre-line;" placeholder="مثال: جميع الحقوق محفوظة لمتجر MS"></textarea></div>
         <div class="field"><label>حجم خط الحقوق</label>
           <input type="number" id="setFooterRightsSize" min="8" max="50" step="1" placeholder="مثال: 14" />
+        </div>
+        <div class="field"><label>حجم الأيقونات السفلية</label>
+          <input type="number" id="setFooterIconSize" min="20" max="80" step="1" placeholder="مثال: 42" />
         </div>
       </div>
       <div class="row-actions"><button class="btn btn-success" onclick="saveStoreSettings()">حفظ الإعدادات</button></div>
@@ -599,7 +614,8 @@ const defaultSettings = {
   maintenanceMessage: "نقوم حاليًا ببعض التحسينات داخل المتجر، يرجى العودة لاحقًا.",
   adsEnabled: true,
   footerRights: "",
-  footerRightsSize: "12"
+  footerRightsSize: "12",
+  footerIconSize: "42"
 };
 
 
@@ -862,7 +878,6 @@ function applyStoreSettings(){
   setText("heroTitle", storeSettings.heroTitle);
   setText("heroDesc", storeSettings.heroDesc);
   setText("footerStoreTitle", storeSettings.storeName);
-  setText("footerAboutText", storeSettings.storeAbout);
   setText("aboutModalText", storeSettings.storeAbout);
   setText("splashTitle", storeSettings.storeName);
   document.getElementById("splashSubtitle").innerHTML = storeSettings.splashText || defaultSettings.splashText;
@@ -872,6 +887,18 @@ function applyStoreSettings(){
   document.getElementById("footerRights").innerText = storeSettings.footerRights || "";
   const footerRightsEl = document.getElementById("footerRights");
   if(footerRightsEl) footerRightsEl.style.fontSize = String(storeSettings.footerRightsSize || defaultSettings.footerRightsSize || "12") + "px";
+  document.querySelectorAll(".social-btn").forEach(el => {
+    const size = String(storeSettings.footerIconSize || defaultSettings.footerIconSize || "42");
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.fontSize = Math.max(16, Math.round(Number(size) * 0.38)) + "px";
+  });
+  document.querySelectorAll(".social-btn").forEach(el => {
+    const size = String(storeSettings.footerIconSize || defaultSettings.footerIconSize || "42");
+    el.style.width = size + "px";
+    el.style.height = size + "px";
+    el.style.fontSize = Math.max(16, Math.round(Number(size) * 0.38)) + "px";
+  });
   applyLogo("headerLogoBox", storeSettings.logoUrl, storeSettings.storeName || "MS");
   applyLogo("splashLogoBox", storeSettings.splashLogoUrl || storeSettings.logoUrl, storeSettings.storeName || "MS");
   applyMaintenanceMode();
@@ -898,6 +925,7 @@ function fillSettingsForm(){
   setVal("setSplashText", storeSettings.splashText);
   setVal("setFooterRights", storeSettings.footerRights || "");
   setVal("setFooterRightsSize", String(storeSettings.footerRightsSize || defaultSettings.footerRightsSize || "12"));
+  setVal("setFooterIconSize", String(storeSettings.footerIconSize || defaultSettings.footerIconSize || "42"));
 }
 function fillMaintenanceForm(){
   const mt = document.getElementById("maintenanceToggle");
@@ -911,7 +939,7 @@ async function saveStoreSettings(){
   const data = Object.assign({}, storeSettings, {
     storeName: val("setStoreName") || defaultSettings.storeName,
     storeSubtitle: val("setStoreSubtitle") || defaultSettings.storeSubtitle,
-    storeAbout: val("setStoreAbout") || defaultSettings.storeAbout,
+    storeAbout: storeSettings.storeAbout || defaultSettings.storeAbout,
     heroTitle: val("setHeroTitle") || defaultSettings.heroTitle,
     heroDesc: val("setHeroDesc") || defaultSettings.heroDesc,
     whatsapp: cleanupNumber(val("setWhatsapp") || defaultSettings.whatsapp),
@@ -919,7 +947,8 @@ async function saveStoreSettings(){
     tiktok: val("setTiktok") || defaultSettings.tiktok,
     splashText: val("setSplashText") || defaultSettings.splashText,
     footerRights: val("setFooterRights") || defaultSettings.footerRights,
-    footerRightsSize: val("setFooterRightsSize") || defaultSettings.footerRightsSize
+    footerRightsSize: val("setFooterRightsSize") || defaultSettings.footerRightsSize,
+    footerIconSize: val("setFooterIconSize") || defaultSettings.footerIconSize
   });
   await db.ref("settings/store").set(data);
   showToast("تم حفظ الإعدادات بنجاح");
@@ -1196,7 +1225,7 @@ function buildProductCard(p){
     ${adminControls}
     <div class="card-top-badges">${featuredBadge}</div>
     <div class="gallery-wrapper">
-      <img class="gallery-img" src="${escapeAttr(placeholderImage(p.name))}" data-src="${escapeAttr(firstImage)}" alt="${escapeAttr(p.name)}" onclick="openZoom(${encodeJsArray(p.images && p.images.length ? p.images : [firstImage])})" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />
+      <img class="gallery-img" src="${escapeAttr(placeholderImage(p.name))}" data-src="${escapeAttr(firstImage)}" alt="${escapeAttr(p.name)}" data-images="$1" onclick="openZoomFromElement(this)" onerror="this.src='${escapeAttr(placeholderImage(p.name))}'" />
     </div>
     <div class="product-info">
       <h3 class="p-name">${escapeHtml(p.name)}</h3>
@@ -1481,11 +1510,23 @@ function switchAdminTab(tabId, btn){
 }
 function openZoom(images){
   const gal = document.getElementById("zGal");
-  gal.innerHTML = images.map(src => `<img class="z-img" loading="lazy" decoding="async" src="${escapeAttr(src)}" alt="zoom" />`).join("");
-  document.getElementById("zoomOverlay").classList.add("show");
+  const overlay = document.getElementById("zoomOverlay");
+  if(!gal || !overlay) return;
+  const list = Array.isArray(images) && images.length ? images : [];
+  gal.innerHTML = list.map(src => `<img class="z-img" src="${escapeAttr(src)}" alt="zoom" onerror="this.style.display='none'" />`).join("");
+  overlay.classList.add("show");
+  overlay.style.display = "flex";
+  overlay.style.visibility = "visible";
+  document.body.style.overflow = "hidden";
 }
 function closeZoom(){
-  document.getElementById("zoomOverlay").classList.remove("show");
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay){
+    overlay.classList.remove("show");
+    overlay.style.display = "none";
+    overlay.style.visibility = "hidden";
+  }
+  document.body.style.overflow = "";
 }
 function shareProduct(id){
   const p = allProducts.find(x => x.id === id);
@@ -1538,6 +1579,18 @@ function formatPrice(price){
 function encodeJsArray(arr){
   return JSON.stringify(arr || []);
 }
+function openZoomFromElement(el){
+  try{
+    const raw = (el.getAttribute("data-images") || "[]")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, "&");
+    const images = JSON.parse(raw);
+    openZoom(images);
+  }catch(e){
+    console.error(e);
+  }
+}
 function placeholderImage(name){
   return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="700" height="500">
@@ -1577,6 +1630,14 @@ function val(id){
   const el = document.getElementById(id);
   return el ? el.value : "";
 }
+
+document.addEventListener("DOMContentLoaded", ()=>{
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay){
+    document.body.appendChild(overlay);
+  }
+});
+
 </script>
 </body>
 </html>
