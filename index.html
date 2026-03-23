@@ -138,7 +138,7 @@ function toggleDescExpand(el){
     .gallery-img{width:100%;height:100%;object-fit:cover;background:#fff;cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-drag:none}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1;justify-content:flex-start}
     .p-name{font-size:15px;font-weight:900;line-height:1.35;margin:0 0 4px;min-height:auto;display:block}
-    .p-desc{margin:0 0 5px}
+    .p-desc{margin:0 0 5px;cursor:pointer}
     .p-desc.long{font-size:11px !important;line-height:1.45 !important;color:var(--muted) !important;-webkit-line-clamp:3 !important;min-height:auto !important}
     .p-desc.short{font-size:24px;color:var(--text);line-height:1.1;font-weight:900;min-height:auto}
     .p-desc.expanded{-webkit-line-clamp:unset}
@@ -989,7 +989,9 @@ body.dark-mode .footer{
   min-height:40px !important;
 }
 
-.p-desc{margin:0 0 5px}
+.p-desc{
+  cursor:pointer !important;
+}
 .p-desc.long{
   display:-webkit-box !important;
   -webkit-line-clamp:3 !important;
@@ -1016,7 +1018,9 @@ body.dark-mode .footer{
 }
 
 /* description click to toggle */
-.p-desc{margin:0 0 5px}
+.p-desc{
+  cursor:pointer !important;
+}
 .p-desc.long{
   display:-webkit-box !important;
   -webkit-line-clamp:3 !important;
@@ -1029,7 +1033,29 @@ body.dark-mode .footer{
 }
 
 
-/* only long description expands on click */
+/* ===== final small fixes only ===== */
+
+/* top theme icon should be sun/moon emoji */
+#themeBtn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+#themeIcon{
+  display:inline-block !important;
+  font-size:18px !important;
+  line-height:1 !important;
+}
+
+/* remove zoom badge only */
+.gallery-zoom-badge{
+  display:none !important;
+}
+
+/* only long descriptions can expand */
+.p-desc{
+  margin:0 0 6px !important;
+}
 .p-desc.short{
   cursor:default !important;
 }
@@ -1043,6 +1069,28 @@ body.dark-mode .footer{
 .p-desc.long.expanded{
   display:block !important;
   overflow:visible !important;
+}
+
+/* cards should not stretch because of product beside them */
+.products{
+  align-items:start !important;
+}
+.card{
+  height:auto !important;
+  min-height:unset !important;
+  align-self:start !important;
+}
+.product-info{
+  flex:none !important;
+  height:auto !important;
+  min-height:unset !important;
+}
+.price-tag{
+  margin-top:6px !important;
+  margin-bottom:6px !important;
+}
+.card-actions{
+  margin-top:0 !important;
 }
 
 </style>
@@ -1083,7 +1131,7 @@ body.dark-mode .footer{
       </div>
       <div class="top-actions">
         <button class="icon-btn" onclick="openModal('aboutModal')" title="حول المتجر"><i class="fa-solid fa-circle-info"></i></button>
-        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()"><span id="themeIcon" style="font-size:18px;line-height:1">🌙</span></button>
       </div>
     </div>
     <div class="search-sort-row">
@@ -1583,8 +1631,8 @@ function toggleTheme(){
   updateThemeIcon();
 }
 function updateThemeIcon(){
-  const icon = document.querySelector("#themeBtn i");
-  if(icon) icon.className = document.body.classList.contains("dark-mode") ? "fa-solid fa-sun" : "fa-solid fa-moon";
+  const icon = document.getElementById("themeIcon");
+  if(icon) icon.textContent = document.body.classList.contains("dark-mode") ? "🌙" : "🌞";
 }
 
 function initAdminState(){
@@ -2028,7 +2076,7 @@ function buildProductCard(p){
     </div>
     <div class="product-info">
       <h3 class="p-name">${escapeHtml(p.name)}</h3>
-      <p class="p-desc ${descMode}" ${descMode === "long" ? 'onclick="this.classList.toggle(\'expanded\')"': ""}>${escapeHtml(p.desc || "لا يوجد وصف")}</p>
+      <p class="p-desc ${descMode}" ${descMode === "long" ? 'onclick="this.classList.toggle(\'expanded\')"' : ""}>${escapeHtml(p.desc || "لا يوجد وصف")}</p>
       <div class="meta-row">
         <span class="stock ${p.stock === 'متوفر' ? 'in' : 'out'}">${escapeHtml(p.stock)}</span>
         <span class="section-note">${escapeHtml(p.category)}</span>
