@@ -2906,6 +2906,7 @@ let zoomImages = [];
 let zoomIndex = 0;
 let zoomTouchStartX = 0;
 let zoomTouchStartY = 0;
+let zoomHistoryPushed = false;
 
 function renderZoomImage(){
   const gal = document.getElementById("zGal");
@@ -2925,6 +2926,11 @@ function openZoom(images, startIndex = 0){
   overlay.style.display = "flex";
   overlay.style.visibility = "visible";
   document.body.classList.add("modal-open");
+
+  if(!zoomHistoryPushed){
+    history.pushState({ zoomOverlay: true }, "");
+    zoomHistoryPushed = true;
+  }
 }
 
 function zoomNext(event){
@@ -2941,8 +2947,14 @@ function zoomPrev(event){
   renderZoomImage();
 }
 
-function closeZoom(){
+function closeZoom(fromPopState = false){
   const overlay = document.getElementById("zoomOverlay");
+
+  if(!fromPopState && zoomHistoryPushed && overlay && overlay.classList.contains("show")){
+    history.back();
+    return;
+  }
+
   if(overlay){
     overlay.classList.remove("show");
     overlay.style.display = "none";
@@ -2950,6 +2962,7 @@ function closeZoom(){
   }
   zoomImages = [];
   zoomIndex = 0;
+  zoomHistoryPushed = false;
   if(!document.querySelector('.modal.show')){
     document.body.classList.remove("modal-open");
   }
@@ -3079,6 +3092,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   const overlay = document.getElementById("zoomOverlay");
   if(overlay){
     document.body.appendChild(overlay);
+  }
+});
+
+window.addEventListener("popstate", () => {
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay && overlay.classList.contains("show")){
+    closeZoom(true);
   }
 });
 
