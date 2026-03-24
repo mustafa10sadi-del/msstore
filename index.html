@@ -2906,7 +2906,7 @@ let zoomImages = [];
 let zoomIndex = 0;
 let zoomTouchStartX = 0;
 let zoomTouchStartY = 0;
-const ZOOM_SESSION_PREFIX = "ms_zoom_session_";
+let zoomHistoryOpen = false;
 
 function renderZoomImage(){
   const gal = document.getElementById("zGal");
@@ -2916,25 +2916,23 @@ function renderZoomImage(){
 }
 
 function openZoom(images, startIndex = 0){
-  const safeImages = Array.isArray(images) ? images.filter(Boolean) : [String(images || "")].filter(Boolean);
-  if(!safeImages.length) return;
+  const overlay = document.getElementById("zoomOverlay");
+  if(!overlay) return;
 
-  const token = "z" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
-  const payload = {
-    images: safeImages,
-    index: Math.max(0, Math.min(startIndex, safeImages.length - 1))
-  };
+  zoomImages = Array.isArray(images) ? images.filter(Boolean) : [String(images || "")].filter(Boolean);
+  if(!zoomImages.length) return;
 
-  try{
-    sessionStorage.setItem(ZOOM_SESSION_PREFIX + token, JSON.stringify(payload));
-  }catch(e){
-    console.error("ZOOM_SESSION_SAVE_FAILED", e);
-    return;
+  zoomIndex = Math.max(0, Math.min(startIndex, zoomImages.length - 1));
+  renderZoomImage();
+  overlay.classList.add("show");
+  overlay.style.display = "flex";
+  overlay.style.visibility = "visible";
+  document.body.classList.add("modal-open");
+
+  if(!zoomHistoryOpen){
+    history.pushState({ zoomOpen: true }, "");
+    zoomHistoryOpen = true;
   }
-
-  const url = new URL(window.location.href);
-  url.searchParams.set("zv", token);
-  window.location.href = url.toString();
 }
 
 function zoomNext(event){
@@ -2951,55 +2949,26 @@ function zoomPrev(event){
   renderZoomImage();
 }
 
-function closeZoom(){
+function closeZoom(fromBack = false){
   const overlay = document.getElementById("zoomOverlay");
   if(overlay){
     overlay.classList.remove("show");
     overlay.style.display = "none";
     overlay.style.visibility = "hidden";
   }
+
   zoomImages = [];
   zoomIndex = 0;
-
-  const url = new URL(window.location.href);
-  if(url.searchParams.has("zv")){
-    history.back();
-    return;
-  }
 
   if(!document.querySelector('.modal.show')){
     document.body.classList.remove("modal-open");
   }
-}
 
-
-function openZoomOverlayDirect(images, startIndex = 0){
-  const overlay = document.getElementById("zoomOverlay");
-  if(!overlay) return;
-  zoomImages = Array.isArray(images) ? images.filter(Boolean) : [];
-  if(!zoomImages.length) return;
-  zoomIndex = Math.max(0, Math.min(startIndex, zoomImages.length - 1));
-  renderZoomImage();
-  overlay.classList.add("show");
-  overlay.style.display = "flex";
-  overlay.style.visibility = "visible";
-  document.body.classList.add("modal-open");
-}
-
-function restoreZoomFromUrl(){
-  const url = new URL(window.location.href);
-  const token = url.searchParams.get("zv");
-  if(!token) return;
-
-  try{
-    const raw = sessionStorage.getItem(ZOOM_SESSION_PREFIX + token);
-    if(!raw) return;
-    const payload = JSON.parse(raw);
-    const images = Array.isArray(payload.images) ? payload.images : [];
-    const index = Number(payload.index || 0);
-    openZoomOverlayDirect(images, index);
-  }catch(e){
-    console.error("ZOOM_SESSION_READ_FAILED", e);
+  if(zoomHistoryOpen){
+    zoomHistoryOpen = false;
+    if(!fromBack){
+      history.back();
+    }
   }
 }
 
@@ -3128,7 +3097,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
   if(overlay){
     document.body.appendChild(overlay);
   }
-  restoreZoomFromUrl();
+});
+
+window.addEventListener("popstate", function () {
+  const overlay = document.getElementById("zoomOverlay");
+  if(overlay && overlay.classList.contains("show")){
+    closeZoom(true);
+  }
 });
 
 
