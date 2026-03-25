@@ -2926,6 +2926,10 @@ function switchAdminTab(tabId, btn){
 }
 
 let overlayHistoryStack = [];
+let lastScrollYBeforeOverlay = 0;
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
 
 function overlayKey(type, id=""){
   return `${type}:${id || ""}`;
@@ -2933,10 +2937,11 @@ function overlayKey(type, id=""){
 function pushOverlayHistory(type, id=""){
   const key = overlayKey(type, id);
   if(overlayHistoryStack[overlayHistoryStack.length - 1] === key) return;
+  if(!overlayHistoryStack.length){
+    lastScrollYBeforeOverlay = window.scrollY || window.pageYOffset || 0;
+  }
   overlayHistoryStack.push(key);
-  const clean = location.pathname + location.search;
-  const hash = type === "zoom" ? '#zoom' : `#${id || 'modal'}`;
-  history.pushState({ msOverlay: true, key }, "", clean + hash);
+  history.pushState({ msOverlay: true, key, scrollY: lastScrollYBeforeOverlay }, "", location.pathname + location.search);
 }
 function closeTopOverlayFromBack(){
   const key = overlayHistoryStack.pop();
@@ -2953,8 +2958,17 @@ function closeTopOverlayFromBack(){
   }
   return false;
 }
-window.addEventListener('popstate', () => {
-  closeTopOverlayFromBack();
+window.addEventListener('popstate', (event) => {
+  if(overlayHistoryStack.length){
+    closeTopOverlayFromBack();
+    return;
+  }
+  const targetScroll = event.state && typeof event.state.scrollY === 'number'
+    ? event.state.scrollY
+    : lastScrollYBeforeOverlay;
+  if(typeof targetScroll === 'number' && !Number.isNaN(targetScroll)){
+    requestAnimationFrame(() => window.scrollTo(0, targetScroll));
+  }
 });
 
 let zoomImages = [];
@@ -3018,6 +3032,10 @@ function closeZoom(fromBack = false){
   if(!document.querySelector('.modal.show')){
     document.body.classList.remove("modal-open");
   }
+
+  if(!overlayHistoryStack.length && typeof lastScrollYBeforeOverlay === 'number'){
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
+  }
 }
 
 function shareProduct(id){
@@ -3047,6 +3065,9 @@ function closeById(id, fromBack = false){
   if(el) el.classList.remove("show");
   if(!document.querySelector('.modal.show') && !document.getElementById("zoomOverlay")?.classList.contains("show")){
     document.body.classList.remove("modal-open");
+  }
+  if(!overlayHistoryStack.length && typeof lastScrollYBeforeOverlay === 'number'){
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
 }
 function closeModal(event, id){
