@@ -2109,8 +2109,7 @@ img{
       نوفر لك منتجات مختارة بعناية وتجربة تسوق سهلة وسريعة من داخل المتجر.<br>
       <span style="font-size:14px;opacity:.92;">بإدارة مصطفى سعدي</span>
     </p>
-    <div id="progressBar"><div id="progressFill"></div><div class="loader"></div>
-  </div>
+    <div id="progressBar"><div id="progressFill"></div></div>
   </div>
 
   <div id="maintenanceOverlay" class="maint-overlay">
@@ -2118,9 +2117,7 @@ img{
       <div id="maintenanceWrench" class="maint-wrench" title="اضغط عدة مرات للدخول للإدارة"><i class="fa-solid fa-screwdriver-wrench"></i></div>
       <div class="maint-title">المتجر تحت الصيانة</div>
       <div class="maint-text" id="maintenanceText">نقوم حاليًا ببعض التحسينات داخل المتجر، يرجى العودة لاحقًا.</div>
-      <div class="maint-note">للدخول إلى الإدارة: اضغط 8 ضغطات على السبانة</div>
-    <div class="loader"></div>
-  </div>
+      <div class="maint-note">للدخول إلى الإدارة: اضغط 8 ضغطات على السبانة</div></div>
   </div>
   <div id="topFixedShell" class="top-fixed-shell">
 
@@ -2172,8 +2169,7 @@ img{
 
   <div class="section-bar">
     <div><div class="section-title">الأقسام</div><div class="section-note"></div></div>
-    <div class="section-note" id="resultCountText">جاري التحميل...<div class="loader"></div>
-  </div>
+    <div class="section-note" id="resultCountText">جاري التحميل...</div>
   </div>
 
   <div class="category-strip" id="categoryFilter"></div>
@@ -2185,8 +2181,7 @@ img{
   <div id="emptyState" class="empty-state hidden">
     <i class="fa-solid fa-box-open" style="font-size:34px; margin-bottom:10px;"></i>
     <div style="font-size:18px; font-weight:900; color:var(--text); margin-bottom:6px;">لا توجد منتجات مطابقة</div>
-    <div style="font-size:13px;">جرّب البحث بكلمة أخرى أو اختر قسمًا مختلفًا.<div class="loader"></div>
-  </div>
+    <div style="font-size:13px;">جرّب البحث بكلمة أخرى أو اختر قسمًا مختلفًا.</div>
   </div>
 
   <footer class="footer">
@@ -2206,9 +2201,7 @@ img{
     <div class="modal-card" onclick="event.stopPropagation()">
       <div class="modal-head"><h3 class="modal-title">حول المتجر</h3><button class="close-btn" onclick="closeById('aboutModal')"><i class="fa-solid fa-xmark"></i></button></div>
       <div class="notice" id="aboutModalText">متجر MS يقدم لك تجربة تسوق راقية وسهلة.</div>
-      <div class="row-actions"><button class="btn btn-secondary" onclick="closeById('aboutModal')">إغلاق</button></div>
-    <div class="loader"></div>
-  </div>
+      <div class="row-actions"><button class="btn btn-secondary" onclick="closeById('aboutModal')">إغلاق</button></div></div>
   </div>
 
   <div id="zoomOverlay" onclick="closeZoom()">
@@ -2216,8 +2209,7 @@ img{
     <button class="zoom-arrow zoom-next" onclick="zoomNext(event)">‹</button>
     <div class="zoom-top"></div>
     <div class="zoom-gal" id="zGal" onclick="event.stopPropagation()"></div>
-    <div class="zoom-hint" id="zoomHint">قرّب بإصبعين للتكبير • اسحب الصورة بعد التكبير<div class="loader"></div>
-  </div>
+    <div class="zoom-hint" id="zoomHint">قرّب بإصبعين للتكبير • اسحب الصورة بعد التكبير</div>
   </div>
 
   <div id="adminPanel" class="modal" onclick="closeModal(event,'adminPanel')">
@@ -2302,9 +2294,7 @@ img{
         <div class="row-actions">
           <button class="btn btn-warning" onclick="saveMaintenanceSettings()">حفظ إعدادات الصيانة</button>
         </div>
-      </div>
-    <div class="loader"></div>
-  </div>
+      </div></div>
   </div>
 
   <div id="productModal" class="modal" onclick="closeModal(event,'productModal')">
@@ -2341,9 +2331,7 @@ img{
         <button class="btn btn-success" onclick="saveProduct()">حفظ المنتج</button>
         <button class="btn btn-secondary" onclick="resetProductForm()">تفريغ الحقول</button>
         <button class="btn btn-danger hidden" id="deleteEditingBtn" onclick="deleteEditingProduct()">حذف هذا المنتج</button>
-      </div>
-    <div class="loader"></div>
-  </div>
+      </div></div>
   </div>
 
   <div id="categoryModal" class="modal" onclick="closeModal(event,'categoryModal')">
@@ -2351,9 +2339,7 @@ img{
       <div class="modal-head"><h3 class="modal-title">إدارة الأقسام</h3><button class="close-btn" onclick="closeById('categoryModal')"><i class="fa-solid fa-xmark"></i></button></div>
       <div class="field"><label>إضافة قسم جديد</label><input type="text" id="newCategoryNameModal" placeholder="مثال: ألعاب - تخزين - قرطاسية" /></div>
       <div class="row-actions"><button class="btn btn-primary" onclick="addCategory(true)">إضافة القسم</button></div>
-      <div class="chips" id="adminCategoriesListModal"></div>
-    <div class="loader"></div>
-  </div>
+      <div class="chips" id="adminCategoriesListModal"></div></div>
   </div>
 
   <div id="settingsModal" class="modal" onclick="closeModal(event,'settingsModal')">
@@ -2399,9 +2385,7 @@ img{
           <input type="number" id="setFooterIconSize" min="20" max="80" step="1" placeholder="مثال: 42" />
         </div>
       </div>
-      <div class="row-actions"><button class="btn btn-success" onclick="saveStoreSettings()">حفظ الإعدادات</button></div>
-    <div class="loader"></div>
-  </div>
+      <div class="row-actions"><button class="btn btn-success" onclick="saveStoreSettings()">حفظ الإعدادات</button></div></div>
   </div>
 
   <div id="passwordModal" class="modal" onclick="closeModal(event,'passwordModal')">
@@ -2409,9 +2393,7 @@ img{
       <div class="modal-head"><h3 class="modal-title">تغيير رمز الإدارة</h3><button class="close-btn" onclick="closeById('passwordModal')"><i class="fa-solid fa-xmark"></i></button></div>
       <div class="field"><label>الرمز الحالي</label><input type="password" id="oldPin" /></div>
       <div class="field"><label>الرمز الجديد</label><input type="password" id="newPin" /></div>
-      <div class="row-actions"><button class="btn btn-primary" onclick="changeAdminPin()">حفظ الرمز الجديد</button></div>
-    <div class="loader"></div>
-  </div>
+      <div class="row-actions"><button class="btn btn-primary" onclick="changeAdminPin()">حفظ الرمز الجديد</button></div></div>
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
