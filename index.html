@@ -2586,7 +2586,48 @@ function applyCachedData(){
   }
 }
 
-function initZoomSwipe(){}
+function initZoomSwipe(){
+  const gal = document.getElementById("zGal");
+  if(!gal || gal.dataset.zoomSwipeBound === "true") return;
+  gal.dataset.zoomSwipeBound = "true";
+
+  let startX = 0;
+  let startY = 0;
+  let tracking = false;
+
+  gal.addEventListener("touchstart", (e) => {
+    if(!document.getElementById("zoomOverlay")?.classList.contains("show")) return;
+    if(!e.touches || e.touches.length !== 1) return;
+    const t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    tracking = true;
+  }, { passive: true });
+
+  gal.addEventListener("touchend", (e) => {
+    if(!tracking) return;
+    tracking = false;
+    if(!document.getElementById("zoomOverlay")?.classList.contains("show")) return;
+    if(!e.changedTouches || !e.changedTouches.length) return;
+
+    /* إذا الصورة مكبرة، لا نبدل بالسحب حتى يبقى التقريب شغال طبيعي */
+    if(typeof zoomScale !== "undefined" && zoomScale > 1.02) return;
+
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+
+    /* امنع تغيير الصورة عند اللمسة العادية أو الحركة الصغيرة */
+    if(Math.abs(dx) < 45 || Math.abs(dx) <= Math.abs(dy)) return;
+
+    if(dx < 0) zoomNext();
+    else zoomPrev();
+  }, { passive: true });
+
+  gal.addEventListener("touchcancel", () => {
+    tracking = false;
+  }, { passive: true });
+}
 
 function updateHeroPinnedState(){
   const fixedSubTop = document.querySelector('.fixed-sub-top');
@@ -3001,12 +3042,37 @@ async function changeAdminPin(){
 }
 
 function countVisitor(){
-  const visited = sessionStorage.getItem("msVisited");
-  if(!visited){
-    db.ref("settings/visitors").transaction(c => (c || 0) + 1);
-    sessionStorage.setItem("msVisited","true");
+  const VISITOR_KEY = "ms_unique_visitor_id_v1";
+  const VISITOR_NODE = "uniqueVisitors";
+  const COUNTER_NODE = "settings/uniqueVisitorsCount";
+
+  function createVisitorId(){
+    return "v_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 12);
   }
-  db.ref("settings/visitors").on("value", s => {
+
+  let visitorId = localStorage.getItem(VISITOR_KEY);
+
+  if(!visitorId){
+    visitorId = createVisitorId();
+    localStorage.setItem(VISITOR_KEY, visitorId);
+  }
+
+  const visitorRef = db.ref(VISITOR_NODE + "/" + visitorId);
+
+  visitorRef.once("value").then((snap) => {
+    if(!snap.exists()){
+      return visitorRef.set({
+        createdAt: Date.now(),
+        ua: navigator.userAgent || "",
+        platform: navigator.platform || ""
+      }).then(() => db.ref(COUNTER_NODE).transaction(c => (c || 0) + 1));
+    }
+    return null;
+  }).catch((err) => {
+    console.error("countVisitor unique tracking failed:", err);
+  });
+
+  db.ref(COUNTER_NODE).on("value", s => {
     visitorsCount = s.val() || 0;
     writeCache("ms_cache_visitors", visitorsCount);
     updateStatsCards();
