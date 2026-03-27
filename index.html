@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>متجر MS</title>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
+
+</script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -109,7 +111,8 @@
     .gallery-next{left:8px}
     .gallery-arrow i{font-size:11px}
     .gallery-zoom-badge{display:none !important}
-    .gallery-img{width:100%;height:100%;object-fit:cover;background:#fff;cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-drag:none;opacity:0;transition:opacity .25s ease}
+    .gallery-img{width:100%;height:100%;object-fit:cover;background:#fff;cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-drag:none;opacity:0;transition:opacity 1.1s ease;position:relative;z-index:1}
+    .gallery-fade-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#fff;pointer-events:none;user-select:none;-webkit-user-drag:none;opacity:0;transition:opacity 3.8s ease;z-index:5}
     .gallery-wrapper.img-loading::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%);background-size:400% 100%;animation:shimmer 1.3s infinite}
     body.dark-mode .gallery-wrapper.img-loading::before{background:linear-gradient(90deg,#1f2937 25%,#334155 37%,#1f2937 63%);background-size:400% 100%}
     .gallery-wrapper.img-loaded::before{display:none}
@@ -3043,6 +3046,7 @@ function buildProductCard(p){
     <div class="card-top-badges">${featuredBadge}</div>
     <div class="gallery-wrapper img-loading">
       <img class="gallery-img" src="${escapeAttr(placeholderImage(p.name))}" data-src="${escapeAttr(firstImage)}" alt="${escapeAttr(p.name)}" data-product-id="${escapeAttr(p.id)}" data-index="0" data-images='${escapeAttr(encodeJsArray(p.images && p.images.length ? p.images : [firstImage]))}' onclick="openZoomFromElement(this,event)" onerror="handleProductImageError(this)" />
+      <img class="gallery-fade-img" src="${escapeAttr(firstImage)}" alt="" aria-hidden="true" />
       ${(p.images && p.images.length > 1) ? `<div class="gallery-dots">${p.images.map((_,i)=>`<span class="gallery-dot ${i===0?'active':''}" data-index="${i}"></span>`).join('')}</div>` : ""}
     </div>
     <div class="product-info">
@@ -3058,6 +3062,41 @@ function buildProductCard(p){
       </div>
     </div>`;
   return card;
+}
+
+
+function blendCardImageChange(mainImg, nextSrc, productName, productId, nextIndex){
+  if(!mainImg) return;
+  const wrapper = mainImg.closest(".gallery-wrapper");
+  const fadeImg = wrapper ? wrapper.querySelector(".gallery-fade-img") : null;
+
+  if(!wrapper || !fadeImg){
+    mainImg.src = nextSrc;
+    markProductImageLoaded(mainImg);
+    updateGalleryDots(productId, nextIndex);
+    return;
+  }
+
+  mainImg.classList.add("real-ready");
+  fadeImg.src = nextSrc;
+  fadeImg.style.opacity = "0";
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fadeImg.style.opacity = "1";
+    });
+  });
+
+  const finish = () => {
+    mainImg.src = nextSrc;
+    markProductImageLoaded(mainImg);
+    updateGalleryDots(productId, nextIndex);
+    requestAnimationFrame(() => {
+      fadeImg.style.opacity = "0";
+    });
+  };
+
+  setTimeout(finish, 2600);
 }
 
 function changeCardImage(productId, step, event){
@@ -3077,18 +3116,10 @@ function changeCardImage(productId, step, event){
 
   img.setAttribute("data-index", String(nextIndex));
   img.setAttribute("data-images", escapeAttr(encodeJsArray(p.images)));
-  img.classList.remove("real-ready");
-  const wrapper = img.closest(".gallery-wrapper");
-  if(wrapper){
-    wrapper.classList.remove("img-loaded");
-    wrapper.classList.add("img-loading");
-  }
   const nextSrc = p.images[nextIndex] || placeholderImage(p.name);
   const realImage = new Image();
   realImage.onload = () => {
-    img.src = nextSrc;
-    markProductImageLoaded(img);
-    updateGalleryDots(productId, nextIndex);
+    blendCardImageChange(img, nextSrc, p.name, productId, nextIndex);
   };
   realImage.onerror = () => {
     handleProductImageError(img);
@@ -3129,7 +3160,7 @@ function startCardSlideshows(){
         return;
       }
       changeCardImage(productId, 1);
-    }, 3500);
+    }, 8000);
   });
 }
 
@@ -3621,6 +3652,7 @@ function restoreActiveProductPosition(attempt = 0){
   return true;
 }
 
+
 function clearOverlayHash(expected){
   if(!location.hash) return;
   if(expected && location.hash !== expected) return;
@@ -3727,6 +3759,7 @@ function closeZoom(fromBack = false){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
 }
+
 
 /* =========================
    BACK CONTROL - لا تعدل
