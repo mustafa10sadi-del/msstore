@@ -1825,8 +1825,120 @@ body.keyboard-open .modal-card{
   scroll-margin-bottom:260px !important;
 }
 </style>
+<style id="anti-white-flash-aggressive">
+/* Aggressive anti white-flash fix for Android WebView */
+html,body{
+  background:#0b1220 !important;
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+}
+
+body{
+  background:#0b1220 !important;
+  background-image:none !important;
+}
+
+body:not(.dark-mode){
+  background:#f4f7fb !important;
+  background-image:none !important;
+}
+
+/* most common flash source in WebView */
+.header,
+.fixed-top-area,
+.fixed-sub-top,
+.top-fixed-shell,
+.footer{
+  background:#0b1220 !important;
+  background-image:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+  box-shadow:none !important;
+}
+
+body:not(.dark-mode) .header,
+body:not(.dark-mode) .fixed-top-area,
+body:not(.dark-mode) .fixed-sub-top,
+body:not(.dark-mode) .top-fixed-shell,
+body:not(.dark-mode) .footer{
+  background:#f4f7fb !important;
+  background-image:none !important;
+}
+
+#productsContainer,
+main,
+.section-bar,
+.category-strip{
+  background:transparent !important;
+  background-image:none !important;
+}
+
+/* stop shimmer/shine effects that trigger repaint flashes */
+.skeleton,
+.premium-hero,
+.premium-hero::before,
+.premium-hero::after,
+.hero-glow,
+.hero-overlay,
+.alert-bar::before,
+.btn-order::before,
+.btn-order::after{
+  animation:none !important;
+}
+
+.premium-hero,
+.alert-bar,
+.btn-order{
+  -webkit-backface-visibility:hidden !important;
+  backface-visibility:hidden !important;
+  transform:translateZ(0) !important;
+}
+
+/* keep image cards stable */
+.card,
+.gallery-wrapper,
+.gallery-img{
+  -webkit-backface-visibility:hidden !important;
+  backface-visibility:hidden !important;
+  transform:translateZ(0) !important;
+}
+
+.gallery-wrapper,
+.gallery-img{
+  background:#111827 !important;
+}
+
+/* avoid hidden overlays stealing paint */
+#splashScreen[style*="display: none"],
+#splashScreen[style*="opacity: 0"],
+.maint-overlay:not(.show),
+.modal:not(.show),
+#zoomOverlay[style*="display: none"]{
+  pointer-events:none !important;
+}
+</style>
+<script id="anti-white-flash-js">
+(function(){
+  function repaintFix(){
+    try{
+      var dark = document.body.classList.contains('dark-mode');
+      var bg = dark ? '#0b1220' : '#f4f7fb';
+      document.documentElement.style.background = bg;
+      document.body.style.background = bg;
+      document.querySelectorAll('.header,.fixed-top-area,.fixed-sub-top,.top-fixed-shell,.footer').forEach(function(el){
+        el.style.background = bg;
+        el.style.backdropFilter = 'none';
+        el.style.webkitBackdropFilter = 'none';
+      });
+    }catch(e){}
+  }
+  window.addEventListener('load', function(){ setTimeout(repaintFix, 100); setTimeout(repaintFix, 1000); });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) setTimeout(repaintFix, 100); });
+  window.addEventListener('scroll', function(){}, {passive:true});
+})();
+</script>
 </head>
-<body style="margin:0;background:#0f172a;color:#ffffff;">
+<body style="margin:0;background:#0f172a;color:#ffffff;background:#0b1220;overflow-x:hidden;overflow-y:auto">
 
   <div id="splashScreen" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.45s ease;">
     <div class="logo" id="splashLogoBox">MS</div>
