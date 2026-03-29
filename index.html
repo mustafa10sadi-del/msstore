@@ -2367,11 +2367,12 @@ applyCachedData();
   setupMobileKeyboardFix();
   updateTopFixedShellSpacer();
   startSplash();
-  syncOverlayStateToKodular();
   scheduleSplashHide(getSplashDurationMs(), true);
   window.addEventListener("load", () => { updateTopFixedShellSpacer(); scheduleSplashHideFromSettings(false); }, { once: true });
   window.addEventListener("resize", updateTopFixedShellSpacer);
   window.addEventListener("error", () => hideSplash(), { once: true });
+
+refreshKodularBackState();
 
 setTimeout(() => {
   const splash = document.getElementById("splashScreen");
@@ -3622,29 +3623,32 @@ function restoreActiveProductPosition(attempt = 0){
   return true;
 }
 
+
+const IS_KODULAR_APP = /(?:^|[?&])app=1(?:&|$)/.test(location.search);
+function setKodularBackState(state){
+  const value = state === "can_go_back" ? "can_go_back" : "home";
+  window.__kodularBackState = value;
+  try{
+    if(window.AppInventor && typeof window.AppInventor.setWebViewString === "function"){
+      window.AppInventor.setWebViewString(value);
+    }
+  }catch(e){}
+}
+function refreshKodularBackState(){
+  const hasOverlay = !!document.getElementById('zoomOverlay')?.classList.contains('show') || !!document.querySelector('.modal.show');
+  setKodularBackState(hasOverlay ? 'can_go_back' : 'home');
+}
+window.addEventListener('load', () => {
+  setTimeout(refreshKodularBackState, 200);
+});
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(refreshKodularBackState, 200);
+});
 function clearOverlayHash(expected){
   if(!location.hash) return;
   if(expected && location.hash !== expected) return;
   const cleanUrl = location.pathname + location.search;
   history.replaceState(history.state, '', cleanUrl);
-}
-
-
-function getCurrentOverlayState(){
-  const zoomOpen = document.getElementById('zoomOverlay')?.classList.contains('show');
-  if(zoomOpen) return 'ZOOM';
-  const openModal = document.querySelector('.modal.show');
-  if(openModal) return 'MODAL';
-  return 'NONE';
-}
-function syncOverlayStateToKodular(){
-  try{
-    const state = getCurrentOverlayState();
-    window.__msOverlayState = state;
-    if(window.AppInventor && typeof window.AppInventor.setWebViewString === 'function'){
-      window.AppInventor.setWebViewString('__overlay__:' + state);
-    }
-  }catch(e){}
 }
 
 /* =========================
@@ -3671,7 +3675,7 @@ window.addEventListener('hashchange', () => {
       closeById(modal.id, true);
     }
   });
-  syncOverlayStateToKodular();
+  refreshKodularBackState();
 });
 
 let zoomImages = [];
@@ -3707,8 +3711,9 @@ function openZoom(images, startIndex = 0, sourceEl = null){
   if(location.hash !== '#zoom'){
     location.hash = 'zoom';
   }
-  syncOverlayStateToKodular();
+  refreshKodularBackState();
 }
+
 
 function zoomNext(event){
   if(event){ event.preventDefault(); event.stopPropagation(); }
@@ -3743,13 +3748,13 @@ function closeZoom(fromBack = false){
     clearZoomHash();
   }
 
-  syncOverlayStateToKodular();
-
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
+  refreshKodularBackState();
 }
+
 
 /* =========================
    BACK CONTROL - لا تعدل
@@ -3774,9 +3779,10 @@ function openModal(id){
     if(location.hash !== '#modal-' + id){
       location.hash = 'modal-' + id;
     }
-    syncOverlayStateToKodular();
+    refreshKodularBackState();
   }
 }
+
 function closeById(id, fromBack = false){
   const el = document.getElementById(id);
   if(el) el.classList.remove('show');
@@ -3786,12 +3792,13 @@ function closeById(id, fromBack = false){
   if(!fromBack){
     clearOverlayHash('#modal-' + id);
   }
-  syncOverlayStateToKodular();
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
+  refreshKodularBackState();
 }
+
 function closeModal(event, id){
   const modal = document.getElementById(id);
   if(!modal) return;
