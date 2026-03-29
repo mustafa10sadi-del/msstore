@@ -2041,7 +2041,7 @@ body.keyboard-open .modal-card{
         <label>إضافة صور من الاستوديو</label>
         <input type="file" id="pImageFiles" accept="image/*" multiple class="hidden-file-input" />
         <div class="upload-row">
-          <button type="button" class="btn btn-secondary upload-pick-btn" onclick="document.getElementById('pImageFiles').click()">اختيار الصور</button>
+          <button type="button" class="btn btn-secondary upload-pick-btn" onclick="requestKodularImagePicker()">اختيار الصور</button>
           <div id="pImageStatus" class="upload-status">لم يتم اختيار صور بعد</div>
         </div>
         <div class="helper">الصور ستنضغط تقريباً إلى 100KB ثم تُرفع إلى Supabase، وهذا يخليك تخزن صور أكثر.</div>
@@ -2371,6 +2371,8 @@ applyCachedData();
   window.addEventListener("load", () => { updateTopFixedShellSpacer(); scheduleSplashHideFromSettings(false); }, { once: true });
   window.addEventListener("resize", updateTopFixedShellSpacer);
   window.addEventListener("error", () => hideSplash(), { once: true });
+
+  updateKodularOverlayState();
 
 setTimeout(() => {
   const splash = document.getElementById("splashScreen");
@@ -3295,6 +3297,22 @@ function setSaveButtonsDisabled(disabled){
   });
 }
 
+
+function requestKodularImagePicker(){
+  const input = document.getElementById("pImageFiles");
+  const isKodular = !!(window.AppInventor && typeof window.AppInventor.setWebViewString === 'function');
+
+  if(isKodular){
+    showToast("اختيار الصور من داخل WebViewer في كودولار قد لا يعمل. استخدم منتقي الصور من كودولار إذا استمرت المشكلة.", true);
+    notifyKodularState("request:image-picker");
+    return;
+  }
+
+  if(input){
+    input.click();
+  }
+}
+
 function initImagePicker(){
   const input = document.getElementById("pImageFiles");
   if(!input) return;
@@ -3624,84 +3642,111 @@ function restoreActiveProductPosition(attempt = 0){
 
 function notifyKodularState(state){
   try{
-    if(window.AppInventor && typeof window.AppInventor.setWebViewString === "function"){
-      window.AppInventor.setWebViewString(String(state || "home"));
+    if(window.AppInventor && typeof window.AppInventor.setWebViewString === 'function'){
+      window.AppInventor.setWebViewString(String(state || 'home'));
     }
   }catch(e){}
 }
 
-function getBaseUrlWithoutHash(){
-  return location.pathname + location.search;
+let overlayStack = [];
+let ignoreNextPopState = false;
+
+function getCurrentOverlayState(){
+  const last = overlayStack.length ? overlayStack[overlayStack.length - 1] : null;
+  if(!last) return 'home';
+  if(last.type === 'zoom') return 'inside:zoom';
+  if(last.type === 'modal') return 'inside:' + last.id;
+  return 'home';
 }
 
-function getVisibleOverlayState(){
-  const zoomOverlay = document.getElementById("zoomOverlay");
-  if(zoomOverlay && zoomOverlay.classList.contains("show")){
-    return { app:"overlay", kind:"zoom", id:"zoom" };
-  }
-  const modal = document.querySelector(".modal.show");
-  if(modal){
-    return { app:"overlay", kind:"modal", id: modal.id };
-  }
-  return { app:"home" };
+function updateKodularOverlayState(){
+  notifyKodularState(getCurrentOverlayState());
 }
 
-function syncKodularBackState(){
-  const state = getVisibleOverlayState();
-  if(state.app === "home"){
-    notifyKodularState("home");
-  }else if(state.kind === "zoom"){
-    notifyKodularState("inside:zoom");
-  }else{
-    notifyKodularState("inside:" + state.id);
-  }
-}
-
-function ensureHomeHistoryState(){
-  try{
-    const st = history.state || {};
-    if(!st || st.app !== "home"){
-      history.replaceState({ app:"home" }, "", getBaseUrlWithoutHash());
-    }
-  }catch(e){}
-  syncKodularBackState();
-}
-
-function pushOverlayHistory(kind, id){
+function pushOverlayState(entry){
+  overlayStack.push(entry);
   try{
     history.pushState(
-      { app:"overlay", kind:String(kind || ""), id:String(id || "") },
-      "",
-      getBaseUrlWithoutHash() + "#" + (kind === "zoom" ? "zoom" : ("modal-" + id))
+      {
+        appOverlay: true,
+        overlayType: entry.type || '',
+        overlayId: entry.id || ''
+      },
+      '',
+      location.pathname + location.search
     );
   }catch(e){}
-  syncKodularBackState();
+  updateKodularOverlayState();
 }
 
-function closeOverlayVisualOnly(){
-  const zoomOverlay = document.getElementById("zoomOverlay");
-  if(zoomOverlay && zoomOverlay.classList.contains("show")){
-    closeZoom(true, true);
+function removeOverlayState(entry){
+  const target = entry || (overlayStack.length ? overlayStack[overlayStack.length - 1] : null);
+  if(!target){
+    updateKodularOverlayState();
+    return;
+  }
+
+  const index = overlayStack.findIndex((item) => {
+    if(item.type !== target.type) return false;
+    if(item.type === 'zoom') return true;
+    return item.id === target.id;
+  });
+
+  if(index !== -1){
+    overlayStack.splice(index, 1);
+  }
+
+  if(history.length > 1){
+    ignoreNextPopState = true;
+    try{
+      history.back();
+    }catch(e){
+      ignoreNextPopState = false;
+    }
+    setTimeout(() => {
+      ignoreNextPopState = false;
+      updateKodularOverlayState();
+    }, 120);
+  }else{
+    updateKodularOverlayState();
+  }
+}
+
+function closeTopOverlayFromHistory(){
+  const last = overlayStack.length ? overlayStack[overlayStack.length - 1] : null;
+  if(!last) return false;
+  if(last.type === 'zoom'){
+    closeZoom(true);
     return true;
   }
-  const modal = document.querySelector(".modal.show");
-  if(modal){
-    closeById(modal.id, true, true);
+  if(last.type === 'modal'){
+    closeById(last.id, true);
     return true;
   }
-  syncKodularBackState();
   return false;
 }
 
-window.addEventListener("popstate", () => {
-  const state = history.state || { app:"home" };
-  if(state.app === "home"){
-    closeOverlayVisualOnly();
+window.addEventListener('popstate', (event) => {
+  if(ignoreNextPopState){
+    ignoreNextPopState = false;
     return;
   }
-  syncKodularBackState();
+
+  if(event.state && event.state.appOverlay){
+    updateKodularOverlayState();
+    return;
+  }
+
+  if(closeTopOverlayFromHistory()){
+    return;
+  }
+
+  updateKodularOverlayState();
 });
 
+/* =========================
+   BACK CONTROL CLEAN
+   ========================= */
 let zoomImages = [];
 let zoomIndex = 0;
 let zoomTouchStartX = 0;
@@ -3731,7 +3776,13 @@ function openZoom(images, startIndex = 0, sourceEl = null){
   overlay.style.display = "flex";
   overlay.style.visibility = "visible";
   document.body.classList.add("modal-open");
-  pushOverlayHistory("zoom", "zoom");
+
+  const isAlreadyTracked = overlayStack.length && overlayStack[overlayStack.length - 1].type === 'zoom';
+  if(!isAlreadyTracked){
+    pushOverlayState({ type: 'zoom' });
+  }else{
+    updateKodularOverlayState();
+  }
 }
 
 function zoomNext(event){
@@ -3748,15 +3799,7 @@ function zoomPrev(event){
   renderZoomImage();
 }
 
-function closeZoom(fromBack = false, skipHistory = false){
-  if(!fromBack && !skipHistory){
-    const st = history.state || {};
-    if(st.app === "overlay" && st.kind === "zoom"){
-      history.back();
-      return;
-    }
-  }
-
+function closeZoom(fromBack = false){
   const overlay = document.getElementById("zoomOverlay");
   if(overlay){
     overlay.classList.remove("show");
@@ -3771,23 +3814,29 @@ function closeZoom(fromBack = false, skipHistory = false){
     document.body.classList.remove("modal-open");
   }
 
+  if(fromBack){
+    const idx = overlayStack.map(item => item.type).lastIndexOf('zoom');
+    if(idx !== -1) overlayStack.splice(idx, 1);
+    updateKodularOverlayState();
+  }else{
+    removeOverlayState({ type: 'zoom' });
+  }
+
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
-  syncKodularBackState();
 }
 
 /* =========================
-   BACK CONTROL - fixed for kodular/webview
+   BACK CONTROL - لا تعدل
+   END
    ========================= */
 
 function shareProduct(id){
   const p = allProducts.find(x => x.id === id);
   if(!p) return;
-  const text = `${p.name}
-${formatPrice(p.price)}
-${p.desc || ""}`;
+  const text = `${p.name}\n${formatPrice(p.price)}\n${p.desc || ""}`;
   if(navigator.share){
     navigator.share({ title: p.name, text }).catch(() => {});
   }else if(navigator.clipboard){
@@ -3799,28 +3848,33 @@ function openModal(id){
   if(el && !el.classList.contains('show')){
     el.classList.add('show');
     document.body.classList.add('modal-open');
-    pushOverlayHistory("modal", id);
-  }
-}
-function closeById(id, fromBack = false, skipHistory = false){
-  if(!fromBack && !skipHistory){
-    const st = history.state || {};
-    if(st.app === "overlay" && st.kind === "modal" && st.id === id){
-      history.back();
-      return;
+    const isAlreadyTracked = overlayStack.length && overlayStack[overlayStack.length - 1].type === 'modal' && overlayStack[overlayStack.length - 1].id === id;
+    if(!isAlreadyTracked){
+      pushOverlayState({ type: 'modal', id });
+    }else{
+      updateKodularOverlayState();
     }
   }
-
+}
+function closeById(id, fromBack = false){
   const el = document.getElementById(id);
   if(el) el.classList.remove('show');
   if(!document.querySelector('.modal.show') && !document.getElementById('zoomOverlay')?.classList.contains('show')){
     document.body.classList.remove('modal-open');
   }
+
+  if(fromBack){
+    const idx = overlayStack.map(item => item.type === 'modal' ? item.id : '').lastIndexOf(id);
+    if(idx !== -1) overlayStack.splice(idx, 1);
+    updateKodularOverlayState();
+  }else{
+    removeOverlayState({ type: 'modal', id });
+  }
+
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
-  syncKodularBackState();
 }
 function closeModal(event, id){
   const modal = document.getElementById(id);
@@ -3831,9 +3885,6 @@ function closeModal(event, id){
     closeById(id);
   }
 }
-
-setTimeout(ensureHomeHistoryState, 0);
-
 
 function showToast(message, isError=false){
   const wrap = document.getElementById("toastWrap");
