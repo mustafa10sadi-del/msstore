@@ -2668,6 +2668,8 @@ applyCachedData();
   window.addEventListener("resize", updateTopFixedShellSpacer);
   window.addEventListener("error", () => hideSplash(), { once: true });
 
+setTimeout(syncOverlayStateWithProject, 500);
+
 setTimeout(() => {
   const splash = document.getElementById("splashScreen");
   const safeMax = Math.max(getSplashDurationMs() + 1500, 10000);
@@ -3971,6 +3973,40 @@ function restoreActiveProductPosition(attempt = 0){
 }
 
 
+
+function notifyOverlayState(state){
+  const value = 'OVERLAY:' + String(state || 'NONE').toUpperCase();
+  try{
+    if(window.AppInventor && typeof window.AppInventor.setWebViewString === "function"){
+      window.AppInventor.setWebViewString(value);
+      return;
+    }
+  }catch(e){}
+  try{
+    if(window.Niotron && typeof window.Niotron.setWebViewString === "function"){
+      window.Niotron.setWebViewString(value);
+      return;
+    }
+  }catch(e){}
+}
+
+function syncOverlayStateWithProject(){
+  const hash = location.hash || '';
+  const zoomOverlay = document.getElementById('zoomOverlay');
+  const hasZoom = !!(zoomOverlay && zoomOverlay.classList.contains('show'));
+  const hasModal = !!document.querySelector('.modal.show');
+
+  if(hash === '#zoom' || hasZoom){
+    notifyOverlayState('ZOOM');
+    return;
+  }
+  if(hash.indexOf('#modal-') === 0 || hasModal){
+    notifyOverlayState('MODAL');
+    return;
+  }
+  notifyOverlayState('NONE');
+}
+
 function clearOverlayHash(expected){
   if(!location.hash) return;
   if(expected && location.hash !== expected) return;
@@ -4160,6 +4196,7 @@ function openZoom(images, startIndex = 0, sourceEl = null){
   if(location.hash !== '#zoom'){
     location.hash = 'zoom';
   }
+  syncOverlayStateWithProject();
 }
 
 function zoomNext(event){
@@ -4195,6 +4232,7 @@ function closeZoom(fromBack = false){
     clearZoomHash();
   }
 
+  syncOverlayStateWithProject();
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
@@ -4225,6 +4263,7 @@ function openModal(id){
     if(location.hash !== '#modal-' + id){
       location.hash = 'modal-' + id;
     }
+    syncOverlayStateWithProject();
   }
 }
 function closeById(id, fromBack = false){
@@ -4236,6 +4275,7 @@ function closeById(id, fromBack = false){
   if(!fromBack){
     clearOverlayHash('#modal-' + id);
   }
+  syncOverlayStateWithProject();
   if(restoreActiveProductPosition()) return;
   if(typeof lastScrollYBeforeOverlay === 'number'){
     requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
