@@ -1,21 +1,16 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <!-- HEAD START -->
-<meta charset="UTF-8" />
+  <meta charset="UTF-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>متجر MS</title>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js">
-
-</script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-    <!-- CSS START -->
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+  <style>    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
 
     :root{
       --bg:#f4f7fb;--card:#ffffff;--text:#0f172a;--muted:#64748b;--accent:#2563eb;--accent2:#06b6d4;
@@ -51,17 +46,6 @@
     #splashScreen p{margin:14px 0 0;font-size:18px;opacity:.98;line-height:1.95;max-width:360px}
     #progressBar{width:80%;max-width:260px;height:6px;background:rgba(255,255,255,.2);border-radius:999px;margin-top:22px;overflow:hidden}
     #progressFill{height:100%;width:0%;background:#fff;border-radius:999px}
-
-    html.splash-lock,
-    body.splash-lock{
-      overflow:hidden !important;
-      height:100vh !important;
-      touch-action:none !important;
-      overscroll-behavior:none !important;
-    }
-    #splashScreen{
-      touch-action:none !important;
-    }
 
     .header{position:sticky;top:0;z-index:2100;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:8px 12px 6px}
     body.dark-mode .header{background:rgba(17,24,39,.9)}
@@ -125,14 +109,11 @@
     .gallery-next{left:8px}
     .gallery-arrow i{font-size:11px}
     .gallery-zoom-badge{display:none !important}
-    .gallery-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:transparent;cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-drag:none;opacity:1;transition:opacity 1.8s ease;will-change:opacity}
-    
-    body.dark-mode 
+    .gallery-img{width:100%;height:100%;object-fit:cover;background:#fff;cursor:zoom-in;touch-action:pan-y;user-select:none;-webkit-user-drag:none;opacity:0;transition:opacity .25s ease}
+    .gallery-wrapper.img-loading::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(90deg,#e5e7eb 25%,#f3f4f6 37%,#e5e7eb 63%);background-size:400% 100%;animation:shimmer 1.3s infinite}
+    body.dark-mode .gallery-wrapper.img-loading::before{background:linear-gradient(90deg,#1f2937 25%,#334155 37%,#1f2937 63%);background-size:400% 100%}
     .gallery-wrapper.img-loaded::before{display:none}
-    .gallery-img.real-ready{opacity:1;transform:scale(1);filter:none}
-
-    
-
+    .gallery-img.real-ready{opacity:1}
     .product-info{padding:10px;display:flex;flex-direction:column;flex:1;justify-content:flex-start}
     .p-name{font-size:15px;font-weight:900;line-height:1.35;margin:0 0 4px;min-height:auto;display:block}
     .p-desc{margin:0 0 5px;cursor:pointer}
@@ -1794,61 +1775,28 @@ body.dark-mode .p-desc.long{
 @keyframes adsTicker{
   from{transform:translateX(0)}
   to{transform:translateX(50%)}
-}
+}</style>
 
-    .gallery-wrapper{position:relative;overflow:hidden}
-    
-
-
-    .gallery-wrapper{
-      position:relative !important;
-      overflow:hidden !important;
-      background:transparent !important;
-    }
-    .gallery-img.active{
-      opacity:1 !important;
-      z-index:2;
-    }
-    .gallery-img.fading-out{
-      opacity:0 !important;
-      z-index:1;
-    }
-    .gallery-img.entering{
-  opacity:0.25;
-      opacity:0 !important;
-      z-index:3;
-    }
-    .gallery-img.entering.show{
-      opacity:1 !important;
-    }
-
-
-    .gallery-wrapper.dragging .gallery-img.active{
-      transition:none !important;
-    }
-
-
-    .gallery-img.preview-img{
-      position:absolute !important;
-      inset:0 !important;
-      z-index:1 !important;
-      opacity:.35 !important;
-      transition:transform .18s ease, opacity .18s ease !important;
-      pointer-events:none !important;
-    }
-
-</style>
-
-  <!-- CSS CONTINUE -->
 <style>
 /* tighten categories spacing */
 .categories, .sections, .cats, .categories-header { margin-top:0 !important; padding-top:0 !important; }
 .categories-note, .section-note { display:none !important; }
 
+/* ===== DESC SCROLL RIGHT + CLEAN ===== */
+.p-desc.long{
+  direction:rtl !important;
+  unicode-bidi:plaintext !important;
+  text-align:right !important;
+}
+
+.p-desc.long *{
+  direction:inherit !important;
+}
+
 </style>
 
-  <!-- CSS CONTINUE -->
 <style>
+
 /* keyboard fix for admin/settings modals on mobile */
 body.keyboard-open .modal{
   align-items:flex-start !important;
@@ -1867,62 +1815,11 @@ body.keyboard-open .modal-card{
   scroll-margin-top:24px !important;
   scroll-margin-bottom:260px !important;
 }
-
-
-/* ===== BLACK PLACEHOLDER + SPINNER ONLY WHILE IMAGE LOADS ===== */
-.gallery-wrapper{
-  position:relative !important;
-  overflow:hidden !important;
-}
-
-.gallery-wrapper.img-loading{
-  background:#000 !important;
-}
-
-.gallery-wrapper.img-loading .gallery-img{
-  opacity:.28 !important;
-  filter:brightness(.72) !important;
-}
-
-.gallery-wrapper.img-loading::after{
-  content:"";
-  position:absolute;
-  top:50%;
-  left:50%;
-  width:28px;
-  height:28px;
-  margin:-14px 0 0 -14px;
-  border:3px solid rgba(255,255,255,.2);
-  border-top-color:#ffffff;
-  border-radius:50%;
-  animation:spinLoader .8s linear infinite;
-  z-index:5;
-  pointer-events:none;
-}
-
-.gallery-wrapper.img-loaded::after,
-.gallery-wrapper:not(.img-loading)::after{
-  content:none !important;
-}
-
-.gallery-wrapper.img-loaded .gallery-img,
-.gallery-wrapper:not(.img-loading) .gallery-img{
-  opacity:1 !important;
-  filter:none !important;
-  transition:opacity .25s ease, filter .25s ease !important;
-}
-
-@keyframes spinLoader{
-  to{transform:rotate(360deg);}
-}
-
 </style>
-  <!-- CSS END -->
 </head>
-<body>
+<body style="margin:0;background:#0f172a;color:#ffffff;">
 
-    <!-- BODY START -->
-<div id="splashScreen">
+  <div id="splashScreen" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.45s ease;">
     <div class="logo" id="splashLogoBox">MS</div>
     <h1 id="splashTitle">متجر MS</h1>
     <p id="splashSubtitle">
@@ -2223,46 +2120,23 @@ body.keyboard-open .modal-card{
     </div>
   </div>
 
-  <!-- SCRIPTS START -->
 <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
-// ===== CONFIG (OBFUSCATED) =====
-const __APP_CONF_PACKED__ = "{\"firebase\":{\"apiKey\":\"NJVRzokTWNncjhUS3U2YidDU2wUeIx0bhlna5QTew4WQ5NVY6lUQ\",\"authDomain\":\"=02bj5CcwFWZzFmYlJXam5CNmVzY10SZy9GdzNXb\",\"databaseURL\":\"==QbvNmLvlWZzFmYlJXam5iYkRnctQHb1FmZlRWL0YWNjVTLlJ3b0N3ct9yL6MHc0RHa\",\"projectId\":\"==ANmVzY10SZy9GdzNXb\",\"storageBucket\":\"wBXYuU2ZhJ3b0NXZzFmYlJXam5CNmVzY10SZy9GdzNXb\",\"messagingSenderId\":\"yAjNzEjN2UzN0UjM\"},\"supabase\":{\"url\":\"==wbj5SZzFmYhBXdz5ScoJGeiR3doVHdm52a1pnez9mam9yL6MHc0RHa\",\"publishableKey\":\"==gWkpXbiJkRx8VUstmQltWSyZkaT9ma1smVzc3VoZDVfVGbiFGazlGbiVHcfJ2c\",\"bucket\":\"=MHdjVHZvJHc\"}}";
-function __decodeConfPart__(value){
-  try {
-    return atob(String(value).split("").reverse().join(""));
-  } catch(e) {
-    return "";
-  }
-}
-function __readAppConfig__(){
-  const raw = JSON.parse(__APP_CONF_PACKED__);
-  return {
-    firebase: {
-      apiKey: __decodeConfPart__(raw.firebase.apiKey),
-      authDomain: __decodeConfPart__(raw.firebase.authDomain),
-      databaseURL: __decodeConfPart__(raw.firebase.databaseURL),
-      projectId: __decodeConfPart__(raw.firebase.projectId),
-      storageBucket: __decodeConfPart__(raw.firebase.storageBucket),
-      messagingSenderId: __decodeConfPart__(raw.firebase.messagingSenderId)
-    },
-    supabase: {
-      url: __decodeConfPart__(raw.supabase.url),
-      publishableKey: __decodeConfPart__(raw.supabase.publishableKey),
-      bucket: __decodeConfPart__(raw.supabase.bucket)
-    }
-  };
-}
-const __APP_CONFIG__ = __readAppConfig__();
-const firebaseConfig = __APP_CONFIG__.firebase;
+const firebaseConfig = {
+  apiKey: "AIzaSyAn0y49jyaoLHyL6P7bce7IHcrsVNJ3ERM",
+  authDomain: "msstore-5c5f4.firebaseapp.com",
+  databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com",
+  projectId: "msstore-5c5f4",
+  storageBucket: "msstore-5c5f4.firebasestorage.app",
+  messagingSenderId: "254756613602"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const SUPABASE_URL = __APP_CONFIG__.supabase.url;
-const SUPABASE_PUBLISHABLE_KEY = __APP_CONFIG__.supabase.publishableKey;
-const SUPABASE_BUCKET = __APP_CONFIG__.supabase.bucket;
+const SUPABASE_URL = "https://fjoszzuknftuhwtbxbhq.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_T6hWw3Vk5joSjFrIkeBklQ_1FBbmzdZ";
+const SUPABASE_BUCKET = "products";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
@@ -2279,9 +2153,7 @@ let productsMap = {};
 let productsFirstPaintDone = false;
 let adAutoToggleTimer = null;
 let adIsTemporarilyHidden = false;
-let isUserInteracting = false;
 
-// ===== DEFAULT SETTINGS =====
 const defaultSettings = {
   storeName: "متجر MS",
   storeSubtitle: "متجر أنيق وفخم",
@@ -2304,7 +2176,6 @@ const defaultSettings = {
   adTransition: "fade"
 };
 
-// ===== HELPERS =====
 function setupMobileKeyboardFix(){
   const supportsVV = !!window.visualViewport;
 
@@ -2439,7 +2310,6 @@ function applyCachedData(){
   }
 }
 
-// ===== UI HELPERS =====
 function initZoomSwipe(){
   const gal = document.getElementById("zGal");
   if(!gal) return;
@@ -2479,15 +2349,10 @@ function updateTopFixedShellSpacer(){
   spacer.style.height = Math.ceil(shell.offsetHeight) + 'px';
 }
 
-// ===== APP START =====
 document.addEventListener("DOMContentLoaded", () => {
-
-document.addEventListener("touchmove", function(e){
-  if(!splashHidden){
-    e.preventDefault();
+  if(!history.state){
+    try{ history.replaceState({ __msHome: true }, '', location.pathname + location.search); }catch(e){}
   }
-}, { passive: false });
-
   applySavedTheme();
 applyCachedData();
   initAdminState();
@@ -2501,7 +2366,6 @@ applyCachedData();
   initMaintenanceAccess();
   initImagePicker();
   initCardImageSwipe();
-  setTimeout(startCardSlideshows, 600);
   initZoomSwipe();
   setupMobileKeyboardFix();
   updateTopFixedShellSpacer();
@@ -2519,9 +2383,9 @@ setTimeout(() => {
   }
 }, Math.max(getSplashDurationMs() + 1500, 10000));
 
+  syncBridgeState();
 });
 
-// ===== SPLASH SCREEN =====
 function getSplashDurationMs(){
   const raw = Number((storeSettings && storeSettings.splashDuration) || defaultSettings.splashDuration || 2);
   const sec = Number.isFinite(raw) && raw > 0 ? raw : 2;
@@ -2562,13 +2426,6 @@ function startSplash(){
   splashHidden = false;
   splashStartedAt = Date.now();
   splashDurationMs = null;
-
-  document.documentElement.classList.add("splash-lock");
-  document.body.classList.add("splash-lock");
-  document.documentElement.style.overflow = "hidden";
-  document.body.style.overflow = "hidden";
-  window.scrollTo(0, 0);
-
   const splash = document.getElementById("splashScreen");
   if(!splash) return;
   if(splashHideTimer){
@@ -2641,14 +2498,7 @@ function hideSplash(forceImmediate){
   const fadeOut = () => {
     splash.style.opacity = "0";
     splash.style.pointerEvents = "none";
-    setTimeout(() => {
-      splash.style.display = "none";
-      document.documentElement.classList.remove("splash-lock");
-      document.body.classList.remove("splash-lock");
-      document.documentElement.style.overflow = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, 0);
-    }, 450);
+    setTimeout(() => { splash.style.display = "none"; }, 450);
   };
 
   if(forceImmediate){
@@ -2672,7 +2522,6 @@ function showProductSkeletons(){
   container.innerHTML = html;
 }
 
-// ===== THEME / ADMIN =====
 function applySavedTheme(){
   const mode = localStorage.getItem("msTheme") || "light";
   if(mode === "dark") document.body.classList.add("dark-mode");
@@ -2767,7 +2616,6 @@ function logoutAdmin(){
   updateAdminUI();
 }
 
-// ===== STORE SETTINGS =====
 function listenStoreSettings(){
   db.ref("settings/store").on("value", snap => {
     storeSettings = Object.assign({}, defaultSettings, snap.val() || {});
@@ -2901,7 +2749,6 @@ async function changeAdminPin(){
   closeById("passwordModal");
 }
 
-// ===== VISITORS =====
 function countVisitor(){
   const visited = sessionStorage.getItem("msVisited");
   if(!visited){
@@ -2915,7 +2762,6 @@ function countVisitor(){
   });
 }
 
-// ===== CATEGORIES =====
 function listenCategories(){
   db.ref("categories").on("value", snap => {
     allCategories = [];
@@ -3012,7 +2858,6 @@ function renderAdminCategories(){
   });
 }
 
-// ===== PRODUCTS =====
 function listenProducts(){
   const ref = db.ref("products");
 
@@ -3120,7 +2965,6 @@ function renderProducts(){
     container.innerHTML = "";
     container.appendChild(frag);
     scheduleRealImageLoading();
-  startCardSlideshows();
     startCardSlideshows();
   });
 }
@@ -3128,8 +2972,6 @@ function renderProducts(){
 function markProductImageLoaded(img){
   if(!img) return;
   img.classList.add("real-ready");
-  img.style.opacity = "1";
-  img.style.filter = "none";
   const wrapper = img.closest(".gallery-wrapper");
   if(wrapper){
     wrapper.classList.remove("img-loading");
@@ -3138,15 +2980,8 @@ function markProductImageLoaded(img){
 }
 function handleProductImageError(img){
   if(!img) return;
-  img.removeAttribute("data-src");
-  img.src = placeholderImage(img.alt || "");
-  const wrapper = img.closest(".gallery-wrapper");
-  if(wrapper){
-    wrapper.classList.remove("img-loading");
-    wrapper.classList.add("img-loaded");
-  }
-  img.style.opacity = "1";
-  img.style.filter = "none";
+  img.src = placeholderImage(img.alt || "صورة");
+  markProductImageLoaded(img);
 }
 function loadRealProductImage(img){
   if(!img) return;
@@ -3156,9 +2991,7 @@ function loadRealProductImage(img){
   realImage.onload = () => {
     img.src = realSrc;
     img.removeAttribute("data-src");
-    requestAnimationFrame(() => {
-      markProductImageLoaded(img);
-    });
+    markProductImageLoaded(img);
   };
   realImage.onerror = () => {
     img.removeAttribute("data-src");
@@ -3200,11 +3033,7 @@ function buildProductCard(p){
   const card = document.createElement("div");
   card.className = "card";
   card.setAttribute("data-product-id", p.id);
-
-  const hasRealImage = !!(p.images && p.images.length && String(p.images[0] || "").trim());
-  const firstImage = hasRealImage ? p.images[0] : placeholderImage(p.name);
-  const wrapperClass = hasRealImage ? "gallery-wrapper img-loading" : "gallery-wrapper img-loaded";
-
+  const firstImage = (p.images && p.images.length ? p.images[0] : "") || placeholderImage(p.name);
   const adminControls = isAdmin ? `
     <button class="admin-delete-btn" onclick="deleteProduct('${p.id}');event.stopPropagation();"><i class="fa-solid fa-trash"></i></button>
     <button class="admin-edit-btn" onclick="editProduct('${p.id}');event.stopPropagation();"><i class="fa-solid fa-pen"></i></button>
@@ -3213,12 +3042,11 @@ function buildProductCard(p){
   const whatsapp = cleanupNumber(storeSettings.whatsapp || defaultSettings.whatsapp);
   const orderText = `مرحبًا، أرغب بطلب المنتج: ${p.name} - السعر: ${formatPrice(p.price)}`;
   const descMode = getDescMode(p.desc);
-
   card.innerHTML = `
     ${adminControls}
     <div class="card-top-badges">${featuredBadge}</div>
-    <div class="${wrapperClass}">
-      <img class="gallery-img active" src="${escapeAttr(placeholderImage(p.name))}" ${hasRealImage ? `data-src="${escapeAttr(firstImage)}"` : ``} alt="${escapeAttr(p.name)}" data-product-id="${escapeAttr(p.id)}" data-index="0" data-images='${escapeAttr(encodeJsArray(p.images && p.images.length ? p.images : [firstImage]))}' onclick="openZoomFromElement(this,event)" onerror="handleProductImageError(this)" />
+    <div class="gallery-wrapper img-loading">
+      <img class="gallery-img" src="${escapeAttr(placeholderImage(p.name))}" data-src="${escapeAttr(firstImage)}" alt="${escapeAttr(p.name)}" data-product-id="${escapeAttr(p.id)}" data-index="0" data-images='${escapeAttr(encodeJsArray(p.images && p.images.length ? p.images : [firstImage]))}' onclick="openZoomFromElement(this,event)" onerror="handleProductImageError(this)" />
       ${(p.images && p.images.length > 1) ? `<div class="gallery-dots">${p.images.map((_,i)=>`<span class="gallery-dot ${i===0?'active':''}" data-index="${i}"></span>`).join('')}</div>` : ""}
     </div>
     <div class="product-info">
@@ -3241,61 +3069,36 @@ function changeCardImage(productId, step, event){
     event.preventDefault();
     event.stopPropagation();
   }
-
   const p = allProducts.find(x => x.id === productId);
   if(!p || !p.images || !p.images.length) return;
 
-  const currentImg = document.querySelector(`.gallery-img.active[data-product-id="${productId}"]`) ||
-                     document.querySelector(`.gallery-img[data-product-id="${productId}"]`);
-  if(!currentImg) return;
+  const img = document.querySelector(`.gallery-img[data-product-id="${productId}"]`);
+  if(!img) return;
 
-  const currentIndex = Number(currentImg.getAttribute("data-index") || 0);
+  const currentIndex = Number(img.getAttribute("data-index") || 0);
   const total = p.images.length;
   const nextIndex = (currentIndex + step + total) % total;
+
+  img.setAttribute("data-index", String(nextIndex));
+  img.setAttribute("data-images", escapeAttr(encodeJsArray(p.images)));
+  img.classList.remove("real-ready");
+  const wrapper = img.closest(".gallery-wrapper");
+  if(wrapper){
+    wrapper.classList.remove("img-loaded");
+    wrapper.classList.add("img-loading");
+  }
   const nextSrc = p.images[nextIndex] || placeholderImage(p.name);
-
-  const wrapper = currentImg.closest(".gallery-wrapper");
-  if(!wrapper) return;
-
-  const newImg = document.createElement("img");
-  newImg.className = "gallery-img entering";
-  newImg.alt = currentImg.alt || "";
-  newImg.setAttribute("data-product-id", productId);
-  newImg.setAttribute("data-index", String(nextIndex));
-  newImg.setAttribute("data-images", escapeAttr(encodeJsArray(p.images)));
-  newImg.onclick = function(ev){ openZoomFromElement(this, ev); };
-  newImg.onerror = function(){ handleProductImageError(this); };
-
-  const preloader = new Image();
-  preloader.onload = () => {
-    newImg.src = nextSrc;
-    wrapper.appendChild(newImg);
-
-    requestAnimationFrame(() => {
-      currentImg.classList.remove("active");
-      currentImg.classList.add("fading-out");
-
-      requestAnimationFrame(() => {
-        newImg.classList.add("show");
-      });
-    });
-
-    updateGalleryDots(productId, nextIndex);
-
-    setTimeout(() => {
-      if(currentImg && currentImg.parentNode){
-        currentImg.remove();
-      }
-      newImg.classList.remove("entering", "show");
-      newImg.classList.add("active");
-    }, 1400);
-  };
-
-  preloader.onerror = () => {
+  const realImage = new Image();
+  realImage.onload = () => {
+    img.src = nextSrc;
+    markProductImageLoaded(img);
     updateGalleryDots(productId, nextIndex);
   };
-
-  preloader.src = nextSrc;
+  realImage.onerror = () => {
+    handleProductImageError(img);
+    updateGalleryDots(productId, nextIndex);
+  };
+  realImage.src = nextSrc;
 }
 
 function updateGalleryDots(productId, activeIndex){
@@ -3306,31 +3109,31 @@ function updateGalleryDots(productId, activeIndex){
   });
 }
 
-/* ===== AUTO IMAGE SLIDESHOW (SOFT + SLOW) ===== */
+/* ===== FIX IMAGE SLIDESHOW DUPLICATION ===== */
 let slideshowIntervals = {};
-function stopAllCardSlideshows(){
-  Object.keys(slideshowIntervals).forEach((key) => {
-    clearInterval(slideshowIntervals[key]);
-    delete slideshowIntervals[key];
-  });
-}
+
 function startCardSlideshows(){
-  stopAllCardSlideshows();
   document.querySelectorAll('.gallery-img[data-product-id]').forEach(img => {
     const productId = img.getAttribute('data-product-id');
     const p = allProducts.find(x => x.id === productId);
     if(!p || !p.images || p.images.length < 2) return;
-    if(slideshowIntervals[productId]) return;
+
+    if(img.dataset.slideshowStarted === 'true') return;
+    img.dataset.slideshowStarted = 'true';
+
+    if(slideshowIntervals[productId]){
+      clearInterval(slideshowIntervals[productId]);
+    }
 
     slideshowIntervals[productId] = setInterval(() => {
-      const currentImg = document.querySelector(`.gallery-img.active[data-product-id="${productId}"]`) ||
-                         document.querySelector(`.gallery-img[data-product-id="${productId}"]`);
-      const wrapper = currentImg ? currentImg.closest('.gallery-wrapper') : null;
-      if(!currentImg || !wrapper || wrapper.classList.contains('dragging') || isUserInteracting){
+      const currentImg = document.querySelector(`.gallery-img[data-product-id="${productId}"]`);
+      if(!currentImg || !document.body.contains(currentImg)){
+        clearInterval(slideshowIntervals[productId]);
+        delete slideshowIntervals[productId];
         return;
       }
       changeCardImage(productId, 1);
-    }, 5000);
+    }, 3500);
   });
 }
 
@@ -3338,115 +3141,32 @@ function initCardImageSwipe(){
   let startX = 0;
   let startY = 0;
   let activeImg = null;
-  let activeWrapper = null;
-  let previewImg = null;
-  let previewIndex = -1;
-
-  function clearPreview(){
-    if(previewImg && previewImg.parentNode){
-      previewImg.remove();
-    }
-    previewImg = null;
-    previewIndex = -1;
-  }
 
   document.addEventListener("touchstart", (e) => {
-    const img = e.target.closest(".gallery-img.active[data-product-id], .gallery-img[data-product-id]");
+    const img = e.target.closest(".gallery-img[data-product-id]");
     if(!img) return;
-    isUserInteracting = true;
     activeImg = img;
-    activeWrapper = img.closest(".gallery-wrapper");
     const t = e.touches[0];
     startX = t.clientX;
     startY = t.clientY;
-    if(activeWrapper) activeWrapper.classList.add("dragging");
   }, { passive: true });
-
-  document.addEventListener("touchmove", (e) => {
-    if(!activeImg || !activeWrapper) return;
-
-    const t = e.touches[0];
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-
-    if(Math.abs(dx) > Math.abs(dy)){
-      const productId = activeImg.getAttribute("data-product-id");
-      const p = allProducts.find(x => x.id === productId);
-      if(!p || !p.images || p.images.length < 2){
-        e.preventDefault();
-        return;
-      }
-
-      const currentIndex = Number(activeImg.getAttribute("data-index") || 0);
-      const targetIndex = dx < 0
-        ? (currentIndex + 1) % p.images.length
-        : (currentIndex - 1 + p.images.length) % p.images.length;
-
-      if(previewIndex !== targetIndex){
-        clearPreview();
-        previewIndex = targetIndex;
-        const nextSrc = p.images[targetIndex] || placeholderImage(p.name);
-        previewImg = document.createElement("img");
-        previewImg.className = "gallery-img preview-img";
-        previewImg.src = nextSrc;
-        previewImg.alt = activeImg.alt || "";
-        previewImg.style.transform = dx < 0 ? 'translateX(26px)' : 'translateX(-26px)';
-        activeWrapper.insertBefore(previewImg, activeWrapper.firstChild);
-      }
-
-      const limited = Math.max(-44, Math.min(44, dx * 0.22));
-      activeImg.style.transform = `translateX(${limited}px)`;
-      activeImg.style.opacity = String(1 - Math.min(0.18, Math.abs(dx) / 320));
-
-      if(previewImg){
-        const previewShift = dx < 0
-          ? Math.max(0, 26 - Math.abs(dx) * 0.12)
-          : Math.min(0, -26 + Math.abs(dx) * 0.12);
-        previewImg.style.transform = `translateX(${previewShift}px)`;
-        previewImg.style.opacity = String(Math.min(0.78, 0.28 + Math.abs(dx) / 180));
-      }
-
-      e.preventDefault();
-    }
-  }, { passive: false });
 
   document.addEventListener("touchend", (e) => {
-    if(!activeImg || !activeWrapper) return;
-
+    if(!activeImg) return;
     const changed = e.changedTouches && e.changedTouches[0];
-    const dx = changed ? (changed.clientX - startX) : 0;
-    const dy = changed ? (changed.clientY - startY) : 0;
+    if(!changed){
+      activeImg = null;
+      return;
+    }
+    const dx = changed.clientX - startX;
+    const dy = changed.clientY - startY;
     const productId = activeImg.getAttribute("data-product-id");
 
-    if(Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy)){
-      clearPreview();
-      changeCardImage(productId, dx < 0 ? 1 : -1);
-    }else{
-      activeImg.style.transform = 'translateX(0)';
-      activeImg.style.opacity = '1';
-      clearPreview();
+    if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)){
+      if(dx < 0) changeCardImage(productId, 1);
+      else changeCardImage(productId, -1);
     }
-
-    activeWrapper.classList.remove("dragging");
     activeImg = null;
-    activeWrapper = null;
-    setTimeout(() => {
-      isUserInteracting = false;
-    }, 1500);
-  }, { passive: true });
-
-  document.addEventListener("touchcancel", () => {
-    if(activeImg){
-      activeImg.style.transform = 'translateX(0)';
-      activeImg.style.opacity = '1';
-    }
-    if(activeWrapper) activeWrapper.classList.remove("dragging");
-    clearPreview();
-    activeImg = null;
-    activeWrapper = null;
-    setTimeout(() => {
-      isUserInteracting = false;
-    }, 1500);
   }, { passive: true });
 }
 
@@ -3483,6 +3203,7 @@ function renderAdminProducts(){
     wrap.appendChild(item);
   });
   scheduleRealImageLoading();
+  startCardSlideshows();
 }
 
 async function compressImageBeforeUpload(file){
@@ -3848,7 +3569,6 @@ function switchAdminTab(tabId, btn){
   btn.classList.add("active");
 }
 
-let overlayHistoryStack = [];
 let lastScrollYBeforeOverlay = 0;
 let lastActiveProductId = "";
 let lastActiveProductOffset = 0;
@@ -3883,8 +3603,11 @@ function restoreActiveProductPosition(attempt = 0){
   html.classList.add('no-smooth-scroll');
 
   const rect = card.getBoundingClientRect();
-  const stickyOffset = getStickyOffset();
-  const targetY = window.scrollY + rect.top - stickyOffset;
+  const desiredTop = Number.isFinite(lastActiveProductOffset) ? lastActiveProductOffset : rect.top;
+  const currentTop = rect.top;
+  const delta = currentTop - desiredTop;
+  const targetY = window.scrollY + delta;
+
   window.scrollTo(0, Math.max(0, targetY));
 
   if(pendingRestoreTimer){
@@ -3892,56 +3615,97 @@ function restoreActiveProductPosition(attempt = 0){
     pendingRestoreTimer = null;
   }
 
-  if(attempt < 6){
-    pendingRestoreTimer = setTimeout(() => restoreActiveProductPosition(attempt + 1), attempt < 2 ? 20 : 60);
+  if(attempt < 4 && Math.abs(delta) > 1){
+    pendingRestoreTimer = setTimeout(() => restoreActiveProductPosition(attempt + 1), attempt < 2 ? 16 : 40);
   }else{
     setTimeout(() => {
       document.documentElement.classList.remove('no-smooth-scroll');
-    }, 120);
+    }, 80);
   }
   return true;
 }
 
-function overlayKey(type, id=""){
-  return `${type}:${id || ""}`;
+function getBridgeTarget(){
+  if(window.AppInventor && typeof window.AppInventor.setWebViewString === 'function') return window.AppInventor;
+  if(window.Kodular && typeof window.Kodular.setWebViewString === 'function') return window.Kodular;
+  return null;
 }
-function pushOverlayHistory(type, id=""){
-  const key = overlayKey(type, id);
-  if(overlayHistoryStack[overlayHistoryStack.length - 1] === key) return;
-  if(!overlayHistoryStack.length){
-    lastScrollYBeforeOverlay = window.scrollY || window.pageYOffset || 0;
-  }
-  overlayHistoryStack.push(key);
-  history.pushState({ msOverlay: true, key, scrollY: lastScrollYBeforeOverlay }, "", location.pathname + location.search);
+
+function sendBridgeState(value){
+  try{
+    const bridge = getBridgeTarget();
+    if(bridge) bridge.setWebViewString(String(value || ''));
+  }catch(e){}
 }
-function closeTopOverlayFromBack(){
-  const key = overlayHistoryStack.pop();
-  if(!key) return false;
-  const [type, ...rest] = key.split(':');
-  const id = rest.join(':');
-  if(type === 'zoom'){
-    closeZoom(true);
-    return true;
-  }
-  if(id){
-    closeById(id, true);
+
+function getOpenModalIds(){
+  return Array.from(document.querySelectorAll('.modal.show')).map((modal) => modal.id).filter(Boolean);
+}
+
+function getCurrentPageState(){
+  const zoomOverlay = document.getElementById('zoomOverlay');
+  if(zoomOverlay && zoomOverlay.classList.contains('show')) return 'inside:zoom';
+  const openModalIds = getOpenModalIds();
+  if(openModalIds.length) return 'inside:' + openModalIds.join(',');
+  return 'home';
+}
+
+function syncBridgeState(){
+  const state = getCurrentPageState();
+  sendBridgeState(state);
+  return state;
+}
+
+function isOverlayHistoryState(state){
+  return !!(state && state.__msOverlay === true);
+}
+
+function pushOverlayHistory(kind, id){
+  const current = history.state;
+  const overlayKey = String(kind || '') + ':' + String(id || '');
+  if(isOverlayHistoryState(current) && current.overlayKey === overlayKey) return;
+  history.pushState({
+    __msOverlay: true,
+    overlayKind: String(kind || ''),
+    overlayId: String(id || ''),
+    overlayKey
+  }, '', location.pathname + location.search);
+}
+
+function popOverlayHistoryIfNeeded(){
+  if(isOverlayHistoryState(history.state)){
+    setTimeout(() => {
+      try{ history.back(); }catch(e){}
+    }, 0);
     return true;
   }
   return false;
 }
-window.addEventListener('popstate', (event) => {
-  if(overlayHistoryStack.length){
-    closeTopOverlayFromBack();
+
+/* =========================
+   BACK CONTROL - لا تعدل
+   START
+   هذا الجزء مسؤول عن:
+   - رجوع الصور
+   - رجوع النوافذ المنبثقة
+   - إبلاغ كودولار بالحالة الحالية
+   ========================= */
+window.addEventListener('popstate', () => {
+  const zoomOverlay = document.getElementById('zoomOverlay');
+  if(zoomOverlay && zoomOverlay.classList.contains('show')){
+    closeZoom(true);
+    syncBridgeState();
     return;
   }
-  const restoredToCard = restoreActiveProductPosition();
-  if(restoredToCard) return;
-  const targetScroll = event.state && typeof event.state.scrollY === 'number'
-    ? event.state.scrollY
-    : lastScrollYBeforeOverlay;
-  if(typeof targetScroll === 'number' && !Number.isNaN(targetScroll)){
-    requestAnimationFrame(() => window.scrollTo(0, targetScroll));
+
+  const openModal = document.querySelector('.modal.show');
+  if(openModal){
+    closeById(openModal.id, true);
+    syncBridgeState();
+    return;
   }
+
+  syncBridgeState();
 });
 
 let zoomImages = [];
@@ -3973,7 +3737,9 @@ function openZoom(images, startIndex = 0, sourceEl = null){
   overlay.style.display = "flex";
   overlay.style.visibility = "visible";
   document.body.classList.add("modal-open");
-  pushOverlayHistory('zoom');
+
+  pushOverlayHistory('zoom', 'zoom');
+  syncBridgeState();
 }
 
 function zoomNext(event){
@@ -3991,11 +3757,6 @@ function zoomPrev(event){
 }
 
 function closeZoom(fromBack = false){
-  if(!fromBack && overlayHistoryStack[overlayHistoryStack.length - 1] === overlayKey('zoom')){
-    history.back();
-    return;
-  }
-
   const overlay = document.getElementById("zoomOverlay");
   if(overlay){
     overlay.classList.remove("show");
@@ -4010,13 +3771,22 @@ function closeZoom(fromBack = false){
     document.body.classList.remove("modal-open");
   }
 
-  if(!overlayHistoryStack.length){
-    if(restoreActiveProductPosition()) return;
-    if(typeof lastScrollYBeforeOverlay === 'number'){
-      requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
-    }
+  if(!fromBack){
+    popOverlayHistoryIfNeeded();
+  }
+
+  syncBridgeState();
+
+  if(restoreActiveProductPosition()) return;
+  if(typeof lastScrollYBeforeOverlay === 'number'){
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
 }
+
+/* =========================
+   BACK CONTROL - لا تعدل
+   END
+   ========================= */
 
 function shareProduct(id){
   const p = allProducts.find(x => x.id === id);
@@ -4030,27 +3800,26 @@ function shareProduct(id){
 }
 function openModal(id){
   const el = document.getElementById(id);
-  if(el && !el.classList.contains("show")){
-    el.classList.add("show");
-    document.body.classList.add("modal-open");
+  if(el && !el.classList.contains('show')){
+    el.classList.add('show');
+    document.body.classList.add('modal-open');
     pushOverlayHistory('modal', id);
+    syncBridgeState();
   }
 }
 function closeById(id, fromBack = false){
-  if(!fromBack && overlayHistoryStack[overlayHistoryStack.length - 1] === overlayKey('modal', id)){
-    history.back();
-    return;
-  }
   const el = document.getElementById(id);
-  if(el) el.classList.remove("show");
-  if(!document.querySelector('.modal.show') && !document.getElementById("zoomOverlay")?.classList.contains("show")){
-    document.body.classList.remove("modal-open");
+  if(el) el.classList.remove('show');
+  if(!document.querySelector('.modal.show') && !document.getElementById('zoomOverlay')?.classList.contains('show')){
+    document.body.classList.remove('modal-open');
   }
-  if(!overlayHistoryStack.length){
-    if(restoreActiveProductPosition()) return;
-    if(typeof lastScrollYBeforeOverlay === 'number'){
-      requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
-    }
+  if(!fromBack){
+    popOverlayHistoryIfNeeded();
+  }
+  syncBridgeState();
+  if(restoreActiveProductPosition()) return;
+  if(typeof lastScrollYBeforeOverlay === 'number'){
+    requestAnimationFrame(() => window.scrollTo(0, lastScrollYBeforeOverlay));
   }
 }
 function closeModal(event, id){
@@ -4113,12 +3882,13 @@ function placeholderImage(name){
     `<svg xmlns="http://www.w3.org/2000/svg" width="700" height="500">
       <defs>
         <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#000000"/>
-          <stop offset="55%" stop-color="#05070d"/>
-          <stop offset="100%" stop-color="#111827"/>
+          <stop offset="0%" stop-color="#1d4ed8"/>
+          <stop offset="100%" stop-color="#0ea5e9"/>
         </linearGradient>
       </defs>
       <rect width="100%" height="100%" fill="url(#g)"/>
+      <text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal, Arial" font-size="38" fill="#ffffff">MS Store</text>
+      <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal, Arial" font-size="24" fill="#e0f2fe">${escapeHtml(name || "صورة")}</text>
     </svg>`
   );
 }
@@ -4158,49 +3928,6 @@ function toggleDescExpand(el){
   el.classList.toggle("expanded");
 }
 
-</script>
-
-  <!-- SCRIPTS END -->
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  function syncWrapper(img){
-    const wrapper = img && img.closest(".gallery-wrapper");
-    if(!wrapper) return;
-    const realSrc = img.getAttribute("data-src");
-    if(!realSrc){
-      wrapper.classList.remove("img-loading");
-      wrapper.classList.add("img-loaded");
-      return;
-    }
-    if(img.complete && img.naturalWidth > 0 && img.src === realSrc){
-      wrapper.classList.remove("img-loading");
-      wrapper.classList.add("img-loaded");
-    }
-  }
-
-  document.querySelectorAll(".gallery-img").forEach(img => {
-    syncWrapper(img);
-    img.addEventListener("load", () => {
-      const wrapper = img.closest(".gallery-wrapper");
-      if(wrapper){
-        wrapper.classList.remove("img-loading");
-        wrapper.classList.add("img-loaded");
-      }
-    });
-    img.addEventListener("error", () => {
-      const wrapper = img.closest(".gallery-wrapper");
-      if(wrapper){
-        wrapper.classList.remove("img-loading");
-        wrapper.classList.add("img-loaded");
-      }
-    });
-  });
-
-  setInterval(() => {
-    document.querySelectorAll(".gallery-wrapper.img-loading .gallery-img").forEach(syncWrapper);
-  }, 1200);
-});
 </script>
 
 </body>
