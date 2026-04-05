@@ -4157,6 +4157,36 @@ function getGuestUserData(){
   }
 }
 
+async function restoreGuestUserDataFromRemote(forceRefresh){
+  try{
+    const localData = getGuestUserData();
+    if(!forceRefresh && isGuestUserPayloadComplete(localData)){
+      return localData;
+    }
+    const deviceId = getGuestDeviceId();
+    const snap = await db.ref("guestUsers/" + deviceId).once("value");
+    if(!snap.exists()) return null;
+
+    const remoteData = normalizeGuestUserData(snap.val() || {});
+    if(!isGuestUserPayloadComplete(remoteData)) return null;
+
+    setGuestUserData({
+      name: remoteData.name || "",
+      address: remoteData.address || "",
+      phone: remoteData.phone || "",
+      updatedAt: remoteData.updatedAt || Date.now()
+    });
+
+    hideGuestUserInlineWarn();
+    fillGuestUserModal();
+    updateGuestUserBtn();
+    return remoteData;
+  }catch(err){
+    console.error(err);
+    return null;
+  }
+}
+
 function setGuestUserData(data){
   localStorage.setItem("ms_guest_user_data", JSON.stringify(normalizeGuestUserData(data || {})));
 }
@@ -4260,13 +4290,18 @@ function hideGuestUserInlineWarn(){
   const box = document.getElementById("guestUserInlineWarn");
   if(box) box.classList.add("hidden");
 }
-function openUserDataModal(forceOpen){
+async function openUserDataModal(forceOpen){
   fillGuestUserModal();
   if(forceOpen){
     sessionStorage.removeItem("ms_guest_data_force_closed");
   }
   openModal("userDataModal");
   updateGuestUserBtn();
+
+  if(!isGuestUserDataComplete()){
+    await restoreGuestUserDataFromRemote(false);
+  }
+
   setTimeout(() => {
     try{
       const title = document.querySelector("#userDataModal .modal-title");
@@ -4959,7 +4994,8 @@ function listenGuestUsers(){
   });
 }
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", async function(){
+  await restoreGuestUserDataFromRemote(false);
   updateGuestUserBtn();
   bindGuestPresence();
   listenGuestUsers();
