@@ -4826,35 +4826,115 @@ async function proceedCartCheckout(){
   showToast("تم حجز الكمية المطلوبة وفتح الطلب في واتساب");
 }
 
+const GUEST_PRESENCE_ACTIVE_WINDOW_MS = 5 * 60 * 1000;
+const GUEST_PRESENCE_HEARTBEAT_MS = 60 * 1000;
+const GUEST_PRESENCE_ACTIVITY_THROTTLE_MS = 20 * 1000;
+
+function getEffectiveUserOnline(user){
+  const lastSeen = Number(user && user.lastSeen || 0);
+  if(!user || !user.isOnline || !lastSeen) return false;
+  return (Date.now() - lastSeen) <= GUEST_PRESENCE_ACTIVE_WINDOW_MS;
+}
+
 async function bindGuestPresence(){
   const deviceId = getGuestDeviceId();
   const userRef = db.ref("guestUsers/" + deviceId);
   const connectedRef = db.ref(".info/connected");
+  let heartbeatTimer = null;
+  let lastActivityWriteAt = 0;
+
   await syncGuestDeletionState();
-  connectedRef.on("value", snap => {
-    if(snap.val() === false) return;
-    if(window.guestDeletionBlocked || !isGuestUserDataComplete()) return;
+
+  function canTrackPresence(){
+    return !window.guestDeletionBlocked && isGuestUserDataComplete();
+  }
+
+  function getPresencePayload(isOnline){
     const d = getGuestUserData();
-    userRef.onDisconnect().update({
-      isOnline: false,
-      lastSeen: firebase.database.ServerValue.TIMESTAMP
-    });
-    userRef.update({
+    return {
       name: d.name || "",
       address: d.address || "",
       phone: d.phone || "",
-      isOnline: true,
+      isOnline: !!isOnline,
+      lastSeen: firebase.database.ServerValue.TIMESTAMP,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    };
+  }
+
+  function writePresence(isOnline){
+    if(!canTrackPresence()) return Promise.resolve();
+    return userRef.update(getPresencePayload(isOnline)).catch(err => {
+      console.error('presence update failed', err);
+    });
+  }
+
+  function pingPresence(force){
+    const now = Date.now();
+    if(!force && (now - lastActivityWriteAt) < GUEST_PRESENCE_ACTIVITY_THROTTLE_MS) return;
+    lastActivityWriteAt = now;
+    writePresence(true);
+  }
+
+  function stopHeartbeat(){
+    if(heartbeatTimer){
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+  }
+
+  function startHeartbeat(){
+    stopHeartbeat();
+    heartbeatTimer = setInterval(() => {
+      if(document.visibilityState === 'visible'){
+        pingPresence(true);
+      }
+    }, GUEST_PRESENCE_HEARTBEAT_MS);
+  }
+
+  connectedRef.on("value", snap => {
+    if(snap.val() === false) return;
+    if(!canTrackPresence()) return;
+    userRef.onDisconnect().update({
+      isOnline: false,
       lastSeen: firebase.database.ServerValue.TIMESTAMP,
       updatedAt: firebase.database.ServerValue.TIMESTAMP
     });
+    pingPresence(true);
+    startHeartbeat();
   });
-  window.addEventListener("beforeunload", function(){
-    if(window.guestDeletionBlocked || !isGuestUserDataComplete()) return;
-    userRef.update({
-      isOnline: false,
-      lastSeen: firebase.database.ServerValue.TIMESTAMP
-    });
+
+  const activityEvents = ['click', 'touchstart', 'keydown', 'scroll'];
+  activityEvents.forEach(eventName => {
+    window.addEventListener(eventName, () => {
+      if(document.visibilityState === 'visible'){
+        pingPresence(false);
+      }
+    }, { passive:true });
   });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible'){
+      pingPresence(true);
+      startHeartbeat();
+    }else{
+      stopHeartbeat();
+      writePresence(false);
+    }
+  });
+
+  window.addEventListener('focus', () => {
+    pingPresence(true);
+    startHeartbeat();
+  }, { passive:true });
+
+  const markOffline = () => {
+    stopHeartbeat();
+    writePresence(false);
+  };
+
+  window.addEventListener('blur', markOffline, { passive:true });
+  window.addEventListener('pagehide', markOffline, { passive:true });
+  window.addEventListener('beforeunload', markOffline, { passive:true });
 }
 
 function formatUserLastSeen(ts){
@@ -4889,8 +4969,8 @@ function renderAdminUsers(){
         <div class="admin-user-avatar">${escapeHtml((u.name || "م").trim().charAt(0) || "م")}</div>
         <div class="admin-user-main">
           <div class="admin-user-name">${escapeHtml(u.name || "-")}</div>
-          <div class="admin-user-status ${u.isOnline ? 'online' : ''}">
-            ${u.isOnline ? 'نشط الآن' : 'آخر ظهور: ' + formatUserLastSeen(u.lastSeen)}
+          <div class="admin-user-status ${getEffectiveUserOnline(u) ? 'online' : ''}">
+            ${getEffectiveUserOnline(u) ? 'نشط الآن' : 'آخر ظهور: ' + formatUserLastSeen(u.lastSeen)}
           </div>
         </div>
         <div class="admin-user-arrow"><i class="fa-solid fa-chevron-down"></i></div>
@@ -5045,18 +5125,21 @@ function listenGuestUsers(){
   db.ref("guestUsers").on("value", snap => {
     const arr = [];
     snap.forEach(child => {
-      const v = normalizeGuestUserData(child.val() || {});
+      const raw = child.val() || {};
+      const v = normalizeGuestUserData(raw);
       if(!isGuestUserPayloadComplete(v)) return;
-      arr.push({
+      const item = {
         id: child.key,
         name: v.name || "",
         phone: v.phone || "",
         address: v.address || "",
-        isOnline: !!(child.val() || {}).isOnline,
-        lastSeen: (child.val() || {}).lastSeen || 0
-      });
+        isOnline: !!raw.isOnline,
+        lastSeen: raw.lastSeen || 0
+      };
+      item.effectiveOnline = getEffectiveUserOnline(item);
+      arr.push(item);
     });
-    arr.sort((a,b) => Number(b.isOnline) - Number(a.isOnline) || ((b.lastSeen || 0) - (a.lastSeen || 0)));
+    arr.sort((a,b) => Number(b.effectiveOnline) - Number(a.effectiveOnline) || ((b.lastSeen || 0) - (a.lastSeen || 0)));
     window.allGuestUsers = arr;
     renderAdminUsers();
   });
