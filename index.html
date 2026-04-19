@@ -1023,8 +1023,8 @@ body.product-view .footer{display:none !important;}
 </style>
 
 </head>
-<body
-><div id='product-view'></div> style="margin:0;color:#ffffff;background:#0b1220;overflow-x:hidden" class="dark-mode">
+<body style="margin:0;color:#ffffff;background:#0b1220;overflow-x:hidden" class="dark-mode">
+  <div id='product-view'></div>
 
   <div id="splashScreen" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.45s ease;">
     <div class="logo" id="splashLogoBox">MS</div>
@@ -4642,6 +4642,7 @@ async function proceedOrderForProduct(productId){
 let activeProductDetailsId = "";
 let productPageImageIndex = 0;
 let lastProductListScrollY = 0;
+let pendingProductPageScrollTimer = null;
 
 function getProductById(productId){
   return (Array.isArray(allProducts) ? allProducts.find(x => String(x.id) === String(productId)) : null) || null;
@@ -4729,7 +4730,7 @@ function renderProductPage(productId){
   content.innerHTML = `
     <div class="product-page-gallery">
       <button type="button" class="product-page-gallery-arrow prev ${images.length > 1 ? '' : 'hidden'}" onclick="changeProductPageImage(-1)"><i class="fa-solid fa-chevron-right"></i></button>
-      <img id="productPageMainImage" src="${escapeAttr(images[0])}" alt="${escapeAttr(product.name)}" data-images='${escapeAttr(encodeJsArray(images))}' data-index="0" onclick="openZoomFromElement(this, event)" onerror="this.src='${escapeJsString(placeholderImage(product.name))}'" />
+      <img id="productPageMainImage" src="${escapeAttr(images[0])}" alt="${escapeAttr(product.name)}" data-images='${escapeAttr(encodeJsArray(images))}' data-index="0" onclick="openZoomFromElement(this, event)" onload="if(document.body.classList.contains('product-view')) scheduleProductPageScroll(true)" onerror="this.src='${escapeJsString(placeholderImage(product.name))}'" />
       <button type="button" class="product-page-gallery-arrow next ${images.length > 1 ? '' : 'hidden'}" onclick="changeProductPageImage(1)"><i class="fa-solid fa-chevron-left"></i></button>
     </div>
     ${images.length > 1 ? `<div class="product-page-dots">${images.map((_,i)=>`<span class="product-page-dot ${i===0?'active':''}" onclick="setProductPageImage(${i})"></span>`).join('')}</div>` : ''}
@@ -4789,16 +4790,22 @@ function placeProductPageNearTrigger(sourceEl){
   const page = document.getElementById('productPage');
   if(!page) return false;
   page.style.marginTop = '0px';
+  return false;
+}
 
-  const card = sourceEl && sourceEl.closest ? sourceEl.closest('.card') : null;
-  if(!card) return false;
+function scheduleProductPageScroll(forceAuto = false){
+  if(pendingProductPageScrollTimer){
+    clearTimeout(pendingProductPageScrollTimer);
+    pendingProductPageScrollTimer = null;
+  }
 
-  const cardTop = window.pageYOffset + card.getBoundingClientRect().top;
-  const pageTop = window.pageYOffset + page.getBoundingClientRect().top;
-  const offset = Math.max(0, cardTop - pageTop - 8);
-
-  page.style.marginTop = offset + 'px';
-  return true;
+  requestAnimationFrame(() => {
+    scrollToProductPage(!forceAuto);
+    pendingProductPageScrollTimer = setTimeout(() => {
+      scrollToProductPage(false);
+      pendingProductPageScrollTimer = null;
+    }, 120);
+  });
 }
 
 function openProductDetails(productId, sourceEl){
@@ -4806,25 +4813,28 @@ function openProductDetails(productId, sourceEl){
   renderProductPage(productId);
   document.body.classList.add('product-view');
   const page = document.getElementById('productPage');
-  if(page) page.classList.add('show');
+  if(page){
+    page.classList.add('show');
+    page.style.marginTop = '0px';
+  }
   const cleanId = encodeURIComponent(String(productId));
   const nextHash = '#product-' + cleanId;
   if(location.hash !== nextHash){
     history.pushState({ productId: String(productId) }, '', nextHash);
   }
-  const positionedNearTrigger = placeProductPageNearTrigger(sourceEl);
-  if(!positionedNearTrigger){
-    requestAnimationFrame(() => scrollToProductPage(false));
-  }
+  scheduleProductPageScroll(true);
 }
 
 function scrollToProductPage(smooth = true){
   const page = document.getElementById('productPage');
-  if(!page) return;
+  if(!page || !page.classList.contains('show')) return;
+  page.style.marginTop = '0px';
   const fixedShell = document.querySelector('.top-fixed-shell');
   const extraGap = 10;
-  const headerOffset = fixedShell ? fixedShell.getBoundingClientRect().height : 0;
-  const targetTop = Math.max(0, window.pageYOffset + page.getBoundingClientRect().top - headerOffset - extraGap);
+  const headerOffset = fixedShell ? Math.ceil(fixedShell.offsetHeight || fixedShell.getBoundingClientRect().height || 0) : 0;
+  const pageTop = page.offsetTop || (window.pageYOffset + page.getBoundingClientRect().top);
+  const targetTop = Math.max(0, pageTop - headerOffset - extraGap);
+  if(Math.abs((window.pageYOffset || window.scrollY || 0) - targetTop) < 2) return;
   window.scrollTo({
     top: targetTop,
     behavior: smooth ? 'smooth' : 'auto'
