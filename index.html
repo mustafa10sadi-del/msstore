@@ -1023,8 +1023,8 @@ body.product-view .footer{display:none !important;}
 </style>
 
 </head>
-<body style="margin:0;color:#ffffff;background:#0b1220;overflow-x:hidden" class="dark-mode">
-  <div id='product-view'></div>
+<body
+><div id='product-view'></div> style="margin:0;color:#ffffff;background:#0b1220;overflow-x:hidden" class="dark-mode">
 
   <div id="splashScreen" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.45s ease;">
     <div class="logo" id="splashLogoBox">MS</div>
@@ -1505,8 +1505,8 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const SUPABASE_URL = "https://fjoszzuknftuhwtbxbhq.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_T6hWw3Vk5joSjFrIkeBklQ_1FBbmzdZ";
+const SUPABASE_URL = "https://hvnrwgjllajgjreegspp.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_1i6Zw9bG6xhx4U02C1HiBA_2OCGM3r2";
 const SUPABASE_BUCKET = "products";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
@@ -4642,7 +4642,6 @@ async function proceedOrderForProduct(productId){
 let activeProductDetailsId = "";
 let productPageImageIndex = 0;
 let lastProductListScrollY = 0;
-let pendingProductPageScrollTimer = null;
 
 function getProductById(productId){
   return (Array.isArray(allProducts) ? allProducts.find(x => String(x.id) === String(productId)) : null) || null;
@@ -4730,7 +4729,7 @@ function renderProductPage(productId){
   content.innerHTML = `
     <div class="product-page-gallery">
       <button type="button" class="product-page-gallery-arrow prev ${images.length > 1 ? '' : 'hidden'}" onclick="changeProductPageImage(-1)"><i class="fa-solid fa-chevron-right"></i></button>
-      <img id="productPageMainImage" src="${escapeAttr(images[0])}" alt="${escapeAttr(product.name)}" data-images='${escapeAttr(encodeJsArray(images))}' data-index="0" onclick="openZoomFromElement(this, event)" onload="if(document.body.classList.contains('product-view')) scheduleProductPageScroll(true)" onerror="this.src='${escapeJsString(placeholderImage(product.name))}'" />
+      <img id="productPageMainImage" src="${escapeAttr(images[0])}" alt="${escapeAttr(product.name)}" data-images='${escapeAttr(encodeJsArray(images))}' data-index="0" onclick="openZoomFromElement(this, event)" onerror="this.src='${escapeJsString(placeholderImage(product.name))}'" />
       <button type="button" class="product-page-gallery-arrow next ${images.length > 1 ? '' : 'hidden'}" onclick="changeProductPageImage(1)"><i class="fa-solid fa-chevron-left"></i></button>
     </div>
     ${images.length > 1 ? `<div class="product-page-dots">${images.map((_,i)=>`<span class="product-page-dot ${i===0?'active':''}" onclick="setProductPageImage(${i})"></span>`).join('')}</div>` : ''}
@@ -4793,21 +4792,6 @@ function placeProductPageNearTrigger(sourceEl){
   return false;
 }
 
-function scheduleProductPageScroll(forceAuto = false){
-  if(pendingProductPageScrollTimer){
-    clearTimeout(pendingProductPageScrollTimer);
-    pendingProductPageScrollTimer = null;
-  }
-
-  requestAnimationFrame(() => {
-    scrollToProductPage(!forceAuto);
-    pendingProductPageScrollTimer = setTimeout(() => {
-      scrollToProductPage(false);
-      pendingProductPageScrollTimer = null;
-    }, 120);
-  });
-}
-
 function openProductDetails(productId, sourceEl){
   lastProductListScrollY = window.scrollY || window.pageYOffset || 0;
   renderProductPage(productId);
@@ -4822,19 +4806,17 @@ function openProductDetails(productId, sourceEl){
   if(location.hash !== nextHash){
     history.pushState({ productId: String(productId) }, '', nextHash);
   }
-  scheduleProductPageScroll(true);
+  requestAnimationFrame(() => scrollToProductPage(false));
 }
 
 function scrollToProductPage(smooth = true){
   const page = document.getElementById('productPage');
-  if(!page || !page.classList.contains('show')) return;
+  if(!page) return;
   page.style.marginTop = '0px';
   const fixedShell = document.querySelector('.top-fixed-shell');
   const extraGap = 10;
-  const headerOffset = fixedShell ? Math.ceil(fixedShell.offsetHeight || fixedShell.getBoundingClientRect().height || 0) : 0;
-  const pageTop = page.offsetTop || (window.pageYOffset + page.getBoundingClientRect().top);
-  const targetTop = Math.max(0, pageTop - headerOffset - extraGap);
-  if(Math.abs((window.pageYOffset || window.scrollY || 0) - targetTop) < 2) return;
+  const headerOffset = fixedShell ? fixedShell.getBoundingClientRect().height : 0;
+  const targetTop = Math.max(0, window.pageYOffset + page.getBoundingClientRect().top - headerOffset - extraGap);
   window.scrollTo({
     top: targetTop,
     behavior: smooth ? 'smooth' : 'auto'
