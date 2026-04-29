@@ -6094,3 +6094,16 @@ function scrollToProduct(){
 
 </body>
 </html>
+
+<!-- Supabase Config Injected -->
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://hvnrwgjllajgjreegspp.supabase.co'
+const supabaseKey = 'sb_publishable_1i6Zw9bG6xhx4U02C1HiBA_2OCGM3r2'
+
+window.supabase = createClient(supabaseUrl, supabaseKey)
+
+console.log('✅ Supabase connected to OLD project')
+</script>
+
