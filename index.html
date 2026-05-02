@@ -11,12 +11,13 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="متجر MS" />
-  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
@@ -1528,6 +1529,19 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+// Firebase Cloud Messaging (FCM)
+// ملاحظة: مفتاح VAPID يجب أن يكون بدون فراغات
+const FCM_VAPID_PUBLIC_KEY = "BKx-21HHw2rOX8airGQK5PeOy_lqj56tZl3P-wckQ1RBoTW5s8RZ0nWUcSw8Xu5vzv6bRJ0o8oJ-_rKU1RT7SyU";
+let messaging = null;
+try {
+  if (firebase.messaging && firebase.messaging.isSupported && firebase.messaging.isSupported()) {
+    messaging = firebase.messaging();
+  }
+} catch (e) {
+  messaging = null;
+}
+
 const SUPABASE_URL = "https://xibvtesonrdvptcjtdwf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9eJPTP5I1bzzjMjmqCRS3w_YoM_m7we";
 const SUPABASE_BUCKET = "products";
@@ -5690,38 +5704,17 @@ function sendAdminNotification(){
     showToast("تعذر إرسال الإشعار", true);
   });
 
-  // Also send real Web Push to all subscribed devices via API
-  const sendBtn = document.getElementById("sendNotifBtn");
+  // Firebase Messaging: يتم حفظ الإشعار داخل التطبيق.
+  // الإرسال كإشعار خارجي حقيقي يحتاج Firebase Console أو سيرفر/Cloud Function،
+  // لأن مفتاح الإرسال السري لا يجوز وضعه داخل GitHub Pages.
   const resultBox = document.getElementById("sendNotifResult");
-  if(sendBtn) sendBtn.disabled = true;
-  if(resultBox){ resultBox.style.display="none"; }
-
-  const adminPin = storeSettings.adminPin || defaultSettings.adminPin || "";
-  fetch("/api/push/send", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, body, adminPin })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if(sendBtn) sendBtn.disabled = false;
-    if(resultBox){
-      resultBox.style.display = "block";
-      if(data.ok){
-        resultBox.innerHTML = `<div style="background:rgba(22,163,74,.1);color:var(--success);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;">
-          <i class="fa-solid fa-circle-check"></i> تم إرسال الإشعار الفوري إلى ${data.sent} جهاز${data.failed ? ` (${data.failed} فشل)` : ""}
-        </div>`;
-      } else {
-        resultBox.innerHTML = `<div style="background:rgba(220,38,38,.08);color:var(--danger);border:1px solid rgba(220,38,38,.15);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;">
-          <i class="fa-solid fa-circle-xmark"></i> ${data.error || "تعذر إرسال الإشعار الفوري"}
-        </div>`;
-      }
-      setTimeout(()=>{ resultBox.style.display="none"; }, 6000);
-    }
-  })
-  .catch(()=>{
-    if(sendBtn) sendBtn.disabled = false;
-  });
+  if(resultBox){
+    resultBox.style.display = "block";
+    resultBox.innerHTML = `<div style="background:rgba(37,99,235,.09);color:var(--accent);border:1px solid rgba(37,99,235,.15);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;line-height:1.8;">
+      <i class="fa-solid fa-circle-info"></i> تم حفظ الإشعار داخل التطبيق. للإشعار الخارجي الحقيقي أرسل من Firebase Console إلى الأجهزة المسجلة.
+    </div>`;
+    setTimeout(()=>{ resultBox.style.display="none"; }, 7000);
+  }
 }
 
 function renderAdminNotificationsReal(){
@@ -5883,37 +5876,22 @@ window.adminEnablePush = adminEnablePush;
 
 </script>
 
-<!-- ── Web Push Subscription ─────────────────────────────────────────── -->
+<!-- ── Firebase Push Subscription ───────────────────────────────────── -->
 <script>
-var _vapidPublicKey = null;
-
-async function getVapidPublicKey(){
-  if(_vapidPublicKey) return _vapidPublicKey;
-  try{
-    const r = await fetch("/api/push/vapid-public-key");
-    const d = await r.json();
-    _vapidPublicKey = d.publicKey;
-    return _vapidPublicKey;
-  } catch(e){ return null; }
-}
-
-function urlBase64ToUint8Array(base64String){
-  const padding = "=".repeat((4 - base64String.length % 4) % 4);
-  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-  const raw = atob(base64);
-  const output = new Uint8Array(raw.length);
-  for(let i = 0; i < raw.length; ++i) output[i] = raw.charCodeAt(i);
-  return output;
-}
-
 async function initPushSubscription(requestPermission){
-  if(!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+  if(!("Notification" in window)){
+    if(requestPermission) showToast("هذا المتصفح لا يدعم الإشعارات", true);
+    updatePushBtnState("denied");
+    return;
+  }
+
+  if(!messaging){
+    if(requestPermission) showToast("Firebase Messaging غير مدعوم على هذا المتصفح", true);
+    updatePushBtnState("denied");
+    return;
+  }
+
   try{
-    const vapidKey = await getVapidPublicKey();
-    if(!vapidKey) return;
-
-    const reg = await navigator.serviceWorker.ready;
-
     if(requestPermission){
       const perm = await Notification.requestPermission();
       if(perm !== "granted"){
@@ -5921,30 +5899,45 @@ async function initPushSubscription(requestPermission){
         updatePushBtnState("denied");
         return;
       }
+    } else if(Notification.permission !== "granted"){
+      updatePushBtnState(Notification.permission === "denied" ? "denied" : "default");
+      return;
     }
 
-    let sub = await reg.pushManager.getSubscription();
-    if(!sub){
-      sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidKey)
-      });
+    const reg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    await navigator.serviceWorker.ready;
+
+    const token = await messaging.getToken({
+      vapidKey: FCM_VAPID_PUBLIC_KEY,
+      serviceWorkerRegistration: reg
+    });
+
+    if(!token){
+      if(requestPermission) showToast("لم يتم إنشاء توكن الإشعارات", true);
+      updatePushBtnState("default");
+      return;
     }
 
     const deviceId = (typeof getGuestDeviceId === "function" ? getGuestDeviceId() : null)
-      || localStorage.getItem("ms_guest_device_id") || null;
+      || localStorage.getItem("ms_guest_device_id")
+      || ("device_" + Math.random().toString(36).slice(2) + Date.now());
+    localStorage.setItem("ms_guest_device_id", deviceId);
 
-    await fetch("/api/push/subscribe", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ subscription: sub.toJSON(), deviceId })
+    await db.ref("fcm_tokens/" + deviceId).set({
+      token,
+      deviceId,
+      userAgent: navigator.userAgent || "",
+      permission: Notification.permission,
+      updatedAt: Date.now()
     });
 
     updatePushBtnState("granted");
-    if(requestPermission) showToast("تم تفعيل الإشعارات الفورية ✓");
+    if(requestPermission) showToast("تم تفعيل إشعارات Firebase ✓");
     updatePushSubCount();
   } catch(e){
-    if(requestPermission) showToast("تعذر تفعيل الإشعارات", true);
+    console.error("FCM subscribe error", e);
+    if(requestPermission) showToast("تعذر تفعيل الإشعارات: " + (e && e.message ? e.message : "خطأ غير معروف"), true);
+    updatePushBtnState(Notification.permission === "denied" ? "denied" : "default");
   }
 }
 
@@ -5956,7 +5949,7 @@ function updatePushBtnState(state){
     btn.innerHTML = '<i class="fa-solid fa-bell"></i> مفعّل على هذا الجهاز';
     btn.style.background = "linear-gradient(135deg,#16a34a,#22c55e)";
     btn.disabled = false;
-    if(countEl) countEl.textContent = "هذا الجهاز مشترك في الإشعارات الفورية";
+    if(countEl) countEl.textContent = "هذا الجهاز مسجل في Firebase Messaging";
   } else if(state === "denied"){
     btn.innerHTML = '<i class="fa-solid fa-bell-slash"></i> محظورة في المتصفح';
     btn.style.background = "linear-gradient(135deg,#ef4444,#dc2626)";
@@ -5965,19 +5958,18 @@ function updatePushBtnState(state){
   } else {
     btn.innerHTML = '<i class="fa-solid fa-bell"></i> تفعيل على هذا الجهاز';
     btn.disabled = false;
-    if(countEl) countEl.textContent = "اضغط لتلقي الإشعارات الفورية على هذا الجهاز";
+    if(countEl) countEl.textContent = "اضغط لتسجيل هذا الجهاز في Firebase Messaging";
   }
 }
 
 async function updatePushSubCount(){
-  // Load count from Firebase
   try{
-    const snap = await db.ref("push_subscriptions").once("value");
+    const snap = await db.ref("fcm_tokens").once("value");
     let count = 0;
     snap.forEach(() => count++);
     const countEl = document.getElementById("pushSubCount");
     if(countEl && Notification.permission === "granted"){
-      countEl.textContent = `${count} جهاز مشترك في الإشعارات الفورية`;
+      countEl.textContent = `${count} جهاز مسجل في Firebase Messaging`;
     }
   } catch(e){}
 }
@@ -5985,6 +5977,14 @@ async function updatePushSubCount(){
 async function adminEnablePush(){
   await initPushSubscription(true);
   await updatePushSubCount();
+}
+
+if(messaging){
+  messaging.onMessage(function(payload){
+    const title = (payload.notification && payload.notification.title) || "متجر MS";
+    const body = (payload.notification && payload.notification.body) || "وصل إشعار جديد";
+    showToast(title + " - " + body);
+  });
 }
 
 // Init push state on load
