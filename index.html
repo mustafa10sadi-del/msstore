@@ -6394,7 +6394,6 @@ body.dark-mode #pwa-install-banner-text strong{color:#f8fafc;}
 }
 #pwa-install-banner-btn:active{opacity:.85;}
 #pwa-install-banner-close{
-  display:none !important;
   width:28px;height:28px;border:none;background:transparent;
   color:#94a3b8;font-size:16px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
@@ -6442,12 +6441,11 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
                      window.matchMedia('(display-mode: standalone)').matches ||
                      window.matchMedia('(display-mode: fullscreen)').matches;
 
+  // زر التثبيت ثابت: لا نخزّن الإغلاق حتى يبقى يظهر كلما يفتح من المتصفح
   var DISMISS_KEY = 'pwa-install-dismissed-v3';
-  var DISMISS_TTL = 3 * 24 * 60 * 60 * 1000;
 
   function isDismissed() {
-    var t = parseInt(localStorage.getItem(DISMISS_KEY) || '0', 10);
-    return t && (Date.now() - t < DISMISS_TTL);
+    return false;
   }
 
   /* ── Install banner helpers ─────────────────────────────── */
@@ -6455,7 +6453,7 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
   var installClickWait  = false;
 
   function showBanner() {
-    if (isStandalone) return;
+    if (isStandalone || isDismissed()) return;
     var el = document.getElementById('pwa-install-banner');
     if (!el) return;
     var mode = isSafari ? 'ios' : 'android';
@@ -6480,9 +6478,8 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
   }
 
   window.__dismissInstallBanner = function () {
-    /* تم تعطيل الإخفاء: كلمة تثبيت تبقى ثابتة داخل المتصفح */
-    showBanner();
-    localStorage.removeItem(DISMISS_KEY);
+    // إخفاء مؤقت فقط إلى أن يعاد فتح/تحديث الصفحة
+    hideBanner();
   };
 
   window.__triggerPWAInstall = function () {
@@ -6501,16 +6498,14 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
       hideBanner();
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function (r) {
-        localStorage.removeItem(DISMISS_KEY);
+        // إذا رفض المستخدم لا نخفي الزر دائماً؛ يبقى يظهر عند فتح المتصفح مرة ثانية
         deferredPrompt = null;
       });
       return;
     }
-    /* Prompt not yet ready — keep the fixed install word visible and guide the user */
+    /* Prompt not yet ready — queue and fire the moment it arrives */
     installClickWait = true;
-    var sub2 = document.getElementById('pwa-install-banner-hint');
-    if (sub2) sub2.textContent = 'إذا لم تظهر نافذة التثبيت افتح ⋮ ثم اختر تثبيت التطبيق';
-    showBanner();
+    alert('إذا لم تظهر نافذة التثبيت، افتح الموقع من Chrome واضغط ⋮ ثم اختر إضافة إلى الشاشة الرئيسية.');
   };
 
   /* Capture Chrome install prompt */
@@ -6606,38 +6601,6 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
 })();
 </script>
 
-<script id="ms-fixed-install-word">
-(function(){
-  function isAppMode(){
-    return window.navigator.standalone === true ||
-      window.matchMedia('(display-mode: standalone)').matches ||
-      window.matchMedia('(display-mode: fullscreen)').matches;
-  }
-  function keepInstallVisible(){
-    try{
-      localStorage.removeItem('pwa-install-dismissed-v3');
-      localStorage.removeItem('pwa-install-dismissed-v2');
-      localStorage.removeItem('pwa-install-dismissed');
-    }catch(e){}
-    var banner = document.getElementById('pwa-install-banner');
-    var closeBtn = document.getElementById('pwa-install-banner-close');
-    if(closeBtn) closeBtn.style.display = 'none';
-    if(!banner) return;
-    if(isAppMode()){
-      banner.classList.remove('visible');
-      banner.style.display = 'none';
-    }else{
-      banner.style.display = '';
-      banner.classList.add('visible');
-    }
-  }
-  document.addEventListener('DOMContentLoaded', keepInstallVisible);
-  window.addEventListener('load', keepInstallVisible);
-  window.addEventListener('pageshow', keepInstallVisible);
-  setInterval(keepInstallVisible, 1500);
-})();
-</script>
-
 <style>
 /* ─── PWA Scroll Fix (iOS Safari + Android) ────────────────────────────────
    iOS Safari: when both html+body have overflow:hidden it locks the window.
@@ -6663,6 +6626,28 @@ body.modal-open{overflow:hidden !important;}
 /* Splash: no touch while visible, auto once hidden */
 #splashScreen[style*="display: none"]{touch-action:auto !important;}
 </style>
+
+
+<script id="force-install-banner-script">
+(function(){
+  function isStandaloneMode(){
+    return window.navigator.standalone === true ||
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches;
+  }
+  function forceShowInstallWord(){
+    if (isStandaloneMode()) return;
+    var el = document.getElementById('pwa-install-banner');
+    if (el) el.classList.add('visible');
+    var btn = document.getElementById('pwa-install-banner-btn');
+    if (btn) btn.style.display = '';
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(forceShowInstallWord, 800);
+    setTimeout(forceShowInstallWord, 2500);
+  });
+})();
+</script>
 
 </body>
 </html>
