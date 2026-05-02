@@ -1,6 +1,6 @@
 {
   "name": "متجر MS",
-  "short_name": "MS",
+  "short_name": "متجر MS",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
