@@ -2,18 +2,17 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDakH4F8s6tmdSVTFENXMInK5oQABPSSVo",
+  apiKey: "AIzaSyDkaH4F8s6tmdSVTFENMXImK5oQABPSSVo",
   authDomain: "msstore-5c5f4.firebaseapp.com",
   databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com",
   projectId: "msstore-5c5f4",
-  storageBucket: "msstore-5c5f4.firebasestorage.app",
+  storageBucket: "msstore-5c5f4.appspot.com",
   messagingSenderId: "254756613602",
   appId: "1:254756613602:web:35825d0b88c3dae8545dbb",
   measurementId: "G-QCWRTL41RZ"
 };
 
-// 👇 هذا المفتاح اللي جبناه من Firebase
-const VAPID_KEY = "BKx-21HHwArOX8ainGQK5Pe0y_1qi56tZl3P-wckQ1RBoTW5s8RZ0nWUcSw8Xu5vzv6bRJ0o8oJ-_rKU1RT7SyU";
+const VAPID_KEY = "BKx-21HwArOX8aiNGQK5PeOy_1qi56tZ13P-wcKQ1RBoTW5s8RZ0nWuCsw8Xu5vz6vbRJO8oJ-_rKU1RT7SYu";
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
