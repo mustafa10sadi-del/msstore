@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDakH4F8S6tmdSVTFENMXInk5oQABPSSVo",
+  apiKey: "AIzaSyDakH4F8S6tmdSVTFENXMINk5oQABPSSVo",
   authDomain: "msstore-5c5f4.firebaseapp.com",
   projectId: "msstore-5c5f4",
   storageBucket: "msstore-5c5f4.appspot.com",
@@ -10,7 +10,7 @@ const firebaseConfig = {
   appId: "1:254756613602:web:35825d0b88c3dae8545dbb"
 };
 
-const VAPID_KEY = "BKx-21HwArOX8aiNGQK5PeOy_1qi56tZ13P-wcKQ1RBoTW5s8RZ0nUWcSw8Xu5vvz6ybRJO8oJ-_rKUlRT7SYU";
+const VAPID_KEY = "BFG_qDpx9U7LlRGfniUkhtPzs_72PNoaVpakCFcUuWmnwsL-SL-NKLNIbCQ_564AJUjGBURatxv3iT-PA7iMYco";
 
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
@@ -21,7 +21,7 @@ async function startFCM() {
     if (permission === "granted") {
       const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
       const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: registration });
-      if (token) { console.log("TOKEN:", token); }
+      if (token) { alert("تم التفعيل بنجاح! TOKEN: " + token); }
     }
   } catch (err) { console.error(err); }
 }
