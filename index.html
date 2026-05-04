@@ -1532,9 +1532,9 @@ const SUPABASE_URL = "https://xibvtesonrdvptcjtdwf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9eJPTP5I1bzzjMjmqCRS3w_YoM_m7we";
 const SUPABASE_BUCKET = "products";
 
-/* تم إلغاء Cloudflare مؤقتاً
-   الصور الآن ترجع مباشرة من Supabase حتى تبقى آمنة وما تخترب. */
-const CLOUDFLARE_WORKER_URL = "";
+/* Cloudflare Worker Cache Proxy
+   مهم: لازم كود الـ Worker عندك يكون موجّه لنفس SUPABASE_URL أعلاه */
+const CLOUDFLARE_WORKER_URL = "https://lucky-firefly-fb5c.mustafa10sadi.workers.dev";
 const KNOWN_SUPABASE_ORIGINS = [
   SUPABASE_URL,
   "https://ejgyplqruchrggqemygi.supabase.co",
@@ -1546,25 +1546,21 @@ function toCloudflareUrl(url){
   const clean = String(url || "").trim();
   if(!clean) return clean;
 
-  // إذا القيمة مجرد اسم ملف صورة، ابني رابط Supabase مباشر
-  if(!/^https?:\/\//i.test(clean) && !clean.startsWith("data:")){
-    const fileName = clean.replace(/^\/+/, "");
-    if(/\.(jpg|jpeg|png|webp|gif|avif)(\?|#|$)/i.test(fileName)){
-      return SUPABASE_URL.replace(/\/+$/, "") + "/storage/v1/object/public/" + SUPABASE_BUCKET.replace(/^\/+|\/+$/g, "") + "/" + fileName;
+  if(clean.startsWith(CLOUDFLARE_WORKER_URL)) return clean;
+
+  const workerBase = CLOUDFLARE_WORKER_URL.replace(/\/+$/, "");
+
+  if(clean.startsWith("/storage/v1/")){
+    return workerBase + clean;
+  }
+
+  for(const origin of KNOWN_SUPABASE_ORIGINS){
+    const base = String(origin || "").replace(/\/+$/, "");
+    if(base && clean.startsWith(base + "/storage/v1/")){
+      return workerBase + clean.slice(base.length);
     }
   }
 
-  // إذا بقا رابط Cloudflare قديم داخل Firebase، رجّعه إلى Supabase مباشر
-  const workerMatch = clean.match(/^https:\/\/[^\/]+\.workers\.dev\/(.*)$/i);
-  if(workerMatch){
-    let path = decodeURIComponent(workerMatch[1] || "").replace(/^\/+/, "");
-    if(path.startsWith("storage/v1/object/public/")){
-      return SUPABASE_URL.replace(/\/+$/, "") + "/" + path;
-    }
-    return SUPABASE_URL.replace(/\/+$/, "") + "/storage/v1/object/public/" + SUPABASE_BUCKET.replace(/^\/+|\/+$/g, "") + "/" + path;
-  }
-
-  // أي رابط Supabase يبقى كما هو بدون تحويل
   return clean;
 }
 
@@ -3067,7 +3063,7 @@ function normalizeProduct(id, p){
   else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
   else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
 
-  // إرجاع الصور إلى Supabase مباشرة بدون Cloudflare
+  // تحويل روابط صور Supabase القديمة والجديدة إلى رابط Cloudflare تلقائياً عند العرض
   images = images.map(toCloudflareUrl).filter(Boolean);
 
   let quantity = Number(p.quantity);
@@ -6245,95 +6241,10 @@ body.dark-mode .card .p-desc.short{
 
 
 <script id="refresh-all-product-images-script">
-function __msImageFileNameFromUrl(url){
-  const clean = String(url || "").trim();
-  if(!clean) return "";
-
-  try{
-    if(/^https?:\/\//i.test(clean)){
-      const u = new URL(clean);
-      return decodeURIComponent((u.pathname.split("/").pop() || "").trim());
-    }
-  }catch(e){}
-
-  return decodeURIComponent(clean.split("?")[0].split("#")[0].split("/").pop() || "").trim();
-}
-
-function __msGithubImageUrlFromAnyUrl(url){
-  const fileName = __msImageFileNameFromUrl(url);
-  if(!fileName) return "";
-  if(!/\.(jpg|jpeg|png|webp|gif|avif)$/i.test(fileName)) return String(url || "").trim();
-
-  return "https://msstore95.github.io/images/" + encodeURIComponent(fileName).replace(/%2F/g, "/");
-}
-
+// تم تنظيف زر تحويل الصور لأن الروابط صارت على GitHub.
+// هذا السكربت يبقى آمن ولا يغير أي بيانات.
 async function refreshAllProductImages(){
-  const btn = document.getElementById("refreshAllImagesBtn");
-  if(btn && btn.disabled) return;
-
-  if(!confirm("سيتم تحويل روابط صور المنتجات إلى GitHub بدون حذف أي منتج. هل تريد المتابعة؟")) return;
-
-  const originalHtml = btn ? btn.innerHTML : "";
-  const originalText = btn ? btn.textContent : "";
-
-  try{
-    if(btn){
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحويل...';
-    }
-
-    const snap = await db.ref("products").once("value");
-    const products = snap.val() || {};
-    const entries = Object.entries(products);
-
-    if(!entries.length){
-      alert("لا توجد منتجات");
-      return;
-    }
-
-    let done = 0;
-    let updatedProducts = 0;
-
-    for(const [id, product] of entries){
-      const sourceImages =
-        Array.isArray(product?.images) ? product.images.filter(Boolean) :
-        (product?.images && typeof product.images === "object") ? Object.values(product.images).filter(Boolean) :
-        Array.isArray(product?.imgs) ? product.imgs.filter(Boolean) :
-        (typeof product?.image === "string" && product.image.trim()) ? [product.image.trim()] :
-        (typeof product?.img === "string" && product.img.trim()) ? [product.img.trim()] : [];
-
-      const newImages = sourceImages.map(__msGithubImageUrlFromAnyUrl).filter(Boolean);
-      const changed = JSON.stringify(sourceImages) !== JSON.stringify(newImages);
-
-      if(changed && newImages.length){
-        const patch = {
-          images: newImages,
-          image: newImages[0] || ""
-        };
-
-        if(Array.isArray(product?.imgs)) patch.imgs = newImages;
-        if(typeof product?.img === "string") patch.img = newImages[0] || "";
-
-        await db.ref("products/" + id).update(patch);
-        updatedProducts++;
-      }
-
-      done++;
-      if(btn){
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + done + ' / ' + entries.length;
-      }
-    }
-
-    alert("تم تحويل روابط صور " + updatedProducts + " منتج إلى GitHub ✅");
-  }catch(err){
-    console.error("REFRESH_ALL_PRODUCT_IMAGES_ERROR", err);
-    alert("تعذر تحويل الصور ❌");
-  }finally{
-    if(btn){
-      btn.disabled = false;
-      btn.innerHTML = originalHtml || originalText || '<i class="fa-solid fa-rotate"></i> تحديث كل الصور';
-    }
-  }
+  alert("الصور محولة مسبقاً إلى GitHub ✅");
 }
 </script>
 
