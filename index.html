@@ -1531,39 +1531,6 @@ const db = firebase.database();
 const SUPABASE_URL = "https://xibvtesonrdvptcjtdwf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9eJPTP5I1bzzjMjmqCRS3w_YoM_m7we";
 const SUPABASE_BUCKET = "products";
-
-/* Cloudflare Worker Cache Proxy
-   مهم: لازم كود الـ Worker عندك يكون موجّه لنفس SUPABASE_URL أعلاه */
-const CLOUDFLARE_WORKER_URL = "https://lucky-firefly-fb5c.mustafa10sadi.workers.dev";
-const KNOWN_SUPABASE_ORIGINS = [
-  SUPABASE_URL,
-  "https://ejgyplqruchrggqemygi.supabase.co",
-  "https://hvnrwgjllajgjreegspp.supabase.co",
-  "https://xibvtesonrdvptcjtdwf.supabase.co"
-];
-
-function toCloudflareUrl(url){
-  const clean = String(url || "").trim();
-  if(!clean) return clean;
-
-  if(clean.startsWith(CLOUDFLARE_WORKER_URL)) return clean;
-
-  const workerBase = CLOUDFLARE_WORKER_URL.replace(/\/+$/, "");
-
-  if(clean.startsWith("/storage/v1/")){
-    return workerBase + clean;
-  }
-
-  for(const origin of KNOWN_SUPABASE_ORIGINS){
-    const base = String(origin || "").replace(/\/+$/, "");
-    if(base && clean.startsWith(base + "/storage/v1/")){
-      return workerBase + clean.slice(base.length);
-    }
-  }
-
-  return clean;
-}
-
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
@@ -3063,9 +3030,6 @@ function normalizeProduct(id, p){
   else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
   else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
 
-  // تحويل روابط صور Supabase القديمة والجديدة إلى رابط Cloudflare تلقائياً عند العرض
-  images = images.map(toCloudflareUrl).filter(Boolean);
-
   let quantity = Number(p.quantity);
   if(!Number.isFinite(quantity)){
     quantity = String(p.stock || "").trim() === "غير متوفر" ? 0 : 1;
@@ -3544,7 +3508,7 @@ async function uploadMedia(file, folderPrefix = "product"){
     throw new Error("SUPABASE_PUBLIC_URL_FAILED");
   }
 
-  return toCloudflareUrl(data.publicUrl);
+  return data.publicUrl;
 }
 
 async function uploadImage(file){
@@ -6241,10 +6205,93 @@ body.dark-mode .card .p-desc.short{
 
 
 <script id="refresh-all-product-images-script">
-// تم تنظيف زر تحويل الصور لأن الروابط صارت على GitHub.
-// هذا السكربت يبقى آمن ولا يغير أي بيانات.
 async function refreshAllProductImages(){
-  alert("الصور محولة مسبقاً إلى GitHub ✅");
+  const btn = document.getElementById("refreshAllImagesBtn");
+  if(btn && btn.disabled) return;
+
+  if(!confirm("سيتم إعادة رفع كل صور المنتجات الحالية. هل تريد المتابعة؟")) return;
+
+  const originalHtml = btn ? btn.innerHTML : "";
+  const originalText = btn ? btn.textContent : "";
+
+  try{
+    if(btn){
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحديث...';
+    }
+
+    const snap = await db.ref("products").once("value");
+    const products = snap.val() || {};
+    const entries = Object.entries(products);
+
+    if(!entries.length){
+      alert("لا توجد منتجات");
+      return;
+    }
+
+    let done = 0;
+    let updatedProducts = 0;
+
+    for(const [id, product] of entries){
+      const sourceImages =
+        Array.isArray(product?.images) ? product.images.filter(Boolean) :
+        (product?.images && typeof product.images === "object") ? Object.values(product.images).filter(Boolean) :
+        Array.isArray(product?.imgs) ? product.imgs.filter(Boolean) :
+        (typeof product?.image === "string" && product.image.trim()) ? [product.image.trim()] :
+        (typeof product?.img === "string" && product.img.trim()) ? [product.img.trim()] : [];
+
+      if(!sourceImages.length){
+        done++;
+        if(btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + done + ' / ' + entries.length;
+        continue;
+      }
+
+      const newImages = [];
+      let changed = false;
+
+      for(const imageUrl of sourceImages){
+        try{
+          const response = await fetch(imageUrl, { cache: "no-store" });
+          if(!response.ok) throw new Error("FETCH_FAILED");
+
+          const blob = await response.blob();
+          const extFromType = String(blob.type || "").split("/").pop().toLowerCase();
+          const safeExt = ["jpg","jpeg","png","webp","gif"].includes(extFromType) ? extFromType : "jpg";
+          const file = new File([blob], "product_" + Date.now() + "_" + Math.random().toString(36).slice(2,8) + "." + safeExt, {
+            type: blob.type || ("image/" + safeExt)
+          });
+
+          const newUrl = await uploadMedia(file, "product");
+          newImages.push(newUrl);
+          changed = true;
+        }catch(err){
+          console.error("REFRESH_PRODUCT_IMAGE_ERROR", id, imageUrl, err);
+          newImages.push(imageUrl);
+        }
+      }
+
+      if(changed){
+        const patch = { images: newImages, image: newImages[0] || "" };
+        if(Array.isArray(product?.imgs)) patch.imgs = newImages;
+        if(typeof product?.img === "string") patch.img = newImages[0] || "";
+        await db.ref("products/" + id).update(patch);
+        updatedProducts++;
+      }
+
+      done++;
+      if(btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + done + ' / ' + entries.length;
+    }
+
+    alert("تم تحديث صور " + updatedProducts + " منتج");
+  }catch(err){
+    console.error("REFRESH_ALL_PRODUCT_IMAGES_ERROR", err);
+    alert("تعذر تحديث الصور");
+  }finally{
+    if(btn){
+      btn.disabled = false;
+      btn.innerHTML = originalHtml || originalText || "تحديث كل الصور";
+    }
+  }
 }
 </script>
 
@@ -6264,7 +6311,19 @@ function scrollToProduct(){
 </script>
 
 
-<!-- Supabase القديم تم تعطيله لأن الإعداد الصحيح موجود بالأعلى داخل السكربت الرئيسي -->
+<!-- Supabase -->
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://hvnrwgjllajgjreegspp.supabase.co'
+const supabaseKey = 'sb_publishable_1i6Zw9bG6xhx4U02C1HiBA_2OCGM3r2'
+
+window.supabase = createClient(supabaseUrl, supabaseKey)
+
+console.log('✅ Supabase connected to OLD project')
+</script>
+
 <!-- PWA Update Banner -->
 <style>
 #pwa-update-banner{
@@ -6594,5 +6653,89 @@ body.modal-open{overflow:hidden !important;}
 
 <!-- Firebase Notifications -->
 <script type="module" src="/firebase-notifications.js"></script>
+
+<script id="ms-pwa-install-button-fix">
+(function(){
+  if (window.__MS_PWA_INSTALL_FIX__) return;
+  window.__MS_PWA_INSTALL_FIX__ = true;
+
+  let deferredPrompt = null;
+  let installBtn = null;
+
+  function isStandalone(){
+    return window.matchMedia("(display-mode: standalone)").matches ||
+           window.navigator.standalone === true;
+  }
+
+  function removeInstallButton(){
+    if (installBtn && installBtn.parentNode) installBtn.parentNode.removeChild(installBtn);
+    installBtn = null;
+  }
+
+  function showInstallButton(){
+    if (isStandalone()) {
+      removeInstallButton();
+      return;
+    }
+
+    if (!installBtn) {
+      installBtn = document.createElement("button");
+      installBtn.id = "msPwaInstallBtn";
+      installBtn.type = "button";
+      installBtn.innerHTML = "تثبيت";
+      installBtn.style.position = "fixed";
+      installBtn.style.left = "18px";
+      installBtn.style.bottom = "24px";
+      installBtn.style.zIndex = "999999";
+      installBtn.style.padding = "14px 28px";
+      installBtn.style.border = "0";
+      installBtn.style.borderRadius = "18px";
+      installBtn.style.background = "linear-gradient(135deg,#2563eb,#60a5fa)";
+      installBtn.style.color = "#fff";
+      installBtn.style.fontSize = "18px";
+      installBtn.style.fontWeight = "800";
+      installBtn.style.boxShadow = "0 10px 30px rgba(37,99,235,.35)";
+      installBtn.style.cursor = "pointer";
+      installBtn.style.fontFamily = "inherit";
+
+      installBtn.addEventListener("click", async function(){
+        if (deferredPrompt) {
+          try {
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+          } catch(e) {
+            console.warn("PWA install prompt failed", e);
+          }
+          deferredPrompt = null;
+          removeInstallButton();
+          return;
+        }
+
+        alert("إذا لم تظهر نافذة التثبيت، افتح الموقع من Chrome واضغط ⋮ ثم اختر إضافة إلى الشاشة الرئيسية.");
+      });
+
+      document.body.appendChild(installBtn);
+    }
+  }
+
+  window.addEventListener("beforeinstallprompt", function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+  });
+
+  window.addEventListener("appinstalled", function(){
+    deferredPrompt = null;
+    removeInstallButton();
+  });
+
+  document.addEventListener("DOMContentLoaded", function(){
+    setTimeout(function(){
+      if (!isStandalone()) showInstallButton();
+    }, 1500);
+  });
+})();
+</script>
+
 </body>
 </html>
