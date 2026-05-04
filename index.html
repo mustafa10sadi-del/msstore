@@ -1517,51 +1517,53 @@ body.product-view .footer{display:none !important;}
   </div>
 </div>
 
-
-<script id="splash-hard-failsafe">
-(function(){
-  function forceHideSplash(){
-    try{
-      var splash = document.getElementById('splashScreen');
-      var fill = document.getElementById('progressFill');
-      if(fill) fill.style.width = '100%';
-      if(splash){
-        splash.style.opacity = '0';
-        splash.style.pointerEvents = 'none';
-        splash.style.touchAction = 'auto';
-        splash.style.visibility = 'hidden';
-        setTimeout(function(){ splash.style.display = 'none'; }, 350);
-      }
-      if(document.body){
-        document.body.classList.remove('splash-lock');
-        document.body.style.overflow = '';
-        document.body.style.height = '';
-      }
-    }catch(e){}
-  }
-  window.__forceHideSplash = forceHideSplash;
-  window.addEventListener('error', function(){ setTimeout(forceHideSplash, 200); });
-  window.addEventListener('unhandledrejection', function(){ setTimeout(forceHideSplash, 200); });
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(forceHideSplash, 4500); });
-  setTimeout(forceHideSplash, 8000);
-})();
-</script>
-
 <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDakH4F8S6tmdSVTFENMXInk5oQABPSSVo",
-      authDomain: "msstore-5c5f4.firebaseapp.com",
-      databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com",
-      projectId: "msstore-5c5f4",
-      storageBucket: "msstore-5c5f4.appspot.com",
-      messagingSenderId: "254756613602",
-      appId: "1:254756613602:web:35825d0b88c3dae8545dbb"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyAn0y49jyaoLHyL6P7bce7IHcrsVNJ3ERM",
+  authDomain: "msstore-5c5f4.firebaseapp.com",
+  databaseURL: "https://msstore-5c5f4-default-rtdb.firebaseio.com",
+  projectId: "msstore-5c5f4",
+  storageBucket: "msstore-5c5f4.firebasestorage.app",
+  messagingSenderId: "254756613602"
+};
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const SUPABASE_URL = "https://xibvtesonrdvptcjtdwf.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9eJPTP5I1bzzjMjmqCRS3w_YoM_m7we";
 const SUPABASE_BUCKET = "products";
+
+/* Cloudflare Worker Cache Proxy
+   مهم: لازم كود الـ Worker عندك يكون موجّه لنفس SUPABASE_URL أعلاه */
+const CLOUDFLARE_WORKER_URL = "https://lucky-firefly-fb5c.mustafa10sadi.workers.dev";
+const KNOWN_SUPABASE_ORIGINS = [
+  SUPABASE_URL,
+  "https://ejgyplqruchrggqemygi.supabase.co",
+  "https://hvnrwgjllajgjreegspp.supabase.co",
+  "https://xibvtesonrdvptcjtdwf.supabase.co"
+];
+
+function toCloudflareUrl(url){
+  const clean = String(url || "").trim();
+  if(!clean) return clean;
+
+  if(clean.startsWith(CLOUDFLARE_WORKER_URL)) return clean;
+
+  const workerBase = CLOUDFLARE_WORKER_URL.replace(/\/+$/, "");
+
+  if(clean.startsWith("/storage/v1/")){
+    return workerBase + clean;
+  }
+
+  for(const origin of KNOWN_SUPABASE_ORIGINS){
+    const base = String(origin || "").replace(/\/+$/, "");
+    if(base && clean.startsWith(base + "/storage/v1/")){
+      return workerBase + clean.slice(base.length);
+    }
+  }
+
+  return clean;
+}
+
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let isAdmin = false, tapCounter = 0, maintenanceTapCounter = 0;
@@ -3061,6 +3063,9 @@ function normalizeProduct(id, p){
   else if(typeof p.image === "string" && p.image.trim()) images = [p.image.trim()];
   else if(typeof p.img === "string" && p.img.trim()) images = [p.img.trim()];
 
+  // تحويل روابط صور Supabase القديمة والجديدة إلى رابط Cloudflare تلقائياً عند العرض
+  images = images.map(toCloudflareUrl).filter(Boolean);
+
   let quantity = Number(p.quantity);
   if(!Number.isFinite(quantity)){
     quantity = String(p.stock || "").trim() === "غير متوفر" ? 0 : 1;
@@ -3539,7 +3544,7 @@ async function uploadMedia(file, folderPrefix = "product"){
     throw new Error("SUPABASE_PUBLIC_URL_FAILED");
   }
 
-  return data.publicUrl;
+  return toCloudflareUrl(data.publicUrl);
 }
 
 async function uploadImage(file){
@@ -6213,7 +6218,7 @@ body.dark-mode .card .p-desc.short{
       ? '<div class="product-actions-dual single-action"><button type="button" class="btn btn-order btn-disabled-order" disabled><i class="fa-solid fa-ban"></i><span>' + soldText + '</span></button></div>'
       : '<div class="product-actions-dual"><button type="button" class="btn btn-order btn-buy-now" onclick="handleOrderClick(\'' + escapeJsString(p.id) + '\');event.stopPropagation();"><i class="fa-solid fa-bolt"></i><span>اطلب الآن</span></button><button type="button" class="btn btn-order btn-cart" onclick="addToCart(\'' + escapeJsString(p.id) + '\');event.stopPropagation();" title="أضف للسلة" aria-label="أضف للسلة"><i class="fa-solid fa-cart-plus"></i><span>أضف للسلة</span></button></div>';
 
-    card.innerHTML = '\n      ' + adminControls + '\n      <div class="card-top-badges">' + featuredBadge + '</div>\n      <div class="gallery-wrapper img-loading">\n        <img class="gallery-img" src="' + escapeAttr(placeholderImage(p.name)) + '" data-src="' + escapeAttr(firstImage) + '" alt="' + escapeAttr(p.name) + '" data-product-id="' + escapeAttr(p.id) + '" data-index="0" data-images=\'' + escapeAttr(encodeJsArray(p.images && p.images.length ? p.images : [firstImage])) + '\' onclick="openProductDetails(\'' + escapeJsString(p.id) + '\', this);event.stopPropagation();" onerror="handleProductImageError(this)" />\n        <img class="gallery-fade-img" src="' + escapeAttr(firstImage) + '" alt="" aria-hidden="true" />\n        ' + ((p.images && p.images.length > 1) ? ('<div class="gallery-dots">' + p.images.map(function(_,i){ return '<span class="gallery-dot ' + (i===0?'active':'') + '" data-index="' + i + '"></span>'; }).join('') + '</div>') : '') + '\n      </div>\n      <div class="product-info" onclick="openProductDetails(\'' + escapeJsString(p.id) + '\', this)">\n        <h3 class="p-name">' + escapeHtml(p.name) + '</h3>\n        <p class="p-desc long">' + escapeHtml(descText) + '</p>\n        <div class="meta-row">\n          <span class="stock ' + (p.stock === 'متوفر' ? 'in' : 'out') + '">' + escapeHtml(p.stock) + '</span>\n          <span class="section-note">' + escapeHtml(p.category) + '</span>\n        </div>\n        <div class="price-tag">' + formatPrice(p.price) + '</div>\n        <div class="card-actions">\n          ' + actionButtons + '\n        </div>\n      </div>';
+    card.innerHTML = '\n      ' + adminControls + '\n      <div class="card-top-badges">' + featuredBadge + '</div>\n      <div class="gallery-wrapper img-loading">\n        <img class="gallery-img" src="' + escapeAttr(placeholderImage(p.name)) + '" data-src="' + escapeAttr(firstImage) + '" alt="' + escapeAttr(p.name) + '" data-product-id="' + escapeAttr(p.id) + '" data-index="0" data-images=\'' + escapeAttr(encodeJsArray(p.images && p.images.length ? p.images : [firstImage])) + '\' onclick="openProductDetails('${escapeJsString(p.id)}', this);event.stopPropagation();" onerror="handleProductImageError(this)" />\n        <img class="gallery-fade-img" src="' + escapeAttr(firstImage) + '" alt="" aria-hidden="true" />\n        ' + ((p.images && p.images.length > 1) ? ('<div class="gallery-dots">' + p.images.map(function(_,i){ return '<span class="gallery-dot ' + (i===0?'active':'') + '" data-index="' + i + '"></span>'; }).join('') + '</div>') : '') + '\n      </div>\n      <div class="product-info" onclick="openProductDetails('${escapeJsString(p.id)}', this)">\n        <h3 class="p-name">' + escapeHtml(p.name) + '</h3>\n        <p class="p-desc long">' + escapeHtml(descText) + '</p>\n        <div class="meta-row">\n          <span class="stock ' + (p.stock === 'متوفر' ? 'in' : 'out') + '">' + escapeHtml(p.stock) + '</span>\n          <span class="section-note">' + escapeHtml(p.category) + '</span>\n        </div>\n        <div class="price-tag">' + formatPrice(p.price) + '</div>\n        <div class="card-actions">\n          ' + actionButtons + '\n        </div>\n      </div>';
     return card;
   };
 
@@ -6342,19 +6347,7 @@ function scrollToProduct(){
 </script>
 
 
-<!-- Supabase -->
-
-<script type="module">
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabaseUrl = 'https://hvnrwgjllajgjreegspp.supabase.co'
-const supabaseKey = 'sb_publishable_1i6Zw9bG6xhx4U02C1HiBA_2OCGM3r2'
-
-window.supabase = createClient(supabaseUrl, supabaseKey)
-
-console.log('✅ Supabase connected to OLD project')
-</script>
-
+<!-- Supabase القديم تم تعطيله لأن الإعداد الصحيح موجود بالأعلى داخل السكربت الرئيسي -->
 <!-- PWA Update Banner -->
 <style>
 #pwa-update-banner{
