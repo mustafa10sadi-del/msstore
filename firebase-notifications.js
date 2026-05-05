@@ -1,5 +1,5 @@
-// MS Store Firebase Notifications - clean FCM setup
-// لا تعدل هذا الملف إلا إذا غيرت مشروع Firebase أو VAPID key
+// MS Store Firebase Notifications - FCM setup
+// جاهز: يستخدم VAPID KEY الصحيح ويعرض التوكن حتى ترسله كتجربة من Firebase
 
 const firebaseConfig = {
   apiKey: "AIzaSyDaK4F8S6tmdSVTFEMWXInk5oQABPSSVo",
@@ -10,26 +10,28 @@ const firebaseConfig = {
   appId: "1:25475613602:web:98be2e7aec1bb125545dbb"
 };
 
-const MSSTORE_VAPID_KEY = "mCakom0QAk_6eaN6YuRC5saDooDt6BtmtM94tusIcE";
+const MSSTORE_VAPID_KEY = "BFG_qDpx9U7LIRGfniUkhtPzs_72PNoaVpakCFcUuWmnwsL-SL-NKLNlbCQ_564AJUjGBURatxv3iT-PA7iMYco";
 
 (function () {
   if (!("Notification" in window)) {
-    console.log("هذا المتصفح لا يدعم الإشعارات");
+    alert("هذا المتصفح لا يدعم الإشعارات");
     return;
   }
+
   if (!("serviceWorker" in navigator)) {
-    console.log("Service Worker غير مدعوم");
+    alert("Service Worker غير مدعوم بهذا المتصفح");
     return;
   }
+
   if (!window.firebase || !firebase.messaging) {
-    console.log("Firebase Messaging لم يتم تحميله");
+    alert("Firebase Messaging لم يتم تحميله");
     return;
   }
 
   try {
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   } catch (e) {
-    console.log("Firebase init", e);
+    console.log("Firebase init error", e);
   }
 
   const messaging = firebase.messaging();
@@ -58,7 +60,7 @@ const MSSTORE_VAPID_KEY = "mCakom0QAk_6eaN6YuRC5saDooDt6BtmtM94tusIcE";
 
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        console.log("لم يتم السماح بالإشعارات ❌", permission);
+        alert("لم يتم السماح بالإشعارات");
         return null;
       }
 
@@ -72,13 +74,17 @@ const MSSTORE_VAPID_KEY = "mCakom0QAk_6eaN6YuRC5saDooDt6BtmtM94tusIcE";
         console.log("FCM TOKEN ✅", token);
         await saveToken(token);
         window.dispatchEvent(new CustomEvent("msstore-fcm-ready", { detail: { token } }));
+
+        // يظهر التوكن حتى تنسخه وتلصقه في Firebase > Send test message
+        alert("FCM TOKEN:\n\n" + token);
         return token;
       }
 
-      console.log("ماكو توكن FCM ❌");
+      alert("ما طلع توكن FCM");
       return null;
     } catch (err) {
       console.log("خطأ بتفعيل Firebase Notifications ❌", err);
+      alert("خطأ بتفعيل الإشعارات:\n" + (err && err.message ? err.message : err));
       return null;
     }
   }
@@ -88,18 +94,15 @@ const MSSTORE_VAPID_KEY = "mCakom0QAk_6eaN6YuRC5saDooDt6BtmtM94tusIcE";
     const title = (payload.notification && payload.notification.title) || (payload.data && payload.data.title) || "MS Store";
     const body = (payload.notification && payload.notification.body) || (payload.data && payload.data.body) || "وصل إشعار جديد";
     const icon = (payload.notification && payload.notification.icon) || "/icon-192.png";
+
     try {
       new Notification(title, { body, icon, badge: "/icon-192.png" });
     } catch (e) {
-      alert(title + "
-" + body);
+      alert(title + "\n" + body);
     }
   });
 
-  // نخليه متاح للزر أو للكونسول إذا احتجته
   window.enableMSStoreNotifications = startFirebaseNotifications;
-
-  // تشغيل تلقائي بعد فتح الموقع
   window.addEventListener("load", function () {
     setTimeout(startFirebaseNotifications, 1200);
   });
