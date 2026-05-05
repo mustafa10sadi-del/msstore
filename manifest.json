@@ -1,13 +1,13 @@
 {
   "name": "متجر MS",
   "short_name": "MS Store",
-  "description": "متجر MS للتسوق والإشعارات",
-  "lang": "ar",
-  "dir": "rtl",
+  "description": "متجر MS للتسوق والطلبات",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar",
   "background_color": "#0b1220",
   "theme_color": "#1d4ed8",
   "icons": [
