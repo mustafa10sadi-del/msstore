@@ -11,9 +11,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="متجر MS" />
-  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -1036,7 +1036,7 @@ body.product-view .footer{display:none !important;}
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
-        appId: "5c2f8ba0-b82a-488b-b28b-19601a9060db",
+        appId: "d7dd4c02-cd1a-4e53-bfac-d2c5bd0b70bc",
         notifyButton: {
           enable: true,
           prenotify: true,
@@ -1056,7 +1056,7 @@ body.product-view .footer{display:none !important;}
             'dialog.blocked.message': 'فعّل الإشعارات من إعدادات المتصفح حتى تصلك التنبيهات.'
           }
         },
-        serviceWorkerPath: "OneSignalSDKWorker.js",
+        serviceWorkerPath: "/OneSignalSDKWorker.js",
         serviceWorkerParam: { scope: "/" }
       });
     });
@@ -1067,7 +1067,7 @@ body.product-view .footer{display:none !important;}
   <div id="product-view"></div>
 
   <div id="splashScreen" style="position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);color:#fff;text-align:center;padding:20px;transition:.45s ease;">
-    <div class="logo" id="splashLogoBox"><img src="/icons/icon-512.png" alt="MS" onerror="this.style.display='none'"></div>
+    <div class="logo" id="splashLogoBox"><img src="/icon-512.png" alt="MS" onerror="this.style.display='none'"></div>
     <h1 id="splashTitle">متجر MS</h1>
     <p id="splashSubtitle">
       ✨ أهلاً بك في متجر MS<br>
@@ -1090,7 +1090,7 @@ body.product-view .footer{display:none !important;}
   <header class="header">
     <div class="topbar">
       <div class="brand" id="brandTapArea" >
-        <div class="brand-badge" id="headerLogoBox"><img src="/icons/icon-192.png" alt="MS" onerror="this.style.display='none'"></div>
+        <div class="brand-badge" id="headerLogoBox"><img src="/icon-192.png" alt="MS" onerror="this.style.display='none'"></div>
         <div class="brand-text">
           <div class="brand-title" id="storeTitleTop">متجر MS</div>
           <div class="brand-sub" id="storeSubTop">متجر أنيق وفخم</div>
@@ -6352,7 +6352,7 @@ body.dark-mode #pwa-ios-hint{background:#1e293b;border-color:#243041;color:#94a3
 <div id="pwa-install-banner" aria-label="تثبيت التطبيق">
   <div id="pwa-install-banner-inner">
     <div id="pwa-install-banner-icon">
-      <img src="/icons/icon-192.png" alt="MS" onerror="this.style.display='none'">
+      <img src="/icon-192.png" alt="MS" onerror="this.style.display='none'">
     </div>
     <div id="pwa-install-banner-text">
       <strong>متجر MS</strong>
@@ -6593,5 +6593,30 @@ body.modal-open{overflow:hidden !important;}
 
 <!-- Firebase Notifications -->
 <script type="module" src="/firebase-notifications.js"></script>
+
+<script id="msstore-pwa-onesignal-helper">
+  // MS Store PWA + OneSignal helper
+  window.MS_STORE_ONESIGNAL_APP_ID = "d7dd4c02-cd1a-4e53-bfac-d2c5bd0b70bc";
+  window.addEventListener('load', function () {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration('/').then(function(reg) {
+        console.log('MS Store SW:', reg ? reg.scope : 'not registered yet');
+      }).catch(function(e) { console.log('SW check failed', e); });
+    }
+  });
+
+  window.msStoreRequestNotifications = function () {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        await OneSignal.Notifications.requestPermission();
+        console.log('OneSignal permission:', OneSignal.Notifications.permission);
+      } catch (e) {
+        console.log('OneSignal permission error:', e);
+      }
+    });
+  };
+</script>
+
 </body>
 </html>
