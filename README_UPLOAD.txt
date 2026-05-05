@@ -10,4 +10,10 @@ main.tsx
 OneSignalSDKWorker.js
 OneSignalSDKUpdaterWorker.js
 
-ثم افتح الموقع وثبته من جديد ووافق على الإشعارات.
+بعد الرفع:
+1) احذف التطبيق المثبت القديم من الموبايل.
+2) امسح كاش الموقع من Chrome.
+3) افتح https://msstore95.github.io وثبته من جديد.
+4) وافق على الإشعارات.
+5) سيظهر لك FCM TOKEN في رسالة تنبيه، انسخه.
+6) Firebase > Messaging > Send test message > الصق التوكن.
